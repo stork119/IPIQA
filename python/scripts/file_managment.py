@@ -30,18 +30,18 @@ def remove_file(path):
     except Exception as e:
         logging.error(e)
         
-def remove_directory(path):
+def remove_folder(path):
     try:
         shutil.rmtree(path)
         logging.info("Object \"" + path + "\" succesfully removed.")
     except Exception as e:
         logging.error(e)
 
-def remove_data(path):
+def remove_directory(path): # file or folder 
     if os.path.isfile(path): # os.remove(path) if os.path.isfile(path) else None
         remove_file(path)
     elif os.path.isdir(path):
-        remove_directory(path)
+        remove_folder(path)
     else:
         logging.info("Object \"" + path + "\" not found.")
         
