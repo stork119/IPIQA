@@ -1,0 +1,44 @@
+% GENERAL PURPOSE MACROS
+%====text===============================
+\newcommandx{\fparbox}[4][1=.9\linewidth,3=.05\linewidth,4=1pt]{%
+    \setlength\fboxsep{#3}%
+    \setlength{\abovedisplayskip}{#4}
+    \setlength{\belowdisplayskip}{#4}
+    \fbox{\parbox{#1}{#2}}}
+\newcommand{\skipline}{\ \\}
+%====math===============================
+\newcommand*{\newop}[1]{\ensuremath{\operatorname{#1}}}
+\newcommand*{\pmcc}{\newop{PMCC}}
+\newcommand*{\ks}{\newop{K--S}}
+\newcommand*{\msse}{\newop{MSSE}}
+\newcommand*{\ecdf}{\newop{ecdf}}
+\newcommand*{\norm}[1]{\left|#1\right|} %\norm{X}
+\newcommand*{\fofx}[2]{\ensuremath{#1\left(#2\right)}} %\fofx{f}{x}
+\newcommandx*{\estmean}[1]{\ensuremath{\overline{#1}}} %estimated mean, \estmean{X}
+\newcommandx*{\estvar}[1]{\ensuremath{\sigma_{#1}}} %estimated variance, \estvar{X}
+\newcommandx*{\set}[1]{\ensuremath{\left\{#1\right\}}} %\set{el}
+\newcommandx*{\setfilter}[2]{\ensuremath{\set{#1~\vert~#2}}} %\setfilter{el}{cond}
+\newcommand*{\obsVarI}{\ensuremath{Y_{i,j}}}
+\newcommand*{\govdef}{\fofx{\left[S_{j}\right]}{t_i}}
+\newcommand*{\vParam}{\mathbf{p}}
+\newcommand{\msout}[1]{\text{\sout{\ensuremath{#1}}}}
+
+\providecommand\thispdfpagelabel[1]{}%in older version of beamer
+
+\newtheorem{defi}{Definition}[section]
+\newtheorem{lem}[section]{Lemma}
+\newtheorem{theory}[section]{Theory}
+\newtheorem{proofEng}[section]{Proof}
+
+% \renewcommand{\chaptername}{Chapter}
+% \renewcommand{\appendixname}{Supplement}
+% \renewcommand{\figurename}{Figure}
+\renewcommand{\lstlistingname}{Code}
+
+%====names================================
+\newcommand{\webpy}{\textbf{\textsf{web2py}}\ }
+\newcommand{\Webpy}{\textbf{\textsf{Web2py}}\ }
+\newcommand{\Rpackage}{\textbf{\textsf{R\ }}}
+\newcommand{\ClustSense}{\textbf{\textsf{ClustSense}}\ }
+\newcommand{\ClustSenseHome}{\textbf{\textsf{ClustSenseHome}}\ }
+\newcommand{\Mathematica}{\textbf{\textsf{Mathematica\ }}}

@@ -1,0 +1,36 @@
+\section{Wymagania i problemy}
+
+Problemy i ograniczenia związane z projektem : 
+\begin{itemize}
+\item Czas obrazowania przez mikroskop konfokalny w przypadku 96 dołkowego eksperymentu ~12h
+\item Czas kwantyfikacji danych ~12h
+\item Różne konfiguracje eksperymentów :
+\begin{itemize}
+\item Liczba odczytywanych kanałów.
+\item Różna liczba oraz pozycja analizowanych dołków
+\item Konieczność łączenia eksperymentów
+\end{itemize}
+\item Błędy w obrazowaniu - powtórzenia dla pojedynczych dołków.
+\item Konieczność stosowania różnych metod do kwantyfikacji danych (różne pipeliny w CellProfilerze)
+\item Niektóre algorytmy wymagają informacji o całym zbiorze danych.
+\item Konieczność przesyłu plików
+\item Ograniczenia dyskowe - należy umiejętnie zarządzać plikami
+\item Wielkość przetrzymywanych danych (obecnie dane są przetrzymywane w plikach csv)
+\end{itemize}
+
+W wyniku tych problemów należy zaimplementować oprogramowanie, które spełnia następujące wymagania:
+\begin{itemize}
+\item Proste i intuicyjny system do zapisywania schematu eksperymentu.
+\item Prosta modyfikowalność Workflowu - bez konieczności zmian w implementacji programu.
+\item Możliwość pomijania niektórych kroków (kwantyfikacji, korekty obrazu, itd.)
+\item Zrównoleglanie operacji 
+\begin{itemize}
+\item obrazowanie - kwantyfikacja
+\item kwantyfikacja - kwantyfikacja
+\end{itemize}
+\item Oddzielanie kolejnych etapów procedowania na zasadzie input-output. 
+\item 
+\item
+\end{itemize}
+
+
