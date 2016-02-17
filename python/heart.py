@@ -1,5 +1,5 @@
 #! /usr/bin/python
-import scripts.file_managment as FM
+import modules.file_managment as FM
 import scripts.editdata as ED
 
 import logging

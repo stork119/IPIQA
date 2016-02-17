@@ -63,7 +63,7 @@ def copy_data(in_path, out_path):
         logging.info("Object \"" + in_path + "\" not found.")
 
 
-def copy_data_const(in_path, out_path, sleep_time):
+def copy_data_constantly(in_path, out_path, sleep_time):
     while True:
         if if_exist(in_path) == True :
             try:
