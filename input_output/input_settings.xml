@@ -4,39 +4,49 @@
         <number_of_cores>4</number_of_cores>
     </Configuration_settings>
     <task class="REQUEST">
-        <parametrs_by_value>
-            <input key="example_key" value="example_value">
-            </input>
-            <output key="example_key" value="example_value">
-            </output>
-            <number_of_folders key="example_key" value="example_value">
-            </number_of_folders>
+        <parameters_by_value>
+            <parameter key="input_path" value="example_value">
+            </parameter>
+            <parameter key="output_path" value="example_value">
+            </parameter>
+            <parameter key="folders_number" value="example_value">
+            </parameter>
         </parameters_by_value>
         <parameters_by_name>
-            <input key="example_key_name" value="example_value_name">
-            </input>
-            <output key="example_key_name" value="example_value_name">
-            </output>
+            <parameter key="input_path" value="example_value_name">
+            </parameter>
+            <parameter key="output_path" value="example_value_name">
+            </parameter>
+            <parameter key="folders_number" value="example_value_name">
+            </parameter>
         </parameters_by_name>
         <update_by_value>
-            <update1 key="example_key" value="example_value">
-            </update1>
+            <update key="example_key" value="example_value">
+            </update>
+            <update key="example_key" value="example_value">
+            </update>
         </update_by_value>
         <update_by_name>
+            <update key="example_key_name" value="example_value_name">
+            </update>
+            <update key="example_key" value="example_value_name">
+            </update>
         </update_by_name>
         <Queue>
             <task class="DOWNLOAD">
-                <parametrs_by_value>
-                    <input key="example_key" value="example_value">
-                    </input>
-                    <output key="example_key" value="example_value">
-                    </output>
+                <parameters_by_value>
+                    <parameter key="input_example_key" value="example_value">
+                    </parameter>
+                    <parameter key="output_example_key" value="example_value">
+                    </parameter>
+                    <parameter key="by_url" value="FALSE">
+                    </parameter>
                 </parameters_by_value>
                 <parameters_by_name>
-                    <input key="example_key_name" value="example_value_name">
-                    </input>
-                    <output key="example_key_name" value="example_value_name">
-                    </output>
+                    <parameter key="input.path" value="input.path.download">
+                    </parameter>
+                    <parameter key="example_key_name" value="example_value_name">
+                    </parameter>
                 </parameters_by_name>
                 <update_by_value>
                 </update_by_value>
@@ -44,21 +54,21 @@
                 </update_by_name>
             </task>
             <task class="CELL_PROFILER">
-                <parametrs_by_value>
-                    <input key="example_key" value="example_value">
-                    </input>
-                    <output key="example_key" value="example_value">
-                    </output>
-                    <pipeline key="example_key" value="example_value">
-                    </pipeline>
+                <parameters_by_value>
+                    <parameter key="input" value="example_value">
+                    </parameter>
+                    <parameter key="output" value="example_value">
+                    </parameter>
+                    <parameter key="pipeline" value="example_value">
+                    </parameter>
                 </parameters_by_value>
                 <parameters_by_name>
-                    <input key="example_key_name" value="example_value_name">
-                    </input>
-                    <output key="example_key_name" value="example_value_name">
-                    </input>
-                    <pipeline key="example_key_name" value="example_value_name">
-                    </pipeline>
+                    <parameter key="input" value="example_value_name">
+                    </parameter>
+                    <parameter key="output" value="example_value_name">
+                    </parameter>
+                    <parameter key="pipeline" value="example_value_name">
+		    </parameter>
                 </parameters_by_name>
                 <update_by_value>
                 </update_by_value>
@@ -68,21 +78,21 @@
         </Queue>
     </task>
     <task class="MERGE">
-        <parametrs_by_value>
-            <input key="example_key" value="example_value">
-            </input>
-            <output key="example_key" value="example_value">
-            </output>
-            <file_type key="example_key" value="example_value(what kind of files, shrinkednuclei, cell?)">
-            </file_type>
+        <parameters_by_value>
+            <parameter key="input_path" value="example_value">
+            </parameter>
+            <parameter key="output_path" value="example_value">
+            </parameter>
+            <parameter key="folders_number" value="example_value">
+            </parameter>
         </parameters_by_value>
         <parameters_by_name>
-            <input key="example_key_name" value="example_value_name">
-            </input>
-            <output key="example_key_name" value="example_value_name">
-            </output>
-            <file_type key="example_key" value="example_value(what kind of files, shrinkednuclei, cell?)">
-            </file_type>
+            <parameter key="input_path" value="example_value_name">
+            </parameter>
+            <parameter key="output_path" value="example_value_name">
+            </parameter>
+            <parameter key="folders_number" value="example_name">
+            </parameter>
         </parameters_by_name>
         <update_by_value>
         </update_by_value>
