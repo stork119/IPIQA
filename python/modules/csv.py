@@ -24,9 +24,9 @@ def merge(csv_name, subdir_list, input_path, output_path):
             out_file.write(line.rstrip() + "," + position + "\n")
     # rest files:
     for subdir in (subdir_list[1:]):
-        position = subdir_list.split()
+        position = subdir.split()
         position = position[1]
-        f = open((os.path.join(input_path, subdir, csv_name)), "r+")
+        f = open((os.path.join(input_path, subdir, csv_name)), "r")
         # skip the header
         first_line = f.readline() # first line is header, it is called to put it out of set
         for line in f:
