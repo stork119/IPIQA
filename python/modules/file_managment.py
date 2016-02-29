@@ -38,7 +38,7 @@ def remove_folder(path):
         logging.error(e)
 
 def remove_directory(path): # file or folder 
-    if os.path.isfile(path): # os.remove(path) if os.path.isfile(path) else None
+    if os.path.isfile(path):
         remove_file(path)
     elif os.path.isdir(path):
         remove_folder(path)
@@ -50,7 +50,7 @@ Functions for coping objects.
 """
       
 def copy_data(in_path, out_path):
-    if if_exist(in_path) == True:
+    if if_exist(in_path):
         try:
             shutil.copy(in_path, out_path)
             return out_path
@@ -63,9 +63,9 @@ def copy_data(in_path, out_path):
         logging.info("Object \"" + in_path + "\" not found.")
 
 
-def copy_data_constantly(in_path, out_path, sleep_time):
+def copy_data_constantly(in_path, out_path, sleep_time): #sleep_time is given in seconds and it's meant to be higher than 0.
     while True:
-        if if_exist(in_path) == True :
+        if if_exist(in_path):
             try:
                 shutil.copy(in_path, out_path)
                 logging.info("Object succesfully copied to \"" + out_path + "\".")
