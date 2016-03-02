@@ -1,0 +1,151 @@
+\section{Plan pracy}
+
+Poniżej przedstawiony jest ogólny plan prac. Prace będą realizowane przez dwie osoby : Agnieszkę Gromadkę (AG) oraz Karola Nienałtowskiego (KN)
+
+\begin{enumerate} 
+\item Grudzień
+\begin{itemize}
+\item KN Projekt programu
+\item KN Moduł Cell Profiler
+\item AG Moduł File Management
+\item KN-AG Konfiguracja sieciowa komputera obsługującego Pathwaya
+\item KN-AG Konfiguracja systemu zarządzania projektem 
+\item AG Stworzenie struktury projektu
+\item AG Konfiguracja oprogramowania
+\item KN-AG
+\end{itemize}
+\item Styczeń
+\begin{itemize}
+\item KN-AG Projekt struktury workflowu
+\item AG Moduł XML parser
+\item AG Moduł TASK
+\item KN Projekt struktury MAP PLATE'a
+\item AG Moduł do parsowania MAP PLATE'a
+\item KN Moduł Analiza Danych
+\item KN Funkcja do integracji danych z Cell Profilera
+\end{itemize}
+\item Luty
+\begin{itemize}
+\item AG Moduł R Connection
+\item AG Moduł Python Connection
+\item KN Moduł  ImageJ
+\item AG Analiza danych - przygotowanie statystyk
+\end{itemize}
+\item Marzec
+\begin{itemize}
+\item AG Moduł Correction
+\item KN-AG Wdrożenie projektu. Dokumentacja. Wersja 0.1
+\end{itemize}
+\item Kwiecień
+\begin{itemize}
+\item AG Moduł do tworzenia rysunków
+\item AG Analiza danych - korekta morfologiczna
+\end{itemize}
+\item Maj
+\begin{itemize}
+\item KN-AG Zarządzanie plikami wprowadzenie poprawek do projektu
+\item AG Wdrożenie projektu wersja 1.0
+\end{itemize}
+\end{enumerate}
+
+\begin{lstlisting}
+function [Cmatrix, 	...
+             	Qmatrix, 	...
+              	Wmatrix,	 ...
+               	IWmatrix,	 ...
+               	Ematrix,	 ...
+               	timer,	...
+               	n, 	...
+               	Bmatrix] = ArimotoBlahutAlgorithm( P, Q, N, eTollerance )
+%% Arimoto Blahut Algorithm
+%% INPUT
+% P = P(Y|X) -- model rows output; columns input
+% Q = P(X)   -- a priori
+% N  -- limit of evaluation -- default 1000
+% eTollerance -- desired accuracy of the algorithm -- default 0.001
+
+%% OUTPUT 
+% Cell arays  1 x N
+% Cmatrix -- estimation of capacity channel I(Q*,W*)
+% Qmatrix -- Q* estimated distribution of parameters
+% Wmatrix -- P(X|Y) posteriori distrbution
+% Imatrix  -- I(Q*)
+% Ematrix -- terminate condtition ln(Q^(n+1)/Q^(n))
+% Bmatrix -- number of states
+%% Private functions
+
+% Creates Wmatrix 
+Wfun = @(n, Pmatrix, Qprob) ...
+    ((Pmatrix*diag(Qprob))./ ...
+    repmat(Pmatrix*(Qprob)', 1, size(Pmatrix, 2)))';
+
+% Creates Amatrix
+alphaFun = @(Pmatrix, Wmatrix) diag(exp(logzerom(Wmatrix, Pmatrix, false)))';
+
+
+% Mutual Information
+Ij = @(Pmatrix, Qprob) sum(logzerov(Pmatrix.*Qprob, Pmatrix./(Pmatrix*Qprob')));
+I = @(Pmatrix, Qprob) ...
+      summarize(@(j) Ij(Pmatrix(j,:), Qprob), {1:size(Pmatrix,1)});
+%% Initialization
+if nargin < 4
+  if nargin < 3
+      eTollerance = 0.001;
+  end
+  N  = 1000;
+  
+end
+
+Wmatrix = cell(1, N);
+Amatrix = cell(1, N);
+Cmatrix = cell(1, N);
+Bmatrix = cell(1, N);
+Ematrix = cell(1, N);
+
+Qmatrix = cell(1, N);
+Qmatrix{1} = Q;
+
+Pmatrix = P;
+
+Imatrix = cell(1, N);
+
+IWmatrix = cell(1, N);
+
+Cmatrix{1} = I(Pmatrix, Qmatrix{1});
+Bmatrix{1} = exp(Cmatrix{1});
+%% Implementation
+
+timer = cell(1, N);
+
+terminateAlgorithm = false;
+n = 0;
+while ~terminateAlgorithm 
+  n = n + 1;
+  timerTmp = zeros(1,5);
+  disp(['Loop ', num2str(n)]);
+  tic;
+  Wmatrix{n} = Wfun(n - 1, Pmatrix, Qmatrix{n}); 
+  timerTmp(1) = toc;
+  tic;
+  Amatrix{n} = alphaFun(Pmatrix, Wmatrix{n});
+  timerTmp(2) = toc;
+  tic;
+  Qmatrix{n + 1} = Amatrix{n} ./ sum(Amatrix{n});
+  timerTmp(3) = toc;
+
+  tic;
+  Cmatrix{n + 1} = log(sum(Amatrix{n}));
+  Bmatrix{n + 1} = exp(Cmatrix{n + 1});
+  timerTmp(4) = toc;
+  disp(['I(Q, W^n) ', num2str(Cmatrix{n+1})]);
+  
+  tic;
+  Ematrix{n + 1} = -Cmatrix{n+1} + max(log(Amatrix{n}) - log(Qmatrix{n}));
+  timerTmp(5) = toc;
+  disp(['End condition ', num2str(Ematrix{n+1})]);
+  timer{n + 1} = timerTmp;
+  terminateAlgorithm = Ematrix{n + 1} < eTollerance || n + 1 == N;
+end
+
+end
+\end{lstlisting}
