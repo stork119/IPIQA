@@ -33,14 +33,27 @@ class TASK():
                 key_list.append(key[0])
         if len(key_list) > 1:
             temp_dict = dict_out.copy()
+            temp_dict2 = OrderedDict(sorted(dict_out.items()))
             key_list = list(set(key_list))      
             for i in range(len(key_list)):
                 value = ""
-                for k, v in dict_out.items():
+                """
+                robocze = 0    
+                for k, v in temp_dict2.items():
+                    if key_list[i] + "." in k:
+                        if robocze == 0:
+                            robocze = 1
+                            temp_dict = OrderedDict((key_list[i],value) if key == k else (key, value) for key, value in dict_out.items())
+                        else:
+                            del temp_dict[k] # deleting name.number from temporary dictionary
+                        value = value + v
+                        temp_dict[key_list[i]] = value
+                """
+                for k, v in temp_dict2.items():
                     if key_list[i] + "." in k:
                         value = value + v
                         del temp_dict[k] # deleting name.number from temporary dictionary
-                        temp_dict[key_list[i]] = value # the more 'proper' way to do this would be put this phrase out of 'if' condition (to do not assign the value for the key few times), but in that case we would lose the order of dictionary
+                temp_dict[key_list[i]] = value
             dict_out = temp_dict.copy()
             
 class TASK_DOWNLOAD(TASK):
@@ -56,6 +69,16 @@ class TASK_DOWNLOAD(TASK):
 
 class TASK_QUANTIFY(TASK):
   
+    def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name):
+        TASK.__init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name)
+
+    def execute_specify(self, dict_local):
+        pass
+        #some specific function for this class like running cell_profiler
+
+
+class TASK_PARALLELIZE(TASK):
+   # has got object queue
     def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name):
         TASK.__init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name)
 
