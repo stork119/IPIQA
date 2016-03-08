@@ -1,5 +1,5 @@
 #! /usr/bin/python
-import collections
+from collections import OrderedDict
 
 class TASK():
     def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name):
@@ -11,41 +11,60 @@ class TASK():
       
     def execute(self, dict_global):
         dict_local = dict_global.copy()
-        dict_local = dict(self.update_dict(dict_local, dict_local, self.parameters_by_value, self.parameters_by_name))
-        #sth
-        #execute_specific(dict_local)
-        dict_global = dict(self.update_dict(dict_global, dict_local, self.updates_by_value, self.updates_by_name))
-        return dict_global
+        temp_dict = dict_global.copy()
+        self.update_dict(dict_local, temp_dict, self.parameters_by_value, self.parameters_by_name)
+        self.execute_specify(dict_local)
+        self.update_dict(dict_global, dict_local, self.updates_by_value, self.updates_by_name)
       
     def update_dict(self, dict_out, dit_in, list_by_value, list_by_name):
-        for i in (list_by_value): #update by value
-            dict_out[i] = dict_in[i]
-        for i in (list_by_name)): #update by name
-            v = dict_in[i]
-            dict_out[i] = dict_in[v]
+        for k, v in list_by_value.items(): #update by value
+            dict_out[k] = v
+        for k, v in list_by_name.items(): #update by name
+            value = dict_in[v]
+            dict_out[k] = value
+        self.concatenation_name_nr(dict_out)
+            
+    def concatenation_name_nr(self, dict_out):      
         #concatenation name.number
         key_list = []
-        temp_dict = dict(dict_out)
-            for k, v in dict_out.items():
+        for k, v in dict_out.items():
             if "." in k:
                 key = k.split(".")
                 key_list.append(key[0])
-        key_list = list(set(key_list))      
-        for i in range(len(key_list)):
-            value = ""
-            for k, v in dict_out.items():
-                if key_list[i] + "." in k:
-                    value = value + v
-                    del temp_dict[k] # deleting name.number from temporary dictionary
-                temp_dict[key_list[i]] = value # the more 'proper' way to do this would be put this phrase out of 'if' condition (to do not assign the value for the key few times), but in that case we would lose the order of dictionary
-        dict_out = dict(temp_dict) 
-        print(dict_out)
-        return dict_out
+        if len(key_list) > 1:
+            temp_dict = dict_out.copy()
+            key_list = list(set(key_list))      
+            for i in range(len(key_list)):
+                value = ""
+                for k, v in dict_out.items():
+                    if key_list[i] + "." in k:
+                        value = value + v
+                        del temp_dict[k] # deleting name.number from temporary dictionary
+                        temp_dict[key_list[i]] = value # the more 'proper' way to do this would be put this phrase out of 'if' condition (to do not assign the value for the key few times), but in that case we would lose the order of dictionary
+            dict_out = temp_dict.copy()
+            
+class TASK_DOWNLOAD(TASK):
+  
+    def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name):
+        TASK.__init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name)
 
-
+    def copy(self):
+        print("1234")
     
-"""
-dict_global = collections.OrderedDict()
-dict_global = {}
-dict_global = collections.OrderedDict(sorted(dict_global.items()))
-"""
+    def execute_specify(self, dict_local):
+        pass
+
+class TASK_QUANTIFY(TASK):
+  
+    def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name):
+        TASK.__init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name)
+
+    def execute_specify(self, dict_local):
+        pass
+        #some specific function for this class like running cell_profiler
+     
+class QUEUE():
+    
+    def execute(self, dict_global, task_list): # task_list passing by _init_ or function argument?
+        for task in task_list:
+            task.TASK.execute(dict_global)
