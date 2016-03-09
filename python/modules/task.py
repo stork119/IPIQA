@@ -75,7 +75,14 @@ class TASK_QUANTIFY(TASK):
     def execute_specify(self, dict_local):
         pass
         #some specific function for this class like running cell_profiler
+        
+class TASK_MERGE(TASK):
+  
+    def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name):
+        TASK.__init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name)
 
+    def execute_specify(self, dict_local):
+        pass
 
 class TASK_PARALLELIZE(TASK):
    # has got object queue
