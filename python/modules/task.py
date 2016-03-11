@@ -11,8 +11,8 @@ class TASK():
       
     def execute(self, dict_global):
         dict_local = dict_global.copy()
-        temp_dict = dict_global.copy()
-        self.update_dict(dict_local, temp_dict, self.parameters_by_value, self.parameters_by_name)
+       # temp_dict = dict_global.copy()
+        self.update_dict(dict_local, dict_local, self.parameters_by_value, self.parameters_by_name) #check out if its working 
         self.execute_specify(dict_local)
         self.update_dict(dict_global, dict_local, self.updates_by_value, self.updates_by_name)
       
@@ -36,7 +36,7 @@ class TASK():
             temp_dict2 = OrderedDict(sorted(dict_out.items()))
             key_list = list(set(key_list))      
             for i in range(len(key_list)):
-                value = ""
+                value = []
                 """
                 robocze = 0    
                 for k, v in temp_dict2.items():
@@ -51,8 +51,9 @@ class TASK():
                 """
                 for k, v in temp_dict2.items():
                     if key_list[i] + "." in k:
-                        value = value + v
+                        value.append(str(v))
                         del temp_dict[k] # deleting name.number from temporary dictionary
+                "".join(value)
                 temp_dict[key_list[i]] = value
             dict_out = temp_dict.copy()
             

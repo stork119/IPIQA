@@ -10,20 +10,18 @@ def make_task_list(root):
     task_list = []
     for task1 in root.findall('TASK'): #iter include also childern's leaves
         name = task1.get('class')
-        condition = False
         try:
             func = getattr(t,name)
-            condition = True
         except:
             logger.error("Error. %s is unknown.", name)
-        if condition:
-            parameters_by_value = get_settings_dict(task1, "parameters_by_value")
-            parameters_by_name = get_settings_dict(task1, "parameters_by_name")
-            updates_by_value = get_settings_dict(task1, "update_by_value") # in input_settings we have got parameterS (plural) and update (singular)
-            updates_by_name = get_settings_dict(task1, "update_by_name")
-            task = func(parameters_by_value, parameters_by_name, updates_by_value, updates_by_name)
-            task_list.append(task)
-            logger.debug("%s added to task_list.", name)
+            return
+        parameters_by_value = get_settings_dict(task1, "parameters_by_value")
+        parameters_by_name = get_settings_dict(task1, "parameters_by_name")
+        updates_by_value = get_settings_dict(task1, "update_by_value") # in input_settings we have got parameterS (plural) and update (singular)
+        updates_by_name = get_settings_dict(task1, "update_by_name")
+        task = func(parameters_by_value, parameters_by_name, updates_by_value, updates_by_name)
+        task_list.append(task)
+        logger.debug("%s added to task_list.", name)
     return task_list
   
 def get_settings_dict(task, setup):
