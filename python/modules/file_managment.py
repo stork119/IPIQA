@@ -4,36 +4,45 @@ from time import sleep
 import logging
 import shutil # for function copy_data
 
-"""
-Temporary logfile's settings.
-"""
-logging.basicConfig(level=logging.DEBUG, 
-		    filename="logfile_temp", 
-		    format="%(asctime)-2s \t %(levelname)-4s \t %(message)s")
-
-
-logging.info("Executing file_managment module.")
+logger = logging.getLogger(__name__)
+logger.info("Executing file_managment module.")
 """
 Checking out if the director and file exist ["C:/path/to/file"].
 """
 def if_exist(path):
     if (os.path.exists(path)):
+        logger.debug("%s path exists.", path)
         return True
-
+    logger.error("%s path doesn't exist.", path)
+    return False
+"""
+Getting all subdirs names of a given directory.
+"""
+def get_dir_names(input_path):
+    if not if_exist(input_path):
+        logger.error("Error. Can't get subdirs names list for a given path: %s.", input_path)
+        return False
+   # subdir_path = []
+    subdir_names = []
+    for path, subdir, files in os.walk(input_path):
+        for name in subdir:
+       #     subdir_path.append(os.path.join(path, name)) # get list of path to each subdir
+            subdir_names.append(str(name))
+    return subdir_names
 """
 Functions for removing objects.
 """
 def remove_file(path):
     try:
         os.remove(path)
-        logging.info("Object \"" + path + "\" succesfully removed.")
+        logging.info("File %s succesfully removed.", path)
     except Exception as e:
         logging.error(e)
         
 def remove_folder(path):
     try:
         shutil.rmtree(path)
-        logging.info("Object \"" + path + "\" succesfully removed.")
+        logging.info("Folder %s succesfully removed.", path)
     except Exception as e:
         logging.error(e)
 
@@ -60,7 +69,7 @@ def copy_data(in_path, out_path):
             print('Error: %s' % e.strerror)
             logging.error(e)
     else:
-        logging.info("Object \"" + in_path + "\" not found.")
+        logging.error("Object \"" + in_path + "\" not found.")
 
 
 def copy_data_constantly(in_path, out_path, sleep_time): #sleep_time is given in seconds and it's meant to be higher than 0.
