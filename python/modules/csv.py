@@ -1,5 +1,5 @@
 #! /usr/bin/python
-import os, glob
+import os
 
 def get_dir_names(input_path):
    # subdir_path = []

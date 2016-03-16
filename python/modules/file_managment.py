@@ -1,6 +1,6 @@
 #! /usr/bin/python
 import os.path
-import time
+from time import sleep
 import logging
 import shutil # for function copy_data
 
@@ -77,4 +77,4 @@ def copy_data_constantly(in_path, out_path, sleep_time): #sleep_time is given in
                 logging.error(e)
         else:
             logging.info("Object \"" + in_path + "\" have not been found yet. Searching will be continued.")
-            time.sleep(sleep_time)
+            sleep(sleep_time)
