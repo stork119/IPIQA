@@ -23,7 +23,10 @@ def make_task_list(root):
         parameters_by_name = get_settings_dict(name, "parameters_by_name")
         updates_by_value = get_settings_dict(name, "update_by_value")
         updates_by_name = get_settings_dict(name, "update_by_name")
-        task = task_initialization(parameters_by_value, parameters_by_name, updates_by_value, updates_by_name) #creating task class objects
+        task = task_initialization(parameters_by_value, 
+				   parameters_by_name, 
+				   updates_by_value, 
+				   updates_by_name) #creating task class objects
         task_list.append(task) # getting list of tasks objects
         logger.debug("%s added to task_list.", task_name)
     return task_list
@@ -31,11 +34,12 @@ def make_task_list(root):
 def get_settings_dict(task, setup):
     temp_dict = OrderedDict()
     for parameters in task.findall(setup):
-        temp_dict.update(make_config_dict(parameters, task.get('class'), setup)) # passing the name of the task and type of setup (parameter/update), which might be usefull for logs/debugging
-    print(temp_dict)
+        temp_dict.update(make_config_dict(parameters, 
+					  task.get('class'), 
+					  setup)) # passing the name of the task and type of setup (parameter/update), which might be usefull for logs/debugging
     return temp_dict
   
-def make_config_dict(root, tag, setup= ""):
+def make_config_dict(root, tag, setup = ""):
     temp_dict = OrderedDict()
     for attribute in root:
         key = attribute.get('key')
