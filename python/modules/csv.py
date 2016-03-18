@@ -1,11 +1,14 @@
 #! /usr/bin/python
 import os
-from modules.file_managment import get_dir_names
+import logging
+#from modules.file_managment import get_dir_names
 
 logger = logging.getLogger(__name__)
 logger.info("Executing csv (merge) module.")
 
-def merge(csv_name, subdir_list, input_path, output_path):
+def merge(csv_name, subdir_list, input_path, output_path): 
+    """csv_names = the list of filenames with given CP output data (for example: Nuclei.csv, Cytoplasm.csv)
+    subdir_list = the list of subdir's names, each of subdir contains data of given well"""
     out_file= open((os.path.join(output_path, csv_name)), "a") #creating output file
     logger.info("Creating %s output (merged) file.", csv_name)
     # first file:
@@ -32,20 +35,4 @@ def merge(csv_name, subdir_list, input_path, output_path):
         f.close()
     out_file.close()
     logger.info("%s data successfully merged.", csv_name)
-    
 
-def main():
-
-    input_path = ""
-    output_path = ""
-    csv_names = ['Cells.csv', 'Cytoplasm.csv', 'ExpandedNucleiLess.csv', 'ExpandedNucleiMore.csv', 'Image.csv', 'Nuclei.csv', 'RingCytoplasm.csv', 'ShrinkedNuclei.csv']
-    #'Experiment.csv' was not icluded in 'csv_names' list of files, because of different structure
-    subdir_list = get_dir_names(input_path) # getting the subdirectories' list (1 subdir = 1 well data) of the given directory 
-    for csv_name in csv_names: # merging data file (type) by file
-        merge(csv_name, subdir_list, input_path, output_path)
-       
-    
-
-if __name__ == "__main__":
-    main()
- 
