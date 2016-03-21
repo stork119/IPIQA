@@ -1,14 +1,14 @@
 #! /usr/bin/python
-import modules.task as tk
+import modules.task
 from multiprocessing import Pool
 #from functools import partial
 
 
 class QUEUE():
     
-    def execute(self, task, dict_global): 
+    def execute(self, element, dict_global): 
         #task_name = (type(task).__name__)
-        task.tk.execute(dict_global) # or executing = getattr(tk, "execute"), executing()
+        element.task.TASK.execute(dict_global) # or executing = getattr(tk, "execute"), executing()
 
             
     def multiproc(self, dict_global, task_list, settings_dict):
@@ -20,3 +20,5 @@ class QUEUE():
         pool.close()
         pool.join()
         return dict_global
+
+
