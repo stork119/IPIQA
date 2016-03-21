@@ -1,6 +1,9 @@
 #! /usr/bin/python
 from collections import OrderedDict
-
+from modules.file_managment import copy_data, copy_data_constantly, remove_directory, get_dir_names
+from modules.run_cp_by_cmd import run_cp as cp_cmd
+from modules.csv import merge as merge_csv
+ 
 class TASK():
     def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name):
         self.parameters_by_value = parameters_by_value
@@ -16,7 +19,7 @@ class TASK():
         self.execute_specify(dict_local)
         self.update_dict(dict_global, dict_local, self.updates_by_value, self.updates_by_name)
       
-    def update_dict(self, dict_out, dit_in, list_by_value, list_by_name):
+    def update_dict(self, dict_out, dict_in, list_by_value, list_by_name):
         for k, v in list_by_value.items(): #update by value
             dict_out[k] = v
         for k, v in list_by_name.items(): #update by name
@@ -37,18 +40,6 @@ class TASK():
             key_list = list(set(key_list))      
             for i in range(len(key_list)):
                 value = []
-                """
-                robocze = 0    
-                for k, v in temp_dict2.items():
-                    if key_list[i] + "." in k:
-                        if robocze == 0:
-                            robocze = 1
-                            temp_dict = OrderedDict((key_list[i],value) if key == k else (key, value) for key, value in dict_out.items())
-                        else:
-                            del temp_dict[k] # deleting name.number from temporary dictionary
-                        value = value + v
-                        temp_dict[key_list[i]] = value
-                """
                 for k, v in temp_dict2.items():
                     if key_list[i] + "." in k:
                         value.append(str(v))
@@ -62,20 +53,28 @@ class TASK_DOWNLOAD(TASK):
     def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name):
         TASK.__init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name)
 
-    def copy(self):
-        print("1234")
-    
     def execute_specify(self, dict_local):
-        pass
-
+        job_done = dict_local["experiment_finished"] # checking out if the experiment is finished and all data is collected
+        in_path = dict_local["input_path"]
+        out_path = dict_local["output_path"]
+        if job_done == True:
+            copy_data(in_path, out_path)
+        else:
+            sleep_time = dict_local["sleep_time"]
+            copy_data_constantly(in_path, out_path, sleep_time)
+        remove_directory(in_path)
+        
 class TASK_QUANTIFY(TASK):
   
     def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name):
         TASK.__init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name)
 
     def execute_specify(self, dict_local):
-        pass
-        #some specific function for this class like running cell_profiler
+        cp_path = dict_local["cp_path"]
+        in_path = dict_local["input_path"]
+        out_path = dict_local["output_path"]
+        pipeline = dict_local["pipeline"]
+        cp_cmd(cp_path, in_path, out_path, pipeline)
         
 class TASK_MERGE(TASK):
   
@@ -83,7 +82,12 @@ class TASK_MERGE(TASK):
         TASK.__init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name)
 
     def execute_specify(self, dict_local):
-        pass
+        in_path = dict_local["input_path"]
+        out_path = dict_local["output_path"]
+        subdir_list = get_dir_names(in_path)
+        csv_names = (dict_local["csv_names_list"]).split(",")
+        for csv_name in csv_names:
+            merge_csv(csv_name, subdir_list, in_path, out_path)
 
 class TASK_PARALLELIZE(TASK):
    # has got object queue
