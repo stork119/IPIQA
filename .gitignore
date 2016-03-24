@@ -100,3 +100,12 @@ vignettes/*.pdf
 *.out
 *.toc
 *.fmt
+
+
+# PATHWAYPACKAGE
+
+# vim
+*.swp
+
+# resources
+resources/*
