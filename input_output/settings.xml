@@ -43,7 +43,7 @@
                 </TASK>
                 <TASK class="TASK_QUANTIFY">
                     <parameters_by_value>
-                        <parameter key="pipeline.2" value="cellprofiller/2016-03-23/pipeline.cpipe"/>
+                        <parameter key="pipeline.2" value="cellprofiller/2016-03-23/pipeline.cppipe"/>
                     </parameters_by_value>
                     <parameters_by_name>
  	                <parameter key="pipeline.1" value = "pathway_package_path">
