@@ -7,29 +7,54 @@ import modules.task as t
 
 logger = logging.getLogger(__name__)
 
-def make_task_list(root):
-    task_list = []
-    for name in root.findall('TASK'):
-        task_name = name.get('class')
-        #a = "modules.tasks." + task_name.lower()
-        #task_module = __import__(a, globals(), locals(), [], 0)
-        #task_initialization = getattr(task_module, task_name)
-        try:
-            task_initialization = getattr(t,task_name)
-        except:
-            logger.error("Error. %s is unknown.", task_name)
-            return
-        parameters_by_value = get_settings_dict(name, "parameters_by_value") # getting dicts of settings and updates
-        parameters_by_name = get_settings_dict(name, "parameters_by_name")
-        updates_by_value = get_settings_dict(name, "update_by_value")
-        updates_by_name = get_settings_dict(name, "update_by_name")
+def create_task(name, task_list = [], config_dict = {}):
+    task_name = name.get('class')
+    try:
+        task_initialization = getattr(t,task_name)
+    except:
+        logger.error("Error. %s is unknown.", task_name)
+        return
+    parameters_by_value = get_settings_dict(name, "parameters_by_value") # getting dicts of settings and updates
+    parameters_by_name = get_settings_dict(name, "parameters_by_name")
+    updates_by_value = get_settings_dict(name, "update_by_value")
+    updates_by_name = get_settings_dict(name, "update_by_name")
+    if task_name == "TASK_QUEUE":
+        task = task_initialization(parameters_by_value, 
+				   parameters_by_name, 
+				   updates_by_value, 
+				   updates_by_name,
+				   task_list) #creating task class objects
+    elif task_name == "TASK_PARALLELIZE":
+        task = task_initialization(parameters_by_value, 
+				   parameters_by_name, 
+				   updates_by_value, 
+				   updates_by_name,
+				   task_list,
+				   config_dict) #creating task class objects
+    else:
         task = task_initialization(parameters_by_value, 
 				   parameters_by_name, 
 				   updates_by_value, 
 				   updates_by_name) #creating task class objects
-        task_list.append(task) # getting list of tasks objects
-        logger.debug("%s added to task_list.", task_name)
-    return task_list
+    logger.debug("%s task created.", task_name)
+    return task
+   
+def create_queue_task(queue, config_dict):
+    task_list = []
+    for request in queue.findall('TASK'):
+        task_name = request.get('class')
+        if task_name == "TASK_QUEUE" or task_name == "TASK_PARALLELIZE":
+            task = create_queue_task(request, config_dict)
+        else:
+            task = create_task(request)
+        task_list.append(task)
+    #print(task_list)
+    if queue.get('class') == "TASK_PARALLELIZE":
+        pipeline = create_task(queue, task_list, config_dict)
+    else:
+        pipeline = create_task(queue, task_list)
+    return pipeline
+
   
 def get_settings_dict(task, setup):
     temp_dict = OrderedDict()
@@ -49,15 +74,13 @@ def make_config_dict(root, tag, setup = ""):
     return temp_dict
 
 def parse(input_path):
-  
     logger.info("Parsing XML input_settings.")
     tree = ET.parse(input_path)
     root = tree.getroot()
-    Queue = root[1]
-    Queue_para = root[1][0][2]
     Config = root[0]
     config_dict = make_config_dict(Config, Config.tag) # passing the 'name' of dictionary (config), which might be usefull for logs/debugging 
-    task_list = make_task_list(Queue)
-    task_list_para = make_task_list(Queue_para)
-    return config_dict, task_list, task_list_para
-
+    for request in root.findall('TASK'):
+        task_name = request.get('class')
+        if task_name == "TASK_QUEUE":
+            pipeline = create_queue_task(request, config_dict)
+            #print(pipeline)

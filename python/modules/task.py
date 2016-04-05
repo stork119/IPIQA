@@ -47,6 +47,16 @@ class TASK():
                 "".join(value)
                 temp_dict[key_list[i]] = value
             dict_out = temp_dict.copy()
+
+class TASK_QUEUE(TASK):
+  
+    def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, task_list):
+        TASK.__init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name)
+        self.task_list = task_list
+    def execute_specify(self, dict_local, task_list):
+        for task in self.task_list:
+            task.execute()
+
             
 class TASK_DOWNLOAD(TASK):
   
@@ -91,15 +101,15 @@ class TASK_MERGE(TASK):
 
 class TASK_PARALLELIZE(TASK):
    # has got object queue
-    def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, settings_dict, task_list):
+    def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, task_list, config_dict):
         TASK.__init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name)
-        self.settings_dict = settings_dict
         self.task_list = task_list
+        self.config_dict = config_dict
 
     def execute_specify(self, dict_local):
-        number_processes = int(settings_dict["number_of_cores"])
+        number_processes = int(config_dict["number_of_cores"])
         pool = multiprocessing.Pool(number_processes)
-        args = ((self.settings_dict, dict_local, task) for task in self.task_list) #or just pass task, because we're able to get task_list and settings_dict from init if both functions will stay here
+        args = ((self.config_dict, dict_local, task) for task in self.task_list) #or just pass task, because we're able to get task_list and settings_dict from init if both functions will stay here
         results = pool.map_async(self.execute_queue, args)
         pool.close()
         pool.join()
@@ -107,5 +117,5 @@ class TASK_PARALLELIZE(TASK):
     def execute_queue(self, args):
         settings_dict, dict_global, element = args 
         #task_name = (type(task).__name__)
-        element.task.TASK.execute(dict_global) # or executing = getattr(tk, "execute"), executing()
+        element.execute(dict_global) # or executing = getattr(tk, "execute"), executing() ?
      
