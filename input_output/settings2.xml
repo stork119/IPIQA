@@ -68,6 +68,7 @@
                 <parameters_by_name>
                     <parameter key="input_path" value = "quantify_data_raw_path"/>
                     <parameter key="output_path" value = "quantify_data_raw_path"/> 
+                    <parameter key="csv_names_list" value = "Cells.csv, Cytoplasm.csv, ExpandedNucleiLess.csv, ExpandedNucleiMore.csv, Image.csv, Nuclei.csv, RingCytoplasm.csv, ShrinkedNuclei.csv"/>
                 </parameters_by_name>
                 <update_by_value/>
                 <update_by_name/>
