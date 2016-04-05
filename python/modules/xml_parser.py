@@ -79,8 +79,11 @@ def parse(input_path):
     root = tree.getroot()
     Config = root[0]
     config_dict = make_config_dict(Config, Config.tag) # passing the 'name' of dictionary (config), which might be usefull for logs/debugging 
-    for request in root.findall('TASK'):
+    """for request in root.findall('TASK'):
         task_name = request.get('class')
         if task_name == "TASK_QUEUE":
-            pipeline = create_queue_task(request, config_dict)
-            #print(pipeline)
+            pipeline = create_queue_task(request, config_dict)"""
+    main_queue = root[1]
+    pipeline = create_queue_task(main_queue, config_dict)
+    return pipeline
+    

@@ -67,7 +67,7 @@ class TASK_DOWNLOAD(TASK):
         job_done = dict_local["experiment_finished"] # checking out if the experiment is finished and all data is collected
         in_path = dict_local["input_path"]
         out_path = dict_local["output_path"]
-        if job_done == True:
+        if job_done == "yes" or job_done == "TRUE" or job_done == True:
             copy_data(in_path, out_path)
         else:
             sleep_time = dict_local["sleep_time"]
@@ -101,15 +101,16 @@ class TASK_MERGE(TASK):
 
 class TASK_PARALLELIZE(TASK):
    # has got object queue
-    def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, task_list, config_dict):
+    def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, task_list, config_dict, request_list = []):
         TASK.__init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name)
         self.task_list = task_list
         self.config_dict = config_dict
+        self.request_list = request_list
 
     def execute_specify(self, dict_local):
         number_processes = int(config_dict["number_of_cores"])
         pool = multiprocessing.Pool(number_processes)
-        args = ((self.config_dict, dict_local, task) for task in self.task_list) #or just pass task, because we're able to get task_list and settings_dict from init if both functions will stay here
+        args = ((self.config_dict, dict_local, request) for request in self.request_list) #or just pass task, because we're able to get task_list and settings_dict from init if both functions will stay here
         results = pool.map_async(self.execute_queue, args)
         pool.close()
         pool.join()
