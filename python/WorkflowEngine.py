@@ -14,6 +14,7 @@ def main():
     logger = logging.getLogger(__name__)
     dict_global = {}
     logger.info("Starting program...")
+    input_path= (os.path.join(PP_path, "input_output", "settings2.xml")).replace("\\", "//") # setting up path to input settings (in xml format)
     p.parse(input_path)
     """cofig_dict, task_list = p.parse(input_path)
     for element in task_list:
