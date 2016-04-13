@@ -61,7 +61,7 @@
             </TASK>
             <update_by_value/>
             <update_by_name>
-                <update key="quantify_data_raw_path" value="quantify_data_raw_path"/>
+                <update key="quantify_data_raw_path" value="quantify_data_raw_path_rel"/>
                 <update key="pathway_data_path" value = "pathway_data_path"/>
             </update_by_name>
         </TASK>
