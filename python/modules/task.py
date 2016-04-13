@@ -5,6 +5,9 @@ from modules.run_cp_by_cmd import run_cp as cp_cmd
 from modules.csv import merge as merge_csv
 from time import sleep
 import multiprocessing 
+import logging
+
+logger = logging.getLogger(__name__)
 
 class TASK():
     def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name):
@@ -15,11 +18,18 @@ class TASK():
       
       
     def execute(self, dict_global):
+        task_name = self.__class__.__name__
+        logger.debug("TASK (class) name: %s", task_name)
         dict_local = dict_global.copy()
        # temp_dict = dict_global.copy()
+        logger.debug("dict_local before update: %s", (dict_local))
         dict_local = self.update_dict(dict_local, dict_local, self.parameters_by_value, self.parameters_by_name) #check out if its working 
+        logger.debug("dict_local after update: %s", dict_local)
         self.execute_specify(dict_local)
+        logger.debug("dict_local after execute_specify: %s", dict_local) #dunno if its needed
+        logger.debug("dict_global before update: %s", dict_global)
         dict_global = self.update_dict(dict_global, dict_local, self.updates_by_value, self.updates_by_name)
+        logger.debug("dict_global after update: %s", dict_global)
       
     def update_dict(self, dict_out, dict_in, list_by_value, list_by_name):
         for k, v in list_by_value.items(): #update by value
@@ -121,7 +131,7 @@ class TASK_PARALLELIZE(TASK):
         pool = multiprocessing.Pool(processes_number)
         input_path = str(dict_local["input_path"])
         dir_list = FM.get_dir_names(input_path)
-        print("pierwsza lista ", dir_list)
+        #print("pierwsza lista ", dir_list)
         args = ((dict_local, element) for element in dir_list) #or just pass task, because we're able to get task_list and settings_dict from init if both functions will stay here
         pool.map_async(self.execute_queue, args)
         while True:
