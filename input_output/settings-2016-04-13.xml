@@ -49,7 +49,7 @@
                         <parameter key="input_path.1"    value="output_path"/>
                         <parameter key="input_path.2"    value="pathway_data_path_rel"/>
                         <parameter key="output_path.1"    value="output_path"/> 
-                        <parameter key="output_path.2" value="quantify_data_raw_path"/> 
+                        <parameter key="output_path.2" value="quantify_data_raw_path_rel"/> 
                         <parameter key="output_path.3"  value="folder_name"/>
                     </parameters_by_name>
                     <update_by_value/>
