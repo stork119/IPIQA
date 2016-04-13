@@ -116,7 +116,7 @@ class TASK_PARALLELIZE(TASK):
 
     def execute_specify(self, dict_local):
         processes_number = int(self.config_dict["number_of_cores"])
-        samples_number = int(self.config_dict["sample_number"])
+        folders_number = int(self.dict_local["folders_number"])
         sleep_time = int(dict_local["sleep_time"])
         pool = multiprocessing.Pool(processes_number)
         input_path = str(dict_local["input_path"])
@@ -125,7 +125,7 @@ class TASK_PARALLELIZE(TASK):
         args = ((dict_local, element) for element in dir_list) #or just pass task, because we're able to get task_list and settings_dict from init if both functions will stay here
         pool.map_async(self.execute_queue, args)
         while True:
-            if len(dir_list) < samples_number:
+            if len(dir_list) < folders_number:
                 sleep(5)
                 new_dir_list = FM.get_dir_names(input_path)
                 new_dirs = [i for i in new_dir_list if i not in dir_list]
