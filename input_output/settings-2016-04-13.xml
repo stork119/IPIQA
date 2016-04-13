@@ -23,7 +23,12 @@
             </parameters_by_name>
             <TASK class="TASK_QUEUE">   
                 <parameters_by_value/>
-                <parameters_by_name/>
+                <parameters_by_name>
+                    <parameter key="pathway_data_path.1" value="output_path"/>
+                    <parameter key="pathway_data_path.2" value="pathway_data_path_rel"/>
+                    <parameter key="quantify_data_raw_path.1" value="output_path"/>
+                    <parameter key="quantify_data_raw_path.2" value="quantify_data_raw_path_rel"/> 
+                </parameters_by_name>
                 <TASK class="TASK_DOWNLOAD">
                     <parameters_by_value>
                         <parameter key="by_url" value="FALSE"/>
@@ -35,33 +40,31 @@
                         <parameter key="output_path.1" value="pathway_data_path"/>
                         <parameter key="output_path.2"  value="folder_name"/>
                     </parameters_by_name>
-                    <update_by_value>
-                    </update_by_value>
-                    <update_by_name>
-                        <update key="pathway_data_path" value = "output_path"/>
-                    </update_by_name>
+                    <update_by_value/>
+                    <update_by_name/>
                 </TASK>
                 <TASK class="TASK_QUANTIFY">
                     <parameters_by_value>
                         <parameter key="pipeline.2" value="cellprofiller/2016-03-23/pipeline.cppipe"/>
                     </parameters_by_value>
                     <parameters_by_name>
-			<parameter key="pipeline.1" value = "pathway_package_path"/>
-                        <parameter key="input_path.1"    value="output_path"/>
-                        <parameter key="input_path.2"    value="pathway_data_path_rel"/>
-                        <parameter key="output_path.1"    value="output_path"/> 
-                        <parameter key="output_path.2" value="quantify_data_raw_path_rel"/> 
-                        <parameter key="output_path.3"  value="folder_name"/>
+                        <parameter key="pipeline.1" value = "pathway_package_path"/>
+                        <parameter key="input_path"    value="pathway_data_path"/>
+                        <parameter key="output_path.1" value="quantify_data_raw_path"/> 
+                        <parameter key="output_path.2"  value="folder_name"/>
                     </parameters_by_name>
                     <update_by_value/>
                     <update_by_name/>
                 </TASK>
                 <update_by_value/>
-                <update_by_name/>
+                <update_by_name>
+                    <update key="quantify_data_raw_path" value="quantify_data_raw_path"/>
+                    <update key="pathway_data_path" value = "pathway_data_path"/>
+                </update_by_name>
             </TASK>
             <update_by_value/>
             <update_by_name>
-                <update key="quantify_data_raw_path" value="quantify_data_raw_path_rel"/>
+                <update key="quantify_data_raw_path" value="quantify_data_raw_path"/>
                 <update key="pathway_data_path" value = "pathway_data_path"/>
             </update_by_name>
         </TASK>
