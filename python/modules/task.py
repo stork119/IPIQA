@@ -72,6 +72,15 @@ class TASK_DOWNLOAD(TASK):
         out_path = dict_local["output_path"]
         FM.copy_directory(in_path, out_path)
         #FM.remove_directory(in_path) CAREFULL, ON THAT STAGE IT MIGHT INTERRUPT DIRS (SAMPLE) COUNTING
+
+class TASK_REMOVE(TASK):
+  
+    def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name):
+        TASK.__init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name)
+
+    def execute_specify(self, dict_local):
+        in_path = dict_local["input_path"]
+        FM.remove_directory(in_path)
         
 class TASK_QUANTIFY(TASK):
   
