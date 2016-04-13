@@ -51,52 +51,54 @@ class TASK():
 
 class TASK_PARALLELIZE(TASK):
    # has got object queue
-    def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, task_list, config_dict, request_list = []):
+    def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, task_list, config_dict = [], request_list = []):
         TASK.__init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name)
         self.task_list = task_list
         self.config_dict = config_dict
         self.request_list = request_list
 
     def execute_specify(self, dict_local):
-        number_processes = int(self.config_dict["number_of_cores"])
-        pool = multiprocessing.Pool(number_processes)
+        processes_number = int(self.config_dict["number_of_cores"])
+        samples_number = int(self.config_dict["sample_number"])
+        sleep_time = int(dict_local["sleep_time"])
+        pool = multiprocessing.Pool(processes_number)
         input_path = dict_local["input_path"]
         dir_list = SC.get_dir_names(input_path)
-        """while True:
-            dir_list = SC.get_dir_names(input_path)
-            sleep(1)
-            if len(dir_list)>3:
-                break"""
-        print(dir_list)
-        
-        
-        """args = ((self.config_dict, dict_local, request) for request in self.request_list) #or just pass task, because we're able to get task_list and settings_dict from init if both functions will stay here
-        results = pool.map_async(self.execute_queue, args)
-        args = ((self.config_dict, dict_local, request + "66") for request in self.request_list)
-        results = pool.map_async(self.execute_queue, args)
-        args = ((self.config_dict, dict_local, request + "777") for request in self.request_list)
-        results = pool.map_async(self.execute_queue, args)
+        print("pierwsza lista ", dir_list)
+        args = ((dict_local, element) for element in dir_list) #or just pass task, because we're able to get task_list and settings_dict from init if both functions will stay here
+        pool.map_async(self.execute_queue, args)
+        while True:
+            if len(dir_list) < samples_number:
+                sleep(5)
+                new_dir_list = SC.get_dir_names(input_path)
+                new_dirs = [i for i in new_dir_list if i not in dir_list]
+                print("new dirs", new_dirs)
+                if len(new_dirs) > 0:
+                    args = ((dict_local, element) for element in new_dirs) #or just pass task, because we're able to get task_list and settings_dict from init if both functions will stay here
+                    pool.map_async(self.execute_queue, args)
+                    dir_list = new_dir_list
+            else:
+                break
         pool.close()
-        pool.join()"""
-        
+        pool.join()
+
     def execute_queue(self, args):
-        settings_dict, dict_local, element = args
-        in_path = dict_local["input_path"]
-        out_path = dict_local["output_path"]
-        sleep_time = int(dict_local["sleep_time"])
+        dict_local, element = args
+        dict_local["folder_name"] = element + "\\"
+        for task in task_list:
+            task.execute(dict_local)
         #task_name = (type(task).__name__)
         #element.execute(dict_global) # or executing = getattr(tk, "execute"), executing() ?
-        SC.copy_data_constantly(in_path, out_path, sleep_time)
         
             
 def main():      
-    dict_local = {"input_path":"C://Users//Agnieszka//Desktop//input//", "output_path": "C://Users//Agnieszka//Desktop//output//", "sleep_time" :"2"}
+    dict_local = {"input_path":"C://Users//Setnea//Desktop//input//", "output_path": "C://Users//Setnea//Desktop//output//proba//", "sleep_time" :"2"}
     parameters_by_name = []
     parameters_by_value = []
     updates_by_name = []
     updates_by_value = []
     task_list = []
-    config_dict = {"number_of_cores":"7", "zaza":"123", "sample_number":"6"}
+    config_dict = {"number_of_cores":"7", "zaza":"123", "sample_number":"3"}
     e1 = TASK_PARALLELIZE(parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, task_list, config_dict)
     e1.execute_specify(dict_local)
     #in_path = dict_local["input_path"]
