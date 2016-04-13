@@ -141,7 +141,7 @@ class TASK_PARALLELIZE(TASK):
 
     def execute_queue(self, args):
         dict_local, element = args
-        dict_local["folder_name"] = element + "\\"
+        dict_local["folder_name"] = element + "//"
         for task in self.task_list:
             task.execute(dict_local)
      

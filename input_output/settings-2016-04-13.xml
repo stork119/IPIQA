@@ -8,8 +8,8 @@
         <parameters_by_value/>
         <parameters_by_name/>
         <TASK class="TASK_PARALLELIZE">
-
             <parameters_by_value>
+                <parameter key="sleep_time"  value="5"/>
 		<parameter key="pathway_package_path" value = "D:/KN/PathwayPackage/"/>
                 <parameter key="input_path.2"  value="resources//input//2016-03-23//"/>
                 <parameter key="output_path.2" value="resources//output//2016-03-23//"/>
