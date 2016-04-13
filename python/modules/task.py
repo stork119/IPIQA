@@ -1,9 +1,11 @@
 #! /usr/bin/python
 from collections import OrderedDict
-from modules.file_managment import copy_data, copy_data_constantly, remove_directory, get_dir_names
+import modules.file_managment as FM
 from modules.run_cp_by_cmd import run_cp as cp_cmd
 from modules.csv import merge as merge_csv
- 
+from time import sleep
+import multiprocessing 
+
 class TASK():
     def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name):
         self.parameters_by_value = parameters_by_value
@@ -15,9 +17,9 @@ class TASK():
     def execute(self, dict_global):
         dict_local = dict_global.copy()
        # temp_dict = dict_global.copy()
-        self.update_dict(dict_local, dict_local, self.parameters_by_value, self.parameters_by_name) #check out if its working 
+        dict_local = self.update_dict(dict_local, dict_local, self.parameters_by_value, self.parameters_by_name) #check out if its working 
         self.execute_specify(dict_local)
-        self.update_dict(dict_global, dict_local, self.updates_by_value, self.updates_by_name)
+        dict_global = self.update_dict(dict_global, dict_local, self.updates_by_value, self.updates_by_name)
       
     def update_dict(self, dict_out, dict_in, list_by_value, list_by_name):
         for k, v in list_by_value.items(): #update by value
@@ -25,7 +27,8 @@ class TASK():
         for k, v in list_by_name.items(): #update by name
             value = dict_in[v]
             dict_out[k] = value
-        self.concatenation_name_nr(dict_out)
+        dict_out = self.concatenation_name_nr(dict_out)
+        return dict_out
             
     def concatenation_name_nr(self, dict_out):      
         #concatenation name.number
@@ -44,18 +47,19 @@ class TASK():
                     if key_list[i] + "." in k:
                         value.append(str(v))
                         del temp_dict[k] # deleting name.number from temporary dictionary
-                "".join(value)
+                value = "".join(value)
                 temp_dict[key_list[i]] = value
             dict_out = temp_dict.copy()
+        return dict_out
 
 class TASK_QUEUE(TASK):
   
     def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, task_list):
         TASK.__init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name)
         self.task_list = task_list
-    def execute_specify(self, dict_local, task_list):
+    def execute_specify(self, dict_local):
         for task in self.task_list:
-            task.execute()
+            task.execute(dict_local) # dict!!!!
 
             
 class TASK_DOWNLOAD(TASK):
@@ -64,15 +68,10 @@ class TASK_DOWNLOAD(TASK):
         TASK.__init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name)
 
     def execute_specify(self, dict_local):
-        job_done = dict_local["experiment_finished"] # checking out if the experiment is finished and all data is collected
         in_path = dict_local["input_path"]
         out_path = dict_local["output_path"]
-        if job_done == "yes" or job_done == "TRUE" or job_done == True:
-            copy_data(in_path, out_path)
-        else:
-            sleep_time = dict_local["sleep_time"]
-            copy_data_constantly(in_path, out_path, sleep_time)
-        remove_directory(in_path)
+        FM.copy_directory(in_path, out_path)
+        #FM.remove_directory(in_path) CAREFULL, ON THAT STAGE IT MIGHT INTERRUPT DIRS (SAMPLE) COUNTING
         
 class TASK_QUANTIFY(TASK):
   
@@ -94,29 +93,47 @@ class TASK_MERGE(TASK):
     def execute_specify(self, dict_local):
         in_path = dict_local["input_path"]
         out_path = dict_local["output_path"]
-        subdir_list = get_dir_names(in_path)
+        subdir_list = FM.get_dir_names(in_path)
         csv_names = (dict_local["csv_names_list"]).split(",")
         for csv_name in csv_names:
             merge_csv(csv_name, subdir_list, in_path, out_path)
 
 class TASK_PARALLELIZE(TASK):
    # has got object queue
-    def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, task_list, config_dict, request_list = []):
+    def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, task_list, config_dict = [], request_list = []):
         TASK.__init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name)
         self.task_list = task_list
         self.config_dict = config_dict
         self.request_list = request_list
 
     def execute_specify(self, dict_local):
-        number_processes = int(config_dict["number_of_cores"])
-        pool = multiprocessing.Pool(number_processes)
-        args = ((self.config_dict, dict_local, request) for request in self.request_list) #or just pass task, because we're able to get task_list and settings_dict from init if both functions will stay here
-        results = pool.map_async(self.execute_queue, args)
+        processes_number = int(self.config_dict["number_of_cores"])
+        samples_number = int(self.config_dict["sample_number"])
+        sleep_time = int(dict_local["sleep_time"])
+        pool = multiprocessing.Pool(processes_number)
+        input_path = str(dict_local["input_path"])
+        dir_list = FM.get_dir_names(input_path)
+        print("pierwsza lista ", dir_list)
+        args = ((dict_local, element) for element in dir_list) #or just pass task, because we're able to get task_list and settings_dict from init if both functions will stay here
+        pool.map_async(self.execute_queue, args)
+        while True:
+            if len(dir_list) < samples_number:
+                sleep(5)
+                new_dir_list = FM.get_dir_names(input_path)
+                new_dirs = [i for i in new_dir_list if i not in dir_list]
+                #print("new dirs", new_dirs)
+                if len(new_dirs) > 0:
+                    args = ((dict_local, element) for element in new_dirs) #or just pass task, because we're able to get task_list and settings_dict from init if both functions will stay here
+                    pool.map_async(self.execute_queue, args)
+                    dir_list = new_dir_list
+            else:
+                break
         pool.close()
         pool.join()
-        
+
     def execute_queue(self, args):
-        settings_dict, dict_global, element = args 
-        #task_name = (type(task).__name__)
-        element.execute(dict_global) # or executing = getattr(tk, "execute"), executing() ?
+        dict_local, element = args
+        dict_local["folder_name"] = element + "\\"
+        for task in self.task_list:
+            task.execute(dict_local)
      

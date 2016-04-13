@@ -4,7 +4,7 @@ import argparse
 
 import modules.logs_configuration as LC
 import modules.xml_parser as p
-from modules.task import TASK
+#from modules.task import TASK
 
 
 def main():
@@ -23,10 +23,12 @@ def main():
                 help='Input_settings path' )
     args = parser.parse_args()
     #Setting up pipeline.
-    pipeline = p.parse(args.s[0])
+    logger.debug("Input settings source: %s", args.s[0])
+    pipeline, config_dict = p.parse(args.s[0])
     """Default input_settings path.
-    input_path= (os.path.join(PP_path, "input_output", "settings2.xml").replace("\\", "//")) # setting up path to input settings (in xml format)
-    pipeline= p.parse(input_path)"""
-    #pipeline.execute()
+    input_path= (os.path.join(PP_path, "input_output", "settings.xml").replace("\\", "//")) # setting up path to input settings (in xml format)
+    logger.debug("Input settings source: %s", input_path)
+    pipeline, config_dict = p.parse(input_path)"""
+    pipeline.execute(config_dict)
 if __name__ == "__main__":
     main()

@@ -85,5 +85,5 @@ def parse(input_path):
             pipeline = create_queue_task(request, config_dict)"""
     main_queue = root[1]
     pipeline = create_queue_task(main_queue, config_dict)
-    return pipeline
+    return pipeline, config_dict
     
