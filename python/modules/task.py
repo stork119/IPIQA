@@ -116,7 +116,7 @@ class TASK_PARALLELIZE(TASK):
 
     def execute_specify(self, dict_local):
         processes_number = int(self.config_dict["number_of_cores"])
-        folders_number = int(self.dict_local["folders_number"])
+        folders_number = int(dict_local["folders_number"])
         sleep_time = int(dict_local["sleep_time"])
         pool = multiprocessing.Pool(processes_number)
         input_path = str(dict_local["input_path"])
