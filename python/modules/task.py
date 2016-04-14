@@ -34,10 +34,15 @@ class TASK():
     def update_dict(self, dict_out, dict_in, list_by_value, list_by_name):
         for k, v in list_by_value.items(): #update by value
             dict_out[k] = v
+            logger.debug("Dict_out new key, value (updated by value): %s, %s", k, v)
         for k, v in list_by_name.items(): #update by name
+            logger.debug("Dict_in (by names) key, value: %s, %s", k, v)
             value = dict_in[v]
             dict_out[k] = value
+            logger.debug("Dict_out new key, value (updated by name): %s, %s", k, value)
+        logger.debug("Dict_out before concatenation: %s", dict_out)
         dict_out = self.concatenation_name_nr(dict_out)
+        logger.debug("Dict_out before concatenation: %s", dict_out)        
         return dict_out
             
     def concatenation_name_nr(self, dict_out):      
@@ -47,6 +52,7 @@ class TASK():
             if "." in k:
                 key = k.split(".")
                 key_list.append(key[0])
+        logger.debug("List of names to concatenate: %s", key_list)
         if len(key_list) > 1:
             temp_dict = dict_out.copy()
             temp_dict2 = OrderedDict(sorted(dict_out.items()))
@@ -127,7 +133,7 @@ class TASK_PARALLELIZE(TASK):
     def execute_specify(self, dict_local):
         processes_number = int(self.config_dict["number_of_cores"])
         folders_number = int(dict_local["folders_number"])
-        sleep_time = int(dict_local["sleep_time"])
+        sleep_time = 5 #int(dict_local["sleep_time"])
         pool = multiprocessing.Pool(processes_number)
         input_path = str(dict_local["input_path"])
         dir_list = FM.get_dir_names(input_path)
@@ -136,7 +142,7 @@ class TASK_PARALLELIZE(TASK):
         pool.map_async(self.execute_queue, args)
         while True:
             if len(dir_list) < folders_number:
-                sleep(5)
+                sleep(sleep_time)
                 new_dir_list = FM.get_dir_names(input_path)
                 new_dirs = [i for i in new_dir_list if i not in dir_list]
                 #print("new dirs", new_dirs)
