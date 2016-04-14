@@ -30,6 +30,7 @@ class TASK():
         logger.debug("dict_global before update: %s", dict_global)
         dict_global = self.update_dict(dict_global, dict_local, self.updates_by_value, self.updates_by_name)
         logger.debug("dict_global after update: %s", dict_global)
+        return dict_global
       
     def update_dict(self, dict_out, dict_in, list_by_value, list_by_name):
         for k, v in list_by_value.items(): #update by value
@@ -42,7 +43,7 @@ class TASK():
             logger.debug("Dict_out new key, value (updated by name): %s, %s", k, value)
         logger.debug("Dict_out before concatenation: %s", dict_out)
         dict_out = self.concatenation_name_nr(dict_out)
-        logger.debug("Dict_out before concatenation: %s", dict_out)        
+        logger.debug("Dict_out after concatenation: %s", dict_out)        
         return dict_out
             
     def concatenation_name_nr(self, dict_out):      
@@ -75,9 +76,8 @@ class TASK_QUEUE(TASK):
         self.task_list = task_list
     def execute_specify(self, dict_local):
         for task in self.task_list:
-            task.execute(dict_local) # dict!!!!
+            dict_local = task.execute(dict_local)
 
-            
 class TASK_DOWNLOAD(TASK):
   
     def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name):
@@ -160,4 +160,3 @@ class TASK_PARALLELIZE(TASK):
         dict_local["folder_name"] = element + "//"
         for task in self.task_list:
             task.execute(dict_local)
-     

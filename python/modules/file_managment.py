@@ -20,15 +20,14 @@ Getting all subdirs names of a given directory.
 """
 def get_dir_names(input_path):
     if not if_exist(input_path):
-        logger.error("Error. Can't get subdirs names list for a given path: %s.", input_path)
-        return False
-   # subdir_path = []
-    subdir_names = []
-    for path, subdir, files in os.walk(input_path):
-        for name in subdir:
-       #     subdir_path.append(os.path.join(path, name)) # get list of path to each subdir
-            subdir_names.append(str(name))
-    return subdir_names
+        logger.error("Error. Can't get subdirs names list for a given path: %s. Path doesn't exist", input_path)
+        return
+    subdir_list = []
+    for subdir in os.listdir(input_path):
+        if os.path.isdir(os.path.join(input_path, subdir)):
+            subdir_list.append(subdir)
+            logger.debug("Folder %s added to subdirectories' list of path %s.", subdir, input_path)
+    return subdir_list
     
 def get_filepaths(input_path):
     if not if_exist(input_path):
