@@ -57,15 +57,14 @@
                     <update_by_name/>
                 </TASK>
                 <update_by_value/>
-                <update_by_name>
-                    <update key="quantify_data_raw_path" value="quantify_data_raw_path"/>
-                    <update key="pathway_data_path" value = "pathway_data_path"/>
-                </update_by_name>
+                <update_by_name/>
             </TASK>
             <update_by_value/>
             <update_by_name>
-                <update key="quantify_data_raw_path" value="quantify_data_raw_path"/>
-                <update key="pathway_data_path" value = "pathway_data_path"/>
+                <parameter key="pathway_data_path.1" value="output_path"/>
+                <parameter key="pathway_data_path.2" value="pathway_data_path_rel"/>
+                <parameter key="quantify_data_raw_path.1" value="output_path"/>
+                <parameter key="quantify_data_raw_path.2" value="quantify_data_raw_path_rel"/> 
             </update_by_name>
         </TASK>
         <TASK class="TASK_MERGE">
