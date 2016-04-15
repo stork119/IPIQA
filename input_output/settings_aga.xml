@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <main>
     <CONFIG>
-        <parameter key="number_of_cores" value= "4"/>
+        <parameter key="number_of_cores" value= "2"/>
         <parameter key="sample_number" value="96"/>
     </CONFIG>
     <TASK class="TASK_QUEUE">   

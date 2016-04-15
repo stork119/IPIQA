@@ -80,7 +80,7 @@ def copy_directory_constantly(in_path, out_path, sleep_time):
 def copy_directory(in_path, out_path):
     dir_name = (in_path.split("/"))[-1]
     copied_dir_path = out_path + dir_name
-    print("DIR PATH", copied_dir_path)
+    #print("DIR PATH", copied_dir_path)
     os.makedirs(copied_dir_path)
     """if not os.path.exists(copied_dir_path):
         os.makedirs(copied_dir_path)
@@ -88,7 +88,7 @@ def copy_directory(in_path, out_path):
         print("Directory already exists.")
         #return"""
     files_paths_list = get_filepaths(in_path)
-    print(files_paths_list)
+    #print(files_paths_list)
     for f in files_paths_list:
         copy_data(f, copied_dir_path)
       
