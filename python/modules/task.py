@@ -1,7 +1,7 @@
 #! /usr/bin/python
 from collections import OrderedDict
 import modules.file_managment as FM
-from modules.run_cp_by_cmd import run_cp as cp_cmd
+import modules.cellprofiler as cpm
 from modules.csv import merge as merge_csv
 import modules.map_plate as map_plate
 from time import sleep
@@ -108,7 +108,8 @@ class TASK_QUANTIFY(TASK):
         in_path = dict_local["input_path"]
         out_path = dict_local["output_path"]
         pipeline = dict_local["pipeline"]
-        cp_cmd(cp_path, in_path, out_path, pipeline)
+        #cpm.check_pipeline(pipeline)
+        cpm.run_cp_by_cmd(cp_path, in_path, out_path, pipeline)
         
 class TASK_MERGE(TASK):
   
