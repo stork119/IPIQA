@@ -46,11 +46,10 @@
                 </TASK>
                 <TASK class="TASK_QUANTIFY">
                     <parameters_by_value>
-			<parameter key="pipeline.2" value="cellprofiller//2016-03-23//pipeline.cppipe"/>
+			<parameter key="pipeline" value="D://KN//PathwayPackage//cellprofiler//2016-03-23//pipeline.cppipe"/>
 			<parameter key="cp_path" value="C://Program Files//CellProfiler//"/>
                     </parameters_by_value>
                     <parameters_by_name>
-                        <parameter key="pipeline.1" value = "pathway_package_path"/>
                         <parameter key="input_path.1"    value="pathway_data_path"/>
                         <parameter key="input_path.2"  value="folder_name"/>
                         <parameter key="output_path.1" value="quantify_data_raw_path"/> 
