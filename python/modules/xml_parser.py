@@ -69,6 +69,8 @@ def make_config_dict(root, tag, setup = ""):
     for attribute in root:
         key = attribute.get('key')
         value = attribute.get('value')
+        #if "path" in key:
+        value = value.replace("\\", "//")
         temp_dict[key] = (value)
         logger.debug("[%s]:[%s] added to %s %s dictionary.", key, value, tag, setup)
     return temp_dict
