@@ -3,6 +3,7 @@ from collections import OrderedDict
 import modules.file_managment as FM
 from modules.run_cp_by_cmd import run_cp as cp_cmd
 from modules.csv import merge as merge_csv
+import modules.map_plate as map_plate
 from time import sleep
 import multiprocessing 
 import logging
@@ -158,3 +159,17 @@ class TASK_PARALLELIZE(TASK):
         dict_local["folder_name"] = element + "//"
         for task in self.task_list:
             task.execute(dict_local)
+
+class MAP_PLATE(TASK):
+  
+    def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name):
+        TASK.__init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name)
+
+    def execute_specify(self, dict_local):
+        let_number = 8 # int(sth from input_settings?) plate width etc
+        input_path_csv = dict_local["input_path_csv"]
+        input_path_metadata = dict_local["input_path_metadata"]
+        output_path = dict_local["output_path"]
+        csv_names = (dict_local["csv_names_list"]).split(",")
+        metadata_paths_list = ["compare//1.1.csv","group//1.1.csv","group//1.2.csv","group//2.1.csv", "group//2.2.csv"] #dict_local["metadata_paths_list"]
+        map_plate.combine(input_path_csv, input_path_metadata, output_path, csv_list, metadata_paths_list)
