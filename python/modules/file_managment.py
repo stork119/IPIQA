@@ -38,7 +38,7 @@ def get_filepaths(input_path):
     for path, subdir, files in os.walk(input_path):
         for name in files:
        #     subdir_path.append(os.path.join(path, name)) # get list of path to each subdir
-            subfile_names.append(os.path.join(path, name))
+            subfile_names.append(path + "//" + name)
     return subfile_names
 """
 Functions for removing objects.
@@ -80,15 +80,11 @@ def copy_directory_constantly(in_path, out_path, sleep_time):
 def copy_directory(in_path, out_path):
     dir_name = (in_path.split("/"))[-1]
     copied_dir_path = out_path + dir_name
-    #print("DIR PATH", copied_dir_path)
+    if os.path.exists(copied_dir_path):
+        logger.warning("Directory %s already exists. Removing old data.", copied_dir_path)
+        remove_directory(copied_dir_path)
     os.makedirs(copied_dir_path)
-    """if not os.path.exists(copied_dir_path):
-        os.makedirs(copied_dir_path)
-    else:
-        print("Directory already exists.")
-        #return"""
     files_paths_list = get_filepaths(in_path)
-    #print(files_paths_list)
     for f in files_paths_list:
         copy_data(f, copied_dir_path)
       

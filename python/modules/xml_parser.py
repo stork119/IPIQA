@@ -18,24 +18,11 @@ def create_task(name, task_list = [], config_dict = {}):
     parameters_by_name = get_settings_dict(name, "parameters_by_name")
     updates_by_value = get_settings_dict(name, "update_by_value")
     updates_by_name = get_settings_dict(name, "update_by_name")
-    if task_name == "TASK_QUEUE":
-        task = task_initialization(parameters_by_value, 
-				   parameters_by_name, 
-				   updates_by_value, 
-				   updates_by_name,
-				   task_list) #creating task class objects
-    elif task_name == "TASK_PARALLELIZE":
-        task = task_initialization(parameters_by_value, 
-				   parameters_by_name, 
-				   updates_by_value, 
-				   updates_by_name,
-				   task_list,
-				   config_dict) #creating task class objects
-    else:
-        task = task_initialization(parameters_by_value, 
-				   parameters_by_name, 
-				   updates_by_value, 
-				   updates_by_name) #creating task class objects
+    task = task_initialization(parameters_by_value, 
+                 	       parameters_by_name, 
+			       updates_by_value, 
+			       updates_by_name,
+                               {'task_list' : task_list, 'config_dict' : config_dict}) #creating task class objects
     logger.debug("%s task created.", task_name)
     return task
    
@@ -69,6 +56,8 @@ def make_config_dict(root, tag, setup = ""):
     for attribute in root:
         key = attribute.get('key')
         value = attribute.get('value')
+        #if "path" in key:
+        value = value.replace("\\", "//")
         temp_dict[key] = (value)
         logger.debug("[%s]:[%s] added to %s %s dictionary.", key, value, tag, setup)
     return temp_dict
