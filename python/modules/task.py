@@ -11,7 +11,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 class TASK():
-    def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name):
+    def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args = {}):
         self.parameters_by_value = parameters_by_value
         self.parameters_by_name = parameters_by_name
         self.updates_by_value = updates_by_value
@@ -72,17 +72,17 @@ class TASK():
 
 class TASK_QUEUE(TASK):
   
-    def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, task_list):
-        TASK.__init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name)
-        self.task_list = task_list
+    def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args):
+        TASK.__init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args)
+        self.task_list = args['task_list']
     def execute_specify(self, dict_local):
         for task in self.task_list:
             dict_local = task.execute(dict_local)
 
 class TASK_DOWNLOAD(TASK):
   
-    def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name):
-        TASK.__init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name)
+    def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name,  args = {}):
+        TASK.__init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args)
 
     def execute_specify(self, dict_local):
         in_path = dict_local["input_path"]
@@ -91,8 +91,8 @@ class TASK_DOWNLOAD(TASK):
 
 class TASK_REMOVE(TASK):
   
-    def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name):
-        TASK.__init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name)
+    def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name,  args = {}):
+        TASK.__init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args)
 
     def execute_specify(self, dict_local):
         in_path = dict_local["input_path"]
@@ -100,8 +100,8 @@ class TASK_REMOVE(TASK):
         
 class TASK_QUANTIFY(TASK):
   
-    def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name):
-        TASK.__init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name)
+    def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name,  args = {}):
+        TASK.__init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args)
 
     def execute_specify(self, dict_local):
         cp_path = dict_local["cp_path"]
@@ -113,8 +113,8 @@ class TASK_QUANTIFY(TASK):
         
 class TASK_MERGE(TASK):
   
-    def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name):
-        TASK.__init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name)
+    def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args = {}):
+        TASK.__init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args)
 
     def execute_specify(self, dict_local):
         in_path = dict_local["input_path"]
@@ -126,11 +126,10 @@ class TASK_MERGE(TASK):
 
 class TASK_PARALLELIZE(TASK):
    # has got object queue
-    def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, task_list, config_dict = [], request_list = []):
-        TASK.__init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name)
-        self.task_list = task_list
-        self.config_dict = config_dict
-        self.request_list = request_list
+    def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args):
+        TASK.__init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args)
+        self.task_list = args['task_list']
+        self.config_dict = args['config_dict']
 
     def execute_specify(self, dict_local):
         processes_number = int(self.config_dict["number_of_cores"])
@@ -163,8 +162,8 @@ class TASK_PARALLELIZE(TASK):
 
 class MAP_PLATE(TASK):
   
-    def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name):
-        TASK.__init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name)
+    def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name,  args = {}):
+        TASK.__init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args)
 
     def execute_specify(self, dict_local):
         let_number = 8 # int(sth from input_settings?) plate width etc
