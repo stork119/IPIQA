@@ -138,7 +138,6 @@ class TASK_PARALLELIZE(TASK):
         pool = multiprocessing.Pool(processes_number)
         input_path = str(dict_local["input_path"])
         dir_list = FM.get_dir_names(input_path)
-        #print("pierwsza lista ", dir_list)
         args = ((dict_local, element) for element in dir_list) #or just pass task, because we're able to get task_list and settings_dict from init if both functions will stay here
         pool.map_async(self.execute_queue, args)
         while True:
@@ -146,7 +145,6 @@ class TASK_PARALLELIZE(TASK):
                 sleep(sleep_time)
                 new_dir_list = FM.get_dir_names(input_path)
                 new_dirs = [i for i in new_dir_list if i not in dir_list]
-                #print("new dirs", new_dirs)
                 if len(new_dirs) > 0:
                     args = ((dict_local, element) for element in new_dirs) #or just pass task, because we're able to get task_list and settings_dict from init if both functions will stay here
                     pool.map_async(self.execute_queue, args)
