@@ -171,5 +171,3 @@ class MAP_PLATE(TASK):
         input_path_metadata = dict_local["input_path_metadata"]
         output_path = dict_local["output_path"]
         csv_names = (dict_local["csv_names_list"]).split(",")
-        metadata_paths_list = ["compare//1.1.csv","group//1.1.csv","group//1.2.csv","group//2.1.csv", "group//2.2.csv"] #dict_local["metadata_paths_list"]
-        map_plate.combine(input_path_csv, input_path_metadata, output_path, csv_list, metadata_paths_list)
