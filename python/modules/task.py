@@ -7,6 +7,7 @@ import modules.map_plate as map_plate
 from time import sleep
 import multiprocessing 
 import logging
+import os
 
 logger = logging.getLogger(__name__)
 
@@ -87,6 +88,16 @@ class TASK_DOWNLOAD(TASK):
     def execute_specify(self, dict_local):
         in_path = dict_local["input_path"]
         out_path = dict_local["output_path"]
+        """filelist = []
+        a = "No ROI.roi"
+        while True:
+            for f in os.listdir(in_path):
+                if f not in filelist:
+                    filelist.append(f)
+            if a in filelist:
+                break
+            else:
+                sleep(180)""" #checking out if the file is complete => this code gonna be moved to different section
         FM.copy_directory(in_path, out_path)
 
 class TASK_REMOVE(TASK):
@@ -133,8 +144,11 @@ class TASK_PARALLELIZE(TASK):
 
     def execute_specify(self, dict_local):
         processes_number = int(self.config_dict["number_of_cores"])
+        dir_list = self.parsing_elements_list(dict_local)
+        
+        
         folders_number = int(dict_local["folders_number"])
-        sleep_time = 5 #int(dict_local["sleep_time"])
+        sleep_time = int(dict_local["sleep_time"])
         pool = multiprocessing.Pool(processes_number)
         input_path = str(dict_local["input_path"])
         dir_list = FM.get_dir_names(input_path)
@@ -159,7 +173,27 @@ class TASK_PARALLELIZE(TASK):
         dict_local["folder_name"] = element + "//"
         for task in self.task_list:
             task.execute(dict_local)
+            
+class TASK_PARALLELIZE_LIST(TASK_PARALLELIZE): # list of objects (folders)
+    def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args):
+        TASK_PARALLELIZE.__init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args)
 
+    def parsing_elements_list(self, dict_local):
+        paths = []
+        input_path = str(dict_local["input_path"])
+        folder_list = (dict_local["folders_list"]).split(",")
+        for folder in folder_list:
+            path = input_path + folder + "//"
+            paths.append(path)
+        return paths
+        
+
+class TASK_PARALLELIZE_PATH(TASK_PARALLELIZE): #all objects (folders) in given directory (path)
+    def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args):
+        TASK_PARALLELIZE.__init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args)
+
+    def parsing_elements_list(self, dict_local):
+        
 class MAP_PLATE(TASK):
   
     def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name,  args = {}):
