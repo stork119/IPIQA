@@ -171,3 +171,4 @@ class MAP_PLATE(TASK):
         input_path_metadata = dict_local["input_path_metadata"]
         output_path = dict_local["output_path"]
         csv_names = (dict_local["csv_names_list"]).split(",")
+        map_plate.combine(input_path_csv, input_path_metadata, output_path, csv_list)
