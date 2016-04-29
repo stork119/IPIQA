@@ -143,15 +143,10 @@ class TASK_PARALLELIZE(TASK):
         self.config_dict = args['config_dict']
 
     def execute_specify(self, dict_local):
+        dir_list, folders_number = self.parsing_elements_list(dict_local)
         processes_number = int(self.config_dict["number_of_cores"])
-        dir_list = self.parsing_elements_list(dict_local)
-        
-        
-        folders_number = int(dict_local["folders_number"])
         sleep_time = int(dict_local["sleep_time"])
         pool = multiprocessing.Pool(processes_number)
-        input_path = str(dict_local["input_path"])
-        dir_list = FM.get_dir_names(input_path)
         args = ((dict_local, element) for element in dir_list) #or just pass task, because we're able to get task_list and settings_dict from init if both functions will stay here
         pool.map_async(self.execute_queue, args)
         while True:
@@ -185,7 +180,8 @@ class TASK_PARALLELIZE_LIST(TASK_PARALLELIZE): # list of objects (folders)
         for folder in folder_list:
             path = input_path + folder + "//"
             paths.append(path)
-        return paths
+        folders_number = len(paths)
+        return paths, folders_number
         
 
 class TASK_PARALLELIZE_PATH(TASK_PARALLELIZE): #all objects (folders) in given directory (path)
@@ -193,7 +189,11 @@ class TASK_PARALLELIZE_PATH(TASK_PARALLELIZE): #all objects (folders) in given d
         TASK_PARALLELIZE.__init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args)
 
     def parsing_elements_list(self, dict_local):
-        
+        folders_number = int(dict_local["folders_number"])
+        input_path = str(dict_local["input_path"])
+        dir_list = FM.get_dir_names(input_path)
+        return paths, folders_number
+
 class MAP_PLATE(TASK):
   
     def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name,  args = {}):
