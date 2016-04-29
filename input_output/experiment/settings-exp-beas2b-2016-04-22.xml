@@ -46,7 +46,7 @@
                 </TASK>
                 <TASK class="TASK_QUANTIFY">
                     <parameters_by_value>
-			<parameter key="pipeline" value="D:\KN\PathwayPackage\cellprofiler\2016-03-23\pipeline.cppipe"/>
+			<parameter key="pipeline" value="D:\KN\PathwayPackage\cellprofiler\beas2b\raw\pipeline-nuclei.cppipe"/>
 			<parameter key="cp_path" value="C:\Program Files\CellProfiler\"/>
                     </parameters_by_value>
                     <parameters_by_name>
