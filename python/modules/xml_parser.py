@@ -62,9 +62,18 @@ def make_config_dict(root, tag, setup = ""):
         logger.debug("[%s]:[%s] added to %s %s dictionary.", key, value, tag, setup)
     return temp_dict
 
-def parse(input_path):
+def parse(input_path, relative_path):
     logger.info("Parsing XML input_settings.")
-    tree = ET.parse(input_path)
+    try:
+        tree = ET.parse(input_path)
+    except:
+        try:
+            tree = ET.parse(relative_path)
+        except:
+            logger.error("Wrong input_settings path.")
+            pipeline = None
+            config_dict = None
+            return pipeline, config_dict
     root = tree.getroot()
     Config = root[0]
     config_dict = make_config_dict(Config, Config.tag) # passing the 'name' of dictionary (config), which might be usefull for logs/debugging 
