@@ -16,7 +16,38 @@ def if_exist(path):
     logger.error("%s path doesn't exist.", path)
     return False
 """
-Getting all subdirs names of a given directory.
+Operations on paths.
+"""  
+def path_unification(path):
+    windows = True #we may add more conditions in the future.
+    if windows == True:
+        path = path.replace("\\","//")
+    return path
+
+def join_paths(*paths_list):
+    windows = True
+    possible_marks = ["\\\\","\\","//","/"]
+    if len(paths_list) < 2:
+        logger.error("Can't join less then 2 paths. Paths to join list: %s", paths_list)
+        return 0
+    for mark in possible marks:
+        paths_list = split_list_by(paths_list, mark)
+    if windows == True:
+        final_path = "//".join(paths_list)
+    return final_path
+
+def split_list_by(ele_list, mark):
+    output = []
+    for ele in ele_list:
+        data = ele.split(mark)
+        if len(data) > 1:
+            for i in data:
+                output.append(i)    
+        else:
+            output.append(data[0])
+    return output
+"""
+Getting all subdirs names/subfile paths of a given directory.
 """
 def get_dir_names(input_path):
     if not if_exist(input_path):
@@ -63,8 +94,7 @@ def remove_directory(path): # file or folder
     elif os.path.isdir(path):
         remove_folder(path)
     else:
-        logging.info("Object \"" + path + "\" not found.")
-        
+        logging.info("Object \"" + path + "\" not found.")        
 """
 Functions for coping objects.
 """
@@ -75,8 +105,7 @@ def copy_directory_constantly(in_path, out_path, sleep_time):
             return
         else:
             sleep(sleep_time)
-    
-  
+
 def copy_directory(in_path, out_path):
     dir_name = (in_path.split("/"))[-1]
     copied_dir_path = out_path + dir_name
@@ -100,7 +129,6 @@ def copy_data(in_path, out_path):
             logging.error(e)
     else:
         logging.error("Object \"" + in_path + "\" not found.")
-
 
 def copy_data_constantly(in_path, out_path, sleep_time): #sleep_time is given in seconds and it's meant to be higher than 0.
     while True:
