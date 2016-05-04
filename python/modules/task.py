@@ -2,7 +2,7 @@
 from collections import OrderedDict
 import modules.file_managment as FM
 import modules.cellprofiler as cpm
-from modules.csv import merge as merge_csv
+from modules.merge_csv import merge as merge_csv
 import modules.map_plate as map_plate
 from time import sleep
 import multiprocessing 
@@ -88,16 +88,6 @@ class TASK_DOWNLOAD(TASK):
     def execute_specify(self, dict_local):
         in_path = dict_local["input_path"]
         out_path = dict_local["output_path"]
-        """filelist = []
-        a = "No ROI.roi"
-        while True:
-            for f in os.listdir(in_path):
-                if f not in filelist:
-                    filelist.append(f)
-            if a in filelist:
-                break
-            else:
-                sleep(180)""" #checking out if the file is complete => this code gonna be moved to different section
         FM.copy_directory(in_path, out_path)
 
 class TASK_REMOVE(TASK):
@@ -147,19 +137,19 @@ class TASK_PARALLELIZE(TASK):
         processes_number = int(self.config_dict["number_of_cores"])
         sleep_time = int(dict_local["sleep_time"])
         pool = multiprocessing.Pool(processes_number)
-        args = ((dict_local, element) for element in dir_list) #or just pass task, because we're able to get task_list and settings_dict from init if both functions will stay here
-        pool.map_async(self.execute_queue, args)
+        dir_list, folders_number = self.parsing_elements_list(dict_local)
+        new_dirs = dir_list
         while True:
-            if len(dir_list) < folders_number:
-                sleep(sleep_time)
-                new_dir_list = FM.get_dir_names(input_path)
-                new_dirs = [i for i in new_dir_list if i not in dir_list]
-                if len(new_dirs) > 0:
-                    args = ((dict_local, element) for element in new_dirs) #or just pass task, because we're able to get task_list and settings_dict from init if both functions will stay here
-                    pool.map_async(self.execute_queue, args)
-                    dir_list = new_dir_list
-            else:
+            if len(new_dirs) > 0:
+                args = ((dict_local, element) for element in new_dirs) #or just pass task, because we're able to get task_list and settings_dict from init if both functions will stay here
+                pool.map_async(self.execute_queue, args)
+            if dir_list >= folders_number:
                 break
+            sleep(sleep_time)
+            input_path = str(dict_local["input_path"])
+            new_dir_list = FM.get_dir_names(input_path)
+            new_dirs = [i for i in new_dir_list if i not in dir_list]
+            dir_list = new_dir_list
         pool.close()
         pool.join()
 
