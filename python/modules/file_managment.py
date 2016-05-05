@@ -71,6 +71,18 @@ def get_filepaths(input_path):
        #     subdir_path.append(os.path.join(path, name)) # get list of path to each subdir
             subfile_names.append(path + "//" + name)
     return subfile_names
+    
+def get_dirpaths(input_path): #temporary duplicated code !!!
+    if not if_exist(input_path):
+        print("Error. Can't get subfiles names list for a given path: %s.", input_path)
+        return False
+   # subdir_path = []
+    subdir_names = []
+    for path, subdirs, files in os.walk(input_path):
+        for name in subdirs:
+       #     subdir_path.append(os.path.join(path, name)) # get list of path to each subdir
+            subdir_names.append(path + "//" + name)
+    return subdir_names
 """
 Functions for removing objects.
 """
@@ -114,8 +126,11 @@ def copy_directory(in_path, out_path):
         remove_directory(copied_dir_path)
     os.makedirs(copied_dir_path)
     files_paths_list = get_filepaths(in_path)
+    dirs_paths_list = get_dirpaths(in_path)
     for f in files_paths_list:
         copy_data(f, copied_dir_path)
+    for f in dirs_path_list:
+        copy_directory(f, copied_dir_path)
       
 def copy_data(in_path, out_path):
     if if_exist(in_path):
@@ -145,3 +160,16 @@ def copy_data_constantly(in_path, out_path, sleep_time): #sleep_time is given in
         else:
             logging.info("Object \"" + in_path + "\" have not been found yet. Searching will be continued.")
             sleep(sleep_time)
+"""
+Other functionalities.
+"""
+def dir_completeness(in_path, required_files, sleep_time):
+    filelist = []
+    while True:
+        for f in os.listdir(in_path):
+            if f not in filelist:
+                filelist.append(f)
+            if all(element in filelist for element in required_files)
+                break
+            else:
+                sleep(sleep_time)

@@ -88,6 +88,9 @@ class TASK_DOWNLOAD(TASK):
     def execute_specify(self, dict_local):
         in_path = dict_local["input_path"]
         out_path = dict_local["output_path"]
+            required_files = (dict_local["required_files"]).split(",")
+            sleep_time = dict_local["sleep_time"]
+            FM.dir_completeness(in_path, required_files, sleep_time)
         FM.copy_directory(in_path, out_path)
 
 class TASK_REMOVE(TASK):
