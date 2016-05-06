@@ -8,12 +8,12 @@ I. Required installed software:
 - pip
 
 II. Pre-installation procedures:
-1. Adding new variables in the system variable field:
+1. Adding new environmen variables in the system properties:
 - R_USER (username)
 - R_HOME (path/to/installed/r) / (or just add your R path to your system PATHS)
 
 III. Example rpy2 installation:
-1. Download pre-compiled binary package for Windows (http://www.lfd.uci.edu/~gohlke/pythonlibs/)
+1. Download pre-compiled binary rpy2 package for proper Windows + python version (http://www.lfd.uci.edu/~gohlke/pythonlibs/)
 2. In command line type:
     py -m pip install rpy2
 
