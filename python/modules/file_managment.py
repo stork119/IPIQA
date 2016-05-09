@@ -1,5 +1,5 @@
 #! /usr/bin/python
-import os.path
+import os.path, csv
 from time import sleep
 import logging
 import shutil # for function copy_data
@@ -30,7 +30,7 @@ def join_paths(*paths_list):
     if len(paths_list) < 2:
         logger.error("Can't join less then 2 paths. Paths to join list: %s", paths_list)
         return 0
-    for mark in possible marks:
+    for mark in possible_marks:
         paths_list = split_list_by(paths_list, mark)
     if windows == True:
         final_path = "//".join(paths_list)
@@ -169,7 +169,33 @@ def dir_completeness(in_path, required_files, sleep_time):
         for f in os.listdir(in_path):
             if f not in filelist:
                 filelist.append(f)
-            if all(element in filelist for element in required_files)
+            if all(element in filelist for element in required_files):
                 break
             else:
                 sleep(sleep_time)
+
+def read_csv(path, mark, dict_local = {}, key_name = ""):
+    with open(path, 'r') as f:
+        reader = csv.reader(f)
+        data = list(list(line) for line in csv.reader(f, delimiter=mark))
+    if len(dict_local) == 0: #no dictionary was passed
+        return data
+    else:
+        dict_local[key_name] = data
+        return dict_local
+
+def write_csv(path, mark, data = None, key = ""):
+    if isinstance(data,dict):
+        data = data[key]
+    with open(path, 'w') as f:
+        for row in data:
+            f.write(mark.join(row) + "\n")
+  
+a = {"c":'1', 'b':'2'}
+try:
+    job_done= a["a"]
+    if job_done == "1":
+        print("yes")
+except:
+    pass
+print("im done")
