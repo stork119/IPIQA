@@ -19,33 +19,51 @@ def if_exist(path):
 Operations on paths.
 """  
 def path_unification(path):
+    path = split_path_by(path)
+    path = path_unification_from_list(path)
+    return path
+
+def path_unification_from_list(path):
     windows = True #we may add more conditions in the future.
     if windows == True:
-        path = path.replace("\\","//")
+        path = "//".join(path)
     return path
 
 def join_paths(*paths_list):
-    windows = True
-    possible_marks = ["\\\\","\\","//","/"]
+    final_path = []
     if len(paths_list) < 2:
         logger.error("Can't join less then 2 paths. Paths to join list: %s", paths_list)
         return 0
-    for mark in possible_marks:
-        paths_list = split_list_by(paths_list, mark)
-    if windows == True:
-        final_path = "//".join(paths_list)
+    for path in paths_list:
+        splited_path = split_path_by(path)
+        final_path = final_path + splited_path
+    final_path = path_unification_from_list(final_path)
     return final_path
 
-def split_list_by(ele_list, mark):
-    output = []
-    for ele in ele_list:
-        data = ele.split(mark)
-        if len(data) > 1:
-            for i in data:
-                output.append(i)    
-        else:
-            output.append(data[0])
+def get_relative_path(abs_path, file_path):
+    windows = True
+    abs_path = split_path_by(abs_path)
+    file_path = split_path_by(file_path)
+    rel_path = [x for x in file_path if x not in abs_path]
+    rel_path = path_unification_from_list(rel_path)
+    return rel_path
+  
+def split_path_by(path):
+    possible_marks = ["\\\\","\\","//","/"]
+    ele_list = [path]
+    for mark in possible_marks:
+        output = []
+        for ele in ele_list:
+            data = ele.split(mark)
+            if len(data) > 1:
+                for i in data:
+                    output.append(i)    
+            else:
+                output.append(data[0])
+        ele_list = output
+    output = list(filter(None, ele_list))
     return output
+  
 """
 Getting all subdirs names/subfile paths of a given directory.
 """
@@ -190,3 +208,4 @@ def write_csv(path, mark, data = None, key = ""):
     with open(path, 'w') as f:
         for row in data:
             f.write(mark.join(row) + "\n")
+
