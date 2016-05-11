@@ -91,7 +91,7 @@ class TASK_DOWNLOAD(TASK):
         try:
             job_done = str(dict_local["experiment_finished"])
             job_done = job_done.lower()
-            if job_done == "no":
+            if job_done == "no" or "0":
                 required_files = (dict_local["required_files"]).split(",")
                 sleep_time = dict_local["sleep_time"]
                 FM.dir_completeness(in_path, required_files, sleep_time)
@@ -164,7 +164,7 @@ class TASK_PARALLELIZE(TASK):
 
     def execute_queue(self, args):
         dict_local, element = args
-        dict_local["folder_name"] = element + "//"
+        dict_local["folder_name"] = element
         for task in self.task_list:
             task.execute(dict_local)
             
@@ -177,7 +177,7 @@ class TASK_PARALLELIZE_LIST(TASK_PARALLELIZE): # list of objects (folders)
         input_path = str(dict_local["input_path"])
         folder_list = (dict_local["folders_list"]).split(",")
         for folder in folder_list:
-            path = input_path + folder + "//"
+            path = FM.join_paths(input_path, folder)
             paths.append(path)
         folders_number = len(paths)
         return paths, folders_number
@@ -199,7 +199,6 @@ class MAP_PLATE(TASK):
         TASK.__init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args)
 
     def execute_specify(self, dict_local):
-        let_number = 8 # int(sth from input_settings?) plate width etc
         input_path_csv = dict_local["input_path_csv"]
         input_path_metadata = dict_local["input_path_metadata"]
         output_path = dict_local["output_path"]

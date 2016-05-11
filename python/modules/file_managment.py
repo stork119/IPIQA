@@ -63,9 +63,8 @@ def split_path_by(path):
         ele_list = output
     output = list(filter(None, ele_list))
     return output
-  
 """
-Getting all subdirs names/subfile paths of a given directory.
+Getting all names/paths of files/directories located in a given directory.
 """
 def get_dir_names(input_path):
     if not if_exist(input_path):
@@ -77,30 +76,41 @@ def get_dir_names(input_path):
             subdir_list.append(subdir)
             logger.debug("Folder %s added to subdirectories' list of path %s.", subdir, input_path)
     return subdir_list
-    
+
+def get_file_names(input_path):
+    if not if_exist(input_path):
+        logger.error("Error. Can't get subfile names list for a given path: %s. Path doesn't exist", input_path)
+        return
+    subfile_list = []
+    for subfile in os.listdir(input_path):
+        if os.path.isfile(os.path.join(input_path, subfile)):
+            subfile_list.append(subfile)
+            logger.debug("File %s added to subfiles' list of path %s.", subfile, input_path)
+    return subfile_list
+
 def get_filepaths(input_path):
     if not if_exist(input_path):
-        print("Error. Can't get subfiles names list for a given path: %s.", input_path)
+        logger.error("Error. Can't get subfiles names list for a given path: %s.", input_path)
         return False
-   # subdir_path = []
-    subfile_names = []
-    for path, subdir, files in os.walk(input_path):
-        for name in files:
-       #     subdir_path.append(os.path.join(path, name)) # get list of path to each subdir
-            subfile_names.append(path + "//" + name)
-    return subfile_names
+    subfile_paths = []
+    names = get_file_names(input_path)
+    for name in names:
+        tmp = join_paths(input_path, name)
+        subfile_paths.append(tmp)
+        logger.debug("File's path %s added to subfiles' list of path %s.", tmp, input_path)
+    return subfile_paths
     
-def get_dirpaths(input_path): #temporary duplicated code !!!
+def get_dirpaths(input_path):
     if not if_exist(input_path):
-        print("Error. Can't get subfiles names list for a given path: %s.", input_path)
+        logger.error("Error. Can't get subfiles names list for a given path: %s.", input_path)
         return False
-   # subdir_path = []
-    subdir_names = []
-    for path, subdirs, files in os.walk(input_path):
-        for name in subdirs:
-       #     subdir_path.append(os.path.join(path, name)) # get list of path to each subdir
-            subdir_names.append(path + "//" + name)
-    return subdir_names
+    subdir_paths = []
+    names = get_dir_names(input_path)
+    for name in names:
+        tmp = join_paths(path, name)
+        subdir_paths.append(tmp)
+        logger.debug("Directory's path %s added to subdirs' list of path %s.", tmp, input_path)
+    return subdir_paths
 """
 Functions for removing objects.
 """
@@ -137,8 +147,8 @@ def copy_directory_constantly(in_path, out_path, sleep_time):
             sleep(sleep_time)
 
 def copy_directory(in_path, out_path):
-    dir_name = (in_path.split("/"))[-1]
-    copied_dir_path = out_path + dir_name
+    dir_name = extract_dir_name(in_path)
+    copied_dir_path = join_paths(out_path, dir_name)
     if os.path.exists(copied_dir_path):
         logger.warning("Directory %s already exists. Removing old data.", copied_dir_path)
         remove_directory(copied_dir_path)
@@ -209,3 +219,17 @@ def write_csv(path, mark, data = None, key = ""):
         for row in data:
             f.write(mark.join(row) + "\n")
 
+def extension_verification(filename, pattern):
+    if filename.endswith(pattern):
+        return True
+    else:
+        return False
+
+def get_file_extension(filename):
+    extension = os.path.splitext(filename)[1]
+    return extension
+    
+def extract_dir_name(filename):
+    path_list = split_path_by(filename)
+    name = path_list[-1:]
+    return name
