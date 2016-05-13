@@ -88,7 +88,7 @@ def get_file_names(input_path):
             logger.debug("File %s added to subfiles' list of path %s.", subfile, input_path)
     return subfile_list
 
-def get_filepaths(input_path):
+def get_file_paths(input_path):
     if not if_exist(input_path):
         logger.error("Error. Can't get subfiles names list for a given path: %s.", input_path)
         return False
@@ -100,14 +100,14 @@ def get_filepaths(input_path):
         logger.debug("File's path %s added to subfiles' list of path %s.", tmp, input_path)
     return subfile_paths
     
-def get_dirpaths(input_path):
+def get_dir_paths(input_path):
     if not if_exist(input_path):
         logger.error("Error. Can't get subfiles names list for a given path: %s.", input_path)
         return False
     subdir_paths = []
     names = get_dir_names(input_path)
     for name in names:
-        tmp = join_paths(path, name)
+        tmp = join_paths(input_path, name)
         subdir_paths.append(tmp)
         logger.debug("Directory's path %s added to subdirs' list of path %s.", tmp, input_path)
     return subdir_paths
@@ -153,8 +153,8 @@ def copy_directory(in_path, out_path):
         logger.warning("Directory %s already exists. Removing old data.", copied_dir_path)
         remove_directory(copied_dir_path)
     os.makedirs(copied_dir_path)
-    files_paths_list = get_filepaths(in_path)
-    dirs_paths_list = get_dirpaths(in_path)
+    files_paths_list = get_file_paths(in_path)
+    dirs_paths_list = get_dir_paths(in_path)
     for f in files_paths_list:
         copy_data(f, copied_dir_path)
     for f in dirs_path_list:
