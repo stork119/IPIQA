@@ -128,11 +128,18 @@ class TASK_MERGE(TASK):
 
     def execute_specify(self, dict_local):
         in_path = dict_local["input_path"]
-        out_path = dict_local["output_path"]
-        subdir_list = FM.get_dir_names(in_path)
+        #out_path = dict_local["output_path"]
+        subdir_list = FM.get_dir_paths(in_path)
         csv_names = (dict_local["csv_names_list"]).split(",")
         for csv_name in csv_names:
-            merge_csv(csv_name, subdir_list, in_path, out_path)
+            data = merge_csv(csv_name, subdir_list)
+            """extension = FM.get_file_extension(csv_name)
+            len_ext = len(extension)
+            name = csv_name[:-(len_ext)] # for files different then csv...""" 
+            name = csv_name[:-4] 
+            dict_local[name] = data
+            #deltimer = "" #choose separator
+            #FM.write_csv(FM.join_paths(output_path, csv_name), deltimer, data) #if we would like to write_csv somewhere...
 
 class TASK_PARALLELIZE(TASK):
    # has got object queue
