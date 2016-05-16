@@ -1,5 +1,6 @@
 #! /usr/bin/python
 import string, os
+#import file_managment as FM
 import modules.file_managment as FM
 import csv
 
@@ -29,12 +30,12 @@ def writing_output_csv(input_path, output_path, output_data, names):
     out_file.close()
 
 def getting_paths_mp(input_path):
-    all_paths = FM.get_filepaths(input_path)
+    subfile_list = FM.get_file_paths(input_path)
     param_paths = []
-    subfile_list = []
-    for subfile in os.listdir(input_path):
-        if os.path.isfile(os.path.join(input_path, subfile)):
-            subfile_list.append(input_path + "//" + subfile)
+    all_paths = []
+    for root, dires, files in os.walk(input_path):
+        for name in files:
+            all_paths.append(FM.join_paths(root, name))
     for path in all_paths:
         if path not in subfile_list and path[-4:] == ".csv":
             param_paths.append(path)
@@ -62,41 +63,41 @@ def parsing_matrix(path):
             num_row = num_row + 1
     return active_wells
 
-def parsing_map_plate(mp_path, paths_mp):
+def parsing_map_plate(mp_path, paths_mp, mark):
     param_dict = {}
-    active_path = mp_path + "//" + "args_active.csv"
-    names_path = mp_path + "//" + "args_ind.csv"
+    active_path = FM.join_paths(mp_path, "args_active.csv")
+    names_path = FM.join_paths(mp_path, "args_ind.csv")
     active_wells = parsing_matrix(active_path)
     for well in active_wells:
         result = []
-        name = collecting_exp_settings(names_path, well)
+        name = collecting_exp_settings(names_path, well, mark = ",") #!!!
         for mp_file in paths_mp:
-            param = collecting_exp_settings(mp_file, well)
+            param = collecting_exp_settings(mp_file, well, mark)
             result.append(param)
         param_dict[name] = ",".join(result)
     return param_dict
   
-def collecting_exp_settings(mp_file, well):
+def collecting_exp_settings(mp_file, well, mark):
     row_nr, col_nr = well
-    with open(mp_file, 'r') as f:
-        reader = csv.reader(f, delimiter='\t')
-        data = list(reader)
+    data = FM.read_csv(mp_file, mark)
     return (data[row_nr][col_nr])
     
-def getting_column_titles(paths):
+def getting_column_titles(abs_path, paths):
     names = []
     for path in paths:
-        name = (".".join(path.split("//")[-2:]))[:-4]
+        rel_path = FM.get_relative_path(abs_path, path)
+        name = (".".join(FM.split_path_by(rel_path)))[:-4]
+        #ext_len = len(FM.get_file_extension(rel_path))
+        #name = (".".join(FM.split_path_by(rel_path)))[:-ext_len]
         names.append(name)
     #names = ",".join(names)
     return names
 
-def combine(path_csv, path_map_plate, path_output, csv_names):
+def combine(path_csv, path_map_plate, path_output, csv_names, deltimer = "\t"):
     f_paths_map_plate = getting_paths_mp(path_map_plate)
-    f_paths_csv = making_path_list(path_csv, csv_names)
     f_paths_output = making_path_list(path_output, csv_names)
-    output = parsing_map_plate(path_map_plate, f_paths_map_plate)
-    names = getting_column_titles(f_paths_map_plate)
-    print(names)
+    output = parsing_map_plate(path_map_plate, f_paths_map_plate, deltimer)
+    names = getting_column_titles(path_map_plate, f_paths_map_plate)
+    f_paths_csv = making_path_list(path_csv, csv_names)
     for i in range(len(f_paths_csv)):
         writing_output_csv(f_paths_csv[i], f_paths_output[i], output, names)
