@@ -6,11 +6,9 @@ import modules.file_managment as FM
 logger = logging.getLogger(__name__)
 logger.info("Executing csv (merge) module.")
 
-def merge(csv_name, subdir_list, deltimer = ""): 
+def merge(csv_name, subdir_list, deltimer = ","): 
     """csv_names = the list of filenames with given CP output data (for example: Nuclei.csv,Cytoplasm.csv)
     subdir_list = the list of subdir's paths, each of subdir contains data of given well"""
-    if deltimer == "":
-        deltimer = ","
     output= []
     logger.info("Creating %s output (merged) data.", csv_name)
     # first file:

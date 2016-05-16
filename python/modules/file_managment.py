@@ -99,7 +99,7 @@ def get_file_paths(input_path):
         subfile_paths.append(tmp)
         logger.debug("File's path %s added to subfiles' list of path %s.", tmp, input_path)
     return subfile_paths
-    
+
 def get_dir_paths(input_path):
     if not if_exist(input_path):
         logger.error("Error. Can't get subfiles names list for a given path: %s.", input_path)
