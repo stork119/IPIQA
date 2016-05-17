@@ -1,6 +1,5 @@
 #! /usr/bin/python
 import string, os
-#import file_managment as FM
 import modules.file_managment as FM
 import csv
 
@@ -48,10 +47,10 @@ def making_path_list(main_path, file_list): # maybe this should be in file_manag
         path_list.append(path)
     return path_list
 
-def parsing_matrix(path):
+def parsing_matrix(path, deltimer):
     active_wells = []
     with open(path) as csvfile:
-        reader = csv.reader(csvfile, delimiter='\t')
+        reader = csv.reader(csvfile, delimiter)
         num_row = 0
         for row in reader:
             num_column = 0
@@ -63,16 +62,16 @@ def parsing_matrix(path):
             num_row = num_row + 1
     return active_wells
 
-def parsing_map_plate(mp_path, paths_mp, mark):
+def parsing_map_plate(mp_path, paths_mp, deltimer):
     param_dict = {}
     active_path = FM.join_paths(mp_path, "args_active.csv")
     names_path = FM.join_paths(mp_path, "args_ind.csv")
-    active_wells = parsing_matrix(active_path)
+    active_wells = parsing_matrix(active_path, deltimer)
     for well in active_wells:
         result = []
-        name = collecting_exp_settings(names_path, well, mark = ",") #!!!
+        name = collecting_exp_settings(names_path, well, deltimer)
         for mp_file in paths_mp:
-            param = collecting_exp_settings(mp_file, well, mark)
+            param = collecting_exp_settings(mp_file, well, deltimer)
             result.append(param)
         param_dict[name] = ",".join(result)
     return param_dict
@@ -101,3 +100,4 @@ def combine(path_csv, path_map_plate, path_output, csv_names, deltimer = "\t"):
     f_paths_csv = making_path_list(path_csv, csv_names)
     for i in range(len(f_paths_csv)):
         writing_output_csv(f_paths_csv[i], f_paths_output[i], output, names)
+

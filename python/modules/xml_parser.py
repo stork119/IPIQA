@@ -3,6 +3,7 @@ import xml.etree.ElementTree as ET
 from collections import OrderedDict
 import logging
 import modules.task as t
+import modules.file_managment as FM
 #from importlib import import_module
 
 logger = logging.getLogger(__name__)
@@ -57,7 +58,7 @@ def make_config_dict(root, tag, setup = ""):
         key = attribute.get('key')
         value = attribute.get('value')
         #if "path" in key:
-        value = value.replace("\\", "//")
+        value = FM.path_unification(value)
         temp_dict[key] = (value)
         logger.debug("[%s]:[%s] added to %s %s dictionary.", key, value, tag, setup)
     return temp_dict

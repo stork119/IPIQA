@@ -1,6 +1,7 @@
 #! /usr/bin/python
 import logging, os
 import argparse
+import modules.file_managment as FM
 import modules.logs_configuration as LC
 import modules.xml_parser as p
 
@@ -21,7 +22,7 @@ def main():
     args = parser.parse_args()
     """Setting up pipeline."""
     logger.debug("Input settings source: %s", args.s[0])
-    relative_path = PP_path + "//input_output//" + args.s[0]
+    relative_path = FM.join_paths(PP_path, "input_output" , args.s[0])
     pipeline, config_dict = p.parse(args.s[0], relative_path)
     pipeline.execute(config_dict)
 if __name__ == "__main__":
