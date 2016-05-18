@@ -31,13 +31,13 @@ def create_queue_task(queue, config_dict):
     task_list = []
     for request in queue.findall('TASK'):
         task_name = request.get('class')
-        if task_name == "TASK_QUEUE" or task_name == "TASK_PARALLELIZE":
+        if task_name == "TASK_QUEUE" or task_name.startswith("TASK_PARALLELIZE"):
             task = create_queue_task(request, config_dict)
         else:
             task = create_task(request)
         task_list.append(task)
     #print(task_list)
-    if queue.get('class') == "TASK_PARALLELIZE":
+    if queue.get('class').startswith("TASK_PARALLELIZE"):
         pipeline = create_task(queue, task_list, config_dict)
     else:
         pipeline = create_task(queue, task_list)

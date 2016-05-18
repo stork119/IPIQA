@@ -18,9 +18,13 @@ def if_exist(path):
 """
 Operations on paths.
 """  
-def path_unification(path):
-    path = split_path_by(path)
+def path_unification(in_path):
+    windows = True
+    path = split_path_by(in_path)
     path = path_unification_from_list(path)
+    if in_path.endswith("/") or in_path.endswith("\\"):
+        if windows == True:
+            path = path + "//"
     return path
 
 def path_unification_from_list(path):
@@ -147,8 +151,9 @@ def copy_directory_constantly(in_path, out_path, sleep_time):
             sleep(sleep_time)
 
 def copy_directory(in_path, out_path):
-    dir_name = extract_dir_name(in_path)
-    copied_dir_path = join_paths(out_path, dir_name)
+    copied_dir_path = out_path
+    #dir_name = extract_dir_name(in_path)
+    #copied_dir_path = FM.join_paths(out_path, dir_name)
     if os.path.exists(copied_dir_path):
         logger.warning("Directory %s already exists. Removing old data.", copied_dir_path)
         remove_directory(copied_dir_path)
