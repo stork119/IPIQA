@@ -131,10 +131,6 @@ class TASK_MERGE(TASK):
         #out_path = dict_local["output_path"]
         subdir_list = FM.get_dir_paths(in_path)
         csv_names = (dict_local["csv_names_list"]).split(",")
-        try:
-            deltimer = dict_local["deltimer"]
-        except:
-            deltimer = "," #choose separator
         for csv_name in csv_names:
             data = merge_csv(csv_name, subdir_list)
             """extension = FM.get_file_extension(csv_name)
@@ -142,11 +138,8 @@ class TASK_MERGE(TASK):
             name = csv_name[:-(len_ext)] # for files different then csv...""" 
             name = csv_name[:-4] 
             dict_local[name] = data
-            #Saving data
-            out_path = FM.join_paths(output_path, csv_name)
-            if FM.if_exist(out_path):
-                FM.remove_directory(out_path)
-            FM.write_csv(out_path, deltimer, data) #if we would like to write_csv somewhere...
+            #deltimer = "" #choose separator
+            #FM.write_csv(FM.join_paths(output_path, csv_name), deltimer, data) #if we would like to write_csv somewhere...
 
 class TASK_PARALLELIZE(TASK):
    # has got object queue
