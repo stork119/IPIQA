@@ -13,7 +13,7 @@ def if_exist(path):
     if (os.path.exists(path)):
         logger.debug("%s path exists.", path)
         return True
-    logger.error("%s path doesn't exist.", path)
+    #logger.debug("%s path doesn't exist.", path)
     return False
 """
 Operations on paths.
@@ -217,12 +217,12 @@ def read_csv(path, mark, dict_local = {}, key_name = ""):
         dict_local[key_name] = data
         return dict_local
 
-def write_csv(path, mark, data = None, key = ""):
+def write_csv(path, deltimer, data = None, key = ""):
     if isinstance(data,dict):
         data = data[key]
     with open(path, 'w') as f:
         for row in data:
-            f.write(mark.join(row) + "\n")
+            f.write(deltimer.join(row) + "\n")
 
 def extension_verification(filename, pattern):
     if filename.endswith(pattern):
