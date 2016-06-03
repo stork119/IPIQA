@@ -1,6 +1,5 @@
 #! /usr/bin/python
-import os
-import logging
+import os, logging, csv
 import modules.file_managment as FM
 
 logger = logging.getLogger(__name__)
@@ -42,3 +41,19 @@ def merge(csv_name, subdir_list, deltimer = ","):
     logger.info("%s data successfully merged.", csv_name)
     return output
 
+def read_csv(path, mark, dict_local = {}, key_name = ""):
+    with open(path, 'r') as f:
+        reader = csv.reader(f)
+        data = list(list(line) for line in csv.reader(f, delimiter=mark))
+    if len(dict_local) == 0: #no dictionary was passed
+        return data
+    else:
+        dict_local[key_name] = data
+        return dict_local
+
+def write_csv(path, deltimer, data = None, key = ""):
+    if isinstance(data,dict):
+        data = data[key]
+    with open(path, 'w') as f:
+        for row in data:
+            f.write(deltimer.join(row) + "\n")
