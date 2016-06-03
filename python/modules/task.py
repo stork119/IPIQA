@@ -2,7 +2,7 @@
 from collections import OrderedDict
 import modules.file_managment as FM
 import modules.cellprofiler as cpm
-from modules.merge_csv import merge as merge_csv
+import modules.csv_managment as CSV_M
 import modules.map_plate as map_plate
 from time import sleep
 import multiprocessing 
@@ -136,7 +136,7 @@ class TASK_MERGE(TASK):
         except:
             deltimer = "," #choose separator
         for csv_name in csv_names:
-            data = merge_csv(csv_name, subdir_list)
+            data = CSV_M.merge(csv_name, subdir_list)
             """extension = FM.get_file_extension(csv_name)
             len_ext = len(extension)
             name = csv_name[:-(len_ext)] # for files different then csv...""" 
@@ -146,7 +146,7 @@ class TASK_MERGE(TASK):
             out_path = FM.join_paths(output_path, csv_name)
             if FM.if_exist(out_path):
                 FM.remove_directory(out_path)
-            FM.write_csv(out_path, deltimer, data) #if we would like to write_csv somewhere...
+            CSV_M.write_csv(out_path, deltimer, data) #if we would like to write_csv somewhere...
 
 class TASK_PARALLELIZE(TASK):
    # has got object queue
