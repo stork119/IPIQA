@@ -156,7 +156,9 @@ class TASK_PARALLELIZE(TASK):
         self.config_dict = args['config_dict']
 
     def execute_specify(self, dict_local):
-        dir_list, folders_number = self.parsing_elements_list(dict_local)
+        folders_number = int(self.config_dict["sample_number"])
+        input_path = str(dict_local["input_path"])
+        dir_list = FM.get_dir_names(input_path)
         processes_number = int(self.config_dict["number_of_cores"])
         sleep_time = int(dict_local["sleep_time"])
         new_dirs = dir_list
@@ -180,32 +182,6 @@ class TASK_PARALLELIZE(TASK):
         dict_local["folder_name"] = element
         for task in self.task_list:
             task.execute(dict_local)
-            
-class TASK_PARALLELIZE_LIST(TASK_PARALLELIZE): # list of objects (folders)
-    def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args):
-        TASK_PARALLELIZE.__init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args)
-
-    def parsing_elements_list(self, dict_local):
-        paths = []
-        input_path = str(dict_local["input_path"])
-        folder_list = (dict_local["folders_list"]).split(",")
-        for folder in folder_list:
-            path = FM.join_paths(input_path, folder)
-            paths.append(path)
-        folders_number = len(paths)
-        return paths, folders_number
-        
-
-class TASK_PARALLELIZE_PATH(TASK_PARALLELIZE): #all objects (folders) in given directory (path)
-    def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args):
-        TASK_PARALLELIZE.__init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args)
-        self.config_dict = args['config_dict']
-
-    def parsing_elements_list(self, dict_local):
-        folders_number = int(self.config_dict["sample_number"])
-        input_path = str(dict_local["input_path"])
-        dir_list = FM.get_dir_names(input_path)
-        return dir_list, folders_number
 
 class MAP_PLATE(TASK):
   
