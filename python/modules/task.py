@@ -12,13 +12,13 @@ import os
 logger = logging.getLogger(__name__)
 
 class TASK():
+
     def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args = {}):
         self.parameters_by_value = parameters_by_value
         self.parameters_by_name = parameters_by_name
         self.updates_by_value = updates_by_value
         self.updates_by_name = updates_by_name
-      
-      
+
     def execute(self, dict_global):
         task_name = self.__class__.__name__
         logger.debug("TASK (class) name: %s", task_name)
@@ -33,7 +33,7 @@ class TASK():
         dict_global = self.update_dict(dict_global, dict_local, self.updates_by_value, self.updates_by_name)
         logger.debug("dict_global after update: %s", dict_global)
         return dict_global
-      
+
     def update_dict(self, dict_out, dict_in, list_by_value, list_by_name):
         for k, v in list_by_value.items(): #update by value
             dict_out[k] = v
@@ -47,7 +47,7 @@ class TASK():
         dict_out = self.concatenation_name_nr(dict_out)
         logger.debug("Dict_out after concatenation: %s", dict_out)        
         return dict_out
-            
+
     def concatenation_name_nr(self, dict_out):      
         #concatenation name.number
         key_list = []
@@ -71,6 +71,7 @@ class TASK():
             dict_out = temp_dict.copy()
         return dict_out
 
+
 class TASK_QUEUE(TASK):
   
     def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args):
@@ -79,6 +80,7 @@ class TASK_QUEUE(TASK):
     def execute_specify(self, dict_local):
         for task in self.task_list:
             dict_local = task.execute(dict_local)
+
 
 class TASK_DOWNLOAD(TASK):
   
@@ -91,13 +93,14 @@ class TASK_DOWNLOAD(TASK):
         try:
             job_done = str(dict_local["experiment_finished"])
             job_done = job_done.lower()
-            if job_done == "no" or "0":
+            if job_done == "no" or "0" or "false":
                 required_files = (dict_local["required_files"]).split(",")
                 sleep_time = dict_local["sleep_time"]
                 FM.dir_completeness(in_path, required_files, sleep_time)
         except:
             pass
         FM.copy_directory(in_path, out_path)
+
 
 class TASK_REMOVE(TASK):
   
@@ -107,7 +110,8 @@ class TASK_REMOVE(TASK):
     def execute_specify(self, dict_local):
         in_path = dict_local["input_path"]
         FM.remove_directory(in_path)
-        
+
+   
 class TASK_QUANTIFY(TASK):
   
     def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name,  args = {}):
@@ -120,7 +124,8 @@ class TASK_QUANTIFY(TASK):
         pipeline = dict_local["pipeline"]
         #cpm.check_pipeline(pipeline)
         cpm.run_cp_by_cmd(cp_path, in_path, out_path, pipeline)
-        
+
+   
 class TASK_MERGE(TASK):
   
     def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args = {}):
@@ -128,7 +133,7 @@ class TASK_MERGE(TASK):
 
     def execute_specify(self, dict_local):
         in_path = dict_local["input_path"]
-        #out_path = dict_local["output_path"]
+        output_path = dict_local["output_path"]
         subdir_list = FM.get_dir_paths(in_path)
         csv_names = (dict_local["csv_names_list"]).split(",")
         try:
@@ -148,25 +153,24 @@ class TASK_MERGE(TASK):
                 FM.remove_directory(out_path)
             CSV_M.write_csv(out_path, deltimer, data) #if we would like to write_csv somewhere...
 
+
 class TASK_PARALLELIZE(TASK):
-   # has got object queue
+
     def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args):
         TASK.__init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args)
         self.task_list = args['task_list']
         self.config_dict = args['config_dict']
 
     def execute_specify(self, dict_local):
-        folders_number = int(self.config_dict["sample_number"])
-        input_path = str(dict_local["input_path"])
-        dir_list = FM.get_dir_names(input_path)
-        processes_number = int(self.config_dict["number_of_cores"])
+        dir_list, folders_number = self.parsing_elements_list(dict_local)
+        processes_number = int(dict_local["number_of_cores"])
         sleep_time = int(dict_local["sleep_time"])
         new_dirs = dir_list
         pool = multiprocessing.Pool(processes_number)
         while True:
             if len(new_dirs) > 0:
                 args = ((dict_local, element) for element in new_dirs) #or just pass task, because we're able to get task_list and settings_dict from init if both functions will stay here
-                pool.map_async(self.execute_queue, args)
+                pool.map_async(self._execute_queue, args)
             if len(dir_list) >= folders_number:
                 break
             sleep(sleep_time)
@@ -177,11 +181,41 @@ class TASK_PARALLELIZE(TASK):
         pool.close()
         pool.join()
 
-    def execute_queue(self, args):
+    def _execute_queue(self, args):
         dict_local, element = args
         dict_local["folder_name"] = element
         for task in self.task_list:
             task.execute(dict_local)
+
+   
+class TASK_PARALLELIZE_LIST(TASK_PARALLELIZE): # list of objects (folders)
+
+    def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args):
+        TASK_PARALLELIZE.__init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args)
+
+    def parsing_elements_list(self, dict_local):
+        paths = []
+        input_path = str(dict_local["input_path"])
+        folder_list = (dict_local["folders_list"]).split(",")
+        for folder in folder_list:
+            path = FM.join_paths(input_path, folder)
+            paths.append(path)
+        folders_number = len(paths)
+        return paths, folders_number
+
+
+class TASK_PARALLELIZE_PATH(TASK_PARALLELIZE): #all objects (folders) in given directory (path)
+
+    def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args):
+        TASK_PARALLELIZE.__init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args)
+        self.config_dict = args['config_dict']
+
+    def parsing_elements_list(self, dict_local):
+        folders_number = int(dict_local["folders_number"])
+        input_path = str(dict_local["input_path"])
+        dir_list = FM.get_dir_names(input_path)
+        return dir_list, folders_number
+
 
 class MAP_PLATE(TASK):
   
