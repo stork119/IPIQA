@@ -162,7 +162,7 @@ def copy_directory(in_path, out_path):
     dirs_paths_list = get_dir_paths(in_path)
     for f in files_paths_list:
         copy_data(f, copied_dir_path)
-    for f in dirs_path_list:
+    for f in dirs_paths_list:
         copy_directory(f, copied_dir_path)
       
 def copy_data(in_path, out_path):

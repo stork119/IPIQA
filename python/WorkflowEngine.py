@@ -27,7 +27,6 @@ def main():
     else:
         input_settings = FM.join_paths(PP_path, "input_output" , args.s[0])
     pipeline, config_dict = XML_P.parse(input_settings)
-    print(config_dict)
-    #pipeline.execute(config_dict)
+    pipeline.execute(config_dict)
 if __name__ == "__main__":
     main()
