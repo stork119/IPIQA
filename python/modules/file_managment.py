@@ -17,14 +17,18 @@ def path_check_existence(path):
     return False
 """
 Operations on paths.
-"""  
+"""
+def _path_check_end_slash(path):
+    if path.endswith("/") or path.endswith("\\"):
+        return True
+    else:
+        return False
+
 def path_unify(in_path): # Normalize the path for your system, at the moment feature is available only for Windows
     windows = True
     path = _path_split(in_path)
-    path = _unification_by_list(path)
-    if in_path.endswith("/") or in_path.endswith("\\"):
-        if windows == True:
-            path = path + "//"
+    end_slash = _path_check_end_slash(in_path)
+    path = _unification_by_list(path, end_slash)
     logger.debug("Path unification completed. Previous path: %s, actual path: %s", in_path, path)
     return path
 
@@ -36,26 +40,30 @@ def path_join(*paths_list):
     for path in paths_list:
         splited_path = _path_split(path)
         final_path = final_path + splited_path
-    final_path = _unification_by_list(final_path)
+    # checking out if the last partial path has got slash on its end, if so the final (joint) path will also be finished by slash
+    paths_num = len(paths_list)
+    end_slash = _path_check_end_slash(paths_list[(paths_num - 1)])
+    final_path = _unification_by_list(final_path, end_slash)
     logger.debug("Paths joining completed. List of paths to join: %s, final path: %s", paths_list, final_path)
     return final_path
 
 def path_get_relative(abs_path, destination_path):
     windows = True
     abs_path = _path_split(abs_path)
-    dir_path = _path_split(destionation_path)
+    dir_path = _path_split(destination_path)
     rel_path = [x for x in dir_path if x not in abs_path]
-    rel_path = _unification_by_list(rel_path)
-    if destination_path.endswith("/") or destination_path.endswith("\\"):
-        if windows == True:
-            path = path + "//"
+    end_slash = _path_check_end_slash(destination_path)
+    rel_path = _unification_by_list(rel_path, end_slash)
     logger.debug("Creating relative path completed. Absolute path: %s, destination path: %s, relative path:", abs_path, destination_path, rel_path)
     return rel_path
 
-def _unification_by_list(path): #Join list of path pieces 
+def _unification_by_list(path, end_slash = False): #Join list of path pieces 
     windows = True #we may add more conditions in the future.
     if windows == True:
         path = "//".join(path)
+    if end_slash == True:
+        if windows == True:
+            path = path + "//"
     return path
 
 def _path_split(path):
