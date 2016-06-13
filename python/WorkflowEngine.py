@@ -23,9 +23,9 @@ def main():
     """Setting up pipeline."""
     logger.debug("Input settings source: %s", args.s[0])
     if os.path.isabs(args.s[0]):
-        input_settings = FM.path_unification(args.s[0])
+        input_settings = FM.path_unify(args.s[0])
     else:
-        input_settings = FM.join_paths(PP_path, "input_output" , args.s[0])
+        input_settings = FM.path_join(PP_path, "input_output" , args.s[0])
     pipeline, config_dict = XML_P.parse(input_settings)
     pipeline.execute(config_dict)
 if __name__ == "__main__":

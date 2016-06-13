@@ -1,6 +1,7 @@
 #! /usr/bin/python
 import string, os
 import modules.file_managment as FM
+import modules.csv_managment as CSV_M
 import csv
 
 def _preparing_output_csv(input_data, output_path, mp_data, names):
@@ -25,12 +26,12 @@ def _preparing_output_csv(input_data, output_path, mp_data, names):
     return output_data
 
 def _getting_paths_mp(input_path):
-    subfile_list = FM.get_file_paths(input_path)
+    subfile_list = FM.file_get_paths(input_path)
     param_paths = []
     all_paths = []
     for root, dires, files in os.walk(input_path):
         for name in files:
-            all_paths.append(FM.join_paths(root, name))
+            all_paths.append(FM.path_join(root, name))
     for path in all_paths:
         if path not in subfile_list and path[-4:] == ".csv":
             param_paths.append(path)
@@ -45,7 +46,7 @@ def _making_path_list(main_path, file_list): # maybe this should be in file_mana
 
 def _parsing_matrix(path, deltimer):
     active_wells = []
-    data = FM.read_csv(path, deltimer)
+    data = CSV_M.read_csv(path, deltimer)
     for row in range(len(data)):
         for col in range(len(data[row])):
             if data[row][col] == "1":
@@ -55,8 +56,8 @@ def _parsing_matrix(path, deltimer):
 
 def _parsing_map_plate(mp_path, paths_mp, deltimer):
     param_dict = {}
-    active_path = FM.join_paths(mp_path, "args_active.csv")
-    names_path = FM.join_paths(mp_path, "args_ind.csv")
+    active_path = FM.path_join(mp_path, "args_active.csv")
+    names_path = FM.path_join(mp_path, "args_ind.csv")
     active_wells = _parsing_matrix(active_path, deltimer)
     for well in active_wells:
         result = []
@@ -69,16 +70,16 @@ def _parsing_map_plate(mp_path, paths_mp, deltimer):
   
 def _collecting_exp_settings(mp_file, well, deltimer):
     row_nr, col_nr = well
-    data = FM.read_csv(mp_file, deltimer)
+    data = CSV_M.read_csv(mp_file, deltimer)
     return (data[row_nr][col_nr])
     
 def _getting_column_titles(abs_path, paths):
     names = []
     for path in paths:
-        rel_path = FM.get_relative_path(abs_path, path)
-        name = (".".join(FM.split_path_by(rel_path)))[:-4]
-        #ext_len = len(FM.get_file_extension(rel_path))
-        #name = (".".join(FM.split_path_by(rel_path)))[:-ext_len]
+        rel_path = FM.path_get_relative(abs_path, path)
+        fullname = FM.path_extract_name(rel_path)
+        extension_length = len(FM.file_get_extension(fullname))
+        name = fullname[:-extension_length]
         names.append(name)
     #names = ",".join(names)
     return names
@@ -94,11 +95,11 @@ def combine(path_csv, path_map_plate, path_output, csv_names, deltimer = "\t", c
         if isinstance(path_csv,dict):
             in_data = paths_csv[csv_names[i]]  
         elif isinstance(path_csv,str):
-            in_data = FM.read_csv(f_paths_csv[i], csv_deltimer)
+            in_data = CSV_M.read_csv(f_paths_csv[i], csv_deltimer)
         else:
             break #might be some error msg
-        if FM.if_exist(f_paths_output[i]):
-            FM.remove_directory(f_paths_output[i])
+        if FM.path_check_existence(f_paths_output[i]):
+            FM.dir_remove(f_paths_output[i])
         out = _preparing_output_csv(in_data, f_paths_output[i], mp_output, names)
-        FM.write_csv(f_paths_output[i], deltimer, out)
+        CSV_M.write_csv(f_paths_output[i], deltimer, out)
         

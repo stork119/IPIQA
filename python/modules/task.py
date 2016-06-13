@@ -96,10 +96,10 @@ class TASK_DOWNLOAD(TASK):
             if job_done == "no" or "0" or "false":
                 required_files = (dict_local["required_files"]).split(",")
                 sleep_time = dict_local["sleep_time"]
-                FM.dir_completeness(in_path, required_files, sleep_time)
+                FM.dir_check_completeness(in_path, required_files, sleep_time)
         except:
             pass
-        FM.copy_directory(in_path, out_path)
+        FM.dir_copy(in_path, out_path)
 
 
 class TASK_REMOVE(TASK):
@@ -109,7 +109,7 @@ class TASK_REMOVE(TASK):
 
     def execute_specify(self, dict_local):
         in_path = dict_local["input_path"]
-        FM.remove_directory(in_path)
+        FM.dir_remove(in_path)
 
    
 class TASK_QUANTIFY(TASK):
@@ -134,7 +134,7 @@ class TASK_MERGE(TASK):
     def execute_specify(self, dict_local):
         in_path = dict_local["input_path"]
         output_path = dict_local["output_path"]
-        subdir_list = FM.get_dir_paths(in_path)
+        subdir_list = FM.dir_get_paths(in_path)
         csv_names = (dict_local["csv_names_list"]).split(",")
         try:
             deltimer = dict_local["deltimer"]
@@ -142,15 +142,15 @@ class TASK_MERGE(TASK):
             deltimer = "," #choose separator
         for csv_name in csv_names:
             data = CSV_M.merge(csv_name, subdir_list)
-            """extension = FM.get_file_extension(csv_name)
+            """extension = FM.file_get_extension(csv_name)
             len_ext = len(extension)
             name = csv_name[:-(len_ext)] # for files different then csv...""" 
             name = csv_name[:-4] 
             dict_local[name] = data
             #Saving data
-            out_path = FM.join_paths(output_path, csv_name)
-            if FM.if_exist(out_path):
-                FM.remove_directory(out_path)
+            out_path = FM.path_join(output_path, csv_name)
+            if FM.path_check_existence(out_path):
+                FM.dir_remove(out_path)
             CSV_M.write_csv(out_path, deltimer, data) #if we would like to write_csv somewhere...
 
 
@@ -175,7 +175,7 @@ class TASK_PARALLELIZE(TASK):
                 break
             sleep(sleep_time)
             input_path = str(dict_local["input_path"])
-            new_dir_list = FM.get_dir_names(input_path)
+            new_dir_list = FM.dir_get_names(input_path)
             new_dirs = [i for i in new_dir_list if i not in dir_list]
             dir_list = new_dir_list
         pool.close()
@@ -198,7 +198,7 @@ class TASK_PARALLELIZE_LIST(TASK_PARALLELIZE): # list of objects (folders)
         input_path = str(dict_local["input_path"])
         folder_list = (dict_local["folders_list"]).split(",")
         for folder in folder_list:
-            path = FM.join_paths(input_path, folder)
+            path = FM.path_join(input_path, folder)
             paths.append(path)
         folders_number = len(paths)
         return paths, folders_number
@@ -213,7 +213,7 @@ class TASK_PARALLELIZE_PATH(TASK_PARALLELIZE): #all objects (folders) in given d
     def parsing_elements_list(self, dict_local):
         folders_number = int(dict_local["folders_number"])
         input_path = str(dict_local["input_path"])
-        dir_list = FM.get_dir_names(input_path)
+        dir_list = FM.dir_get_names(input_path)
         return dir_list, folders_number
 
 

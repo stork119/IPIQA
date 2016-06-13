@@ -15,7 +15,7 @@ def merge(csv_name, subdir_list, deltimer = ","):
     position = subdir_list[0].split()
     position = position[1] # getting position (well id)
     logger.debug("Merging data from %s.", position)
-    for line in open(FM.join_paths(subdir_list[0], csv_name), "r"):
+    for line in open(FM.path_join(subdir_list[0], csv_name), "r"):
         if num == 0: #adding first line from the first input file (to include the header)
             tmp = [x for x in line.rstrip().split(deltimer)]
             tmp.append("PositionName")
@@ -30,7 +30,7 @@ def merge(csv_name, subdir_list, deltimer = ","):
         position = subdir.split()
         position = position[1]
         logger.debug("Merging data from %s.", position)
-        f = open(FM.join_paths(subdir, csv_name), "r")
+        f = open(FM.path_join(subdir, csv_name), "r")
         # skip the header
         first_line = f.readline() # first line is header, it is called to put it out of set
         for line in f:
