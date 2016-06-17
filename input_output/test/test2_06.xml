@@ -78,6 +78,18 @@
             <update_by_value/>
             <update_by_name/>
         </TASK>
+        <TASK class="TASK_MAP_PLATE">
+            <parameters_by_value>
+                <parameter key="csv_names_list" value = "Nuclei.csv"/>
+                <parameter key="input_path_metadata" value = "E:\AG\PathwayPackage\resources\test_IFNG\metadata\args\"/>
+            </parameters_by_value>
+            <parameters_by_name>
+                <parameter key="input_path_csv" value = "quantify_data_raw_path"/>
+                <parameter key="output_path" value = "quantify_data_raw_path"/> 
+            </parameters_by_name>
+            <update_by_value/>
+            <update_by_name/>
+        </TASK>
         <update_by_value/>
         <update_by_name/>
     </TASK>
