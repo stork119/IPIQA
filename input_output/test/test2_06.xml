@@ -81,6 +81,7 @@
         <TASK class="TASK_MAP_PLATE">
             <parameters_by_value>
                 <parameter key="csv_names_list" value = "Nuclei.csv"/>
+                <parameter key="output_path" value = "E:\AG\PathwayPackage\resources\output\2016-06-07\raw\map_plate\"/> 
                 <parameter key="input_path_metadata" value = "E:\AG\PathwayPackage\resources\test_IFNG\metadata\args\"/>
             </parameters_by_value>
             <parameters_by_name>
