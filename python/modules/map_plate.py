@@ -61,11 +61,11 @@ def _parsing_map_plate(mp_path, paths_mp, deltimer):
     active_wells = _parsing_matrix(active_path, deltimer)
     for well in active_wells:
         result = []
-        name = _collecting_exp_settings(names_path, well, deltimer = ",")
+        name = _collecting_exp_settings(names_path, well, deltimer)
         for mp_file in paths_mp:
             param = _collecting_exp_settings(mp_file, well, deltimer)
             result.append(param)
-        param_dict[name] = ",".join(result)
+        param_dict[name] = deltimer.join(result)
     return param_dict
   
 def _collecting_exp_settings(mp_file, well, deltimer):

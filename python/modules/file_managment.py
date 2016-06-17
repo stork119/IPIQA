@@ -232,6 +232,7 @@ def file_get_extension(filename): #extracting extension from file i.e. ".py" fro
     return extension
     
 def path_extract_name(path): #extract file/dir name from path i.e. "foo.txt" from "path/to/foo.txt"
-    path_list = _path_split(filename)
-    name = path_list[-1:]
+    path_list = _path_split(path)
+    tmp = len(path_list)
+    name = path_list[(tmp - 1)]
     return name

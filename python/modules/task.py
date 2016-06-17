@@ -217,7 +217,7 @@ class TASK_PARALLELIZE_PATH(TASK_PARALLELIZE): #all objects (folders) in given d
         return dir_list, folders_number
 
 
-class MAP_PLATE(TASK):
+class TASK_MAP_PLATE(TASK):
   
     def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name,  args = {}):
         TASK.__init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args)
@@ -227,4 +227,4 @@ class MAP_PLATE(TASK):
         input_path_metadata = dict_local["input_path_metadata"]
         output_path = dict_local["output_path"]
         csv_names = (dict_local["csv_names_list"]).split(",")
-        map_plate.combine(input_path_csv, input_path_metadata, output_path, csv_list)
+        map_plate.combine(input_path_csv, input_path_metadata, output_path, csv_names)
