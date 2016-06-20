@@ -12,7 +12,7 @@ def main():
     logger = logging.getLogger(__name__)
     logger.info("Starting program...")
     """Arg parse section."""
-    parser = argparse.ArgumentParser(description = '\n PathwayPackage [PP] is an integration platform for instantaneous processing and analysis of confocal/fluorescent microscopy images software. \n[...]')
+    parser = argparse.ArgumentParser(description = '\n ...Example description...')
     parser.add_argument('-s',
                 metavar = '<settingspath>', 
                 type = str, 
