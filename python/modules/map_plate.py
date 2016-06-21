@@ -77,8 +77,8 @@ def _getting_column_titles(abs_path, paths):
     names = []
     for path in paths:
         rel_path = FM.path_get_relative(abs_path, path)
-        fullname = FM.path_extract_name(rel_path)
-        extension_length = len(FM.file_get_extension(fullname))
+        fullname = ".".join(FM._path_split(rel_path))
+        extension_length = len(FM.file_get_extension(fullname))  #extracting proper column name from rel_path i.e. compare.1.1 from compare/1.1.csv
         name = fullname[:-extension_length]
         names.append(name)
     #names = ",".join(names)
@@ -101,5 +101,6 @@ def combine(path_csv, path_map_plate, path_output, csv_names, deltimer = "\t", c
         if FM.path_check_existence(f_paths_output[i]):
             FM.dir_remove(f_paths_output[i])
         out = _preparing_output_csv(in_data, f_paths_output[i], mp_output, names)
+        print(f_paths_output[i])
         CSV_M.write_csv(f_paths_output[i], deltimer, out)
         
