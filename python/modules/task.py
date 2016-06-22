@@ -4,6 +4,7 @@ import modules.file_managment as FM
 import modules.cellprofiler as cpm
 import modules.csv_managment as CSV_M
 import modules.map_plate as map_plate
+import modules.r_connection as R_connection
 from time import sleep
 import multiprocessing 
 import logging
@@ -228,3 +229,21 @@ class TASK_MAP_PLATE(TASK):
         output_path = dict_local["output_path"]
         csv_names = (dict_local["csv_names_list"]).split(",")
         map_plate.combine(input_path_csv, input_path_metadata, output_path, csv_names)
+
+
+class TASK_R(TASK):
+  
+    def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name,  args = {}):
+        TASK.__init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args)
+
+    def execute_specify(self, dict_local):
+        function_name = dict_local["function_name"]
+        """abs_path = "C://Users//Pathway//Documents//PathwayPackage//"  || = dict_local["abs_path"]
+        script_name = "pp_boxplot.R" || = dict_local["script_name"]
+        r_script_path = FM.path_join(abs_path, "R", script_name)"""
+        r_script_path = dict_local["r_script_path"]
+        input_path = dict_local["input_path"]
+        delimiter = dict_local["delimiter"]
+        external_params = ["function_name", "r_script_path", "input_path", "delimiter"] # !!! warning, tmp hardcoding
+        param_dict = R_connection.prepare_param_dict(dict_local, self.parameters_by_value, self.parameters_by_name, external_params)
+        R_connection.make_boxplot(param_dict, input_path, r_script_path, function_name, delimiter = "\t")
