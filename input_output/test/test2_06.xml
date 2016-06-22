@@ -96,7 +96,7 @@
                 <parameter key="r_script_path" value = "C://Users//Pathway//Documents//PathwayPackage//R//pp_boxplot.R"/>
                 <parameter key="input_path" value = "E://AG//PathwayPackage//resources//output//2016-06-07//raw//map_plate//Nuclei.csv"/>
                 <parameter key="delimiter" value = "\t"/>
-                <parameter key="output_path" value = "C:/Users/Pathway/Desktop/machlojki/plot.pdf"/>
+                <parameter key="output_path" value = "E:\AG\PathwayPackage\resources\output\2016-06-07\raw\r_plots\boxplot.pdf"/>
                 <parameter key="x" value = "compare.1.1"/> 
                 <parameter key="y" value = "Intensity_MeanIntensity_CHA"/>
                 <parameter key="boxplot_group" value = "PositionName"/>
