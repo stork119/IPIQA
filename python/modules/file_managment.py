@@ -157,6 +157,14 @@ def _folder_remove(path):
 Functions for coping objects.
 """
 def dir_copy(in_path, out_path):
+    if os.path.isfile(in_path):
+        file_copy(in_path, out_path)
+    elif os.path.isdir(in_path):
+        folder_copy(in_path, out_path)
+    else:
+        logging.info("Unable to remove %s. Object not found.", path)   
+
+def folder_copy(in_path, out_path):
     copied_dir_path = out_path
     if path_check_existence(copied_dir_path):
         logger.warning("Directory %s already exists. Removing old data.", copied_dir_path)
@@ -167,7 +175,7 @@ def dir_copy(in_path, out_path):
     for f in files_paths_list:
         file_copy(f, copied_dir_path)
     for f in dirs_paths_list:
-        dir_copy(f, copied_dir_path)
+        folder_copy(f, copied_dir_path)
       
 def file_copy(in_path, out_path):
     if path_check_existence(in_path):
