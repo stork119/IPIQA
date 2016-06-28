@@ -83,14 +83,13 @@ class TASK_QUEUE(TASK):
             dict_local = task.execute(dict_local)
 
 
-class TASK_DOWNLOAD(TASK):
+class TASK_CHECK_COMPLETNESS(TASK):
   
     def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name,  args = {}):
         TASK.__init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args)
 
     def execute_specify(self, dict_local):
         in_path = dict_local["input_path"]
-        out_path = dict_local["output_path"]
         try:
             job_done = str(dict_local["experiment_finished"])
             job_done = job_done.lower()
@@ -100,6 +99,15 @@ class TASK_DOWNLOAD(TASK):
                 FM.dir_check_completeness(in_path, required_files, sleep_time)
         except:
             pass
+
+class TASK_DOWNLOAD(TASK):
+  
+    def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name,  args = {}):
+        TASK.__init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args)
+
+    def execute_specify(self, dict_local):
+        in_path = dict_local["input_path"]
+        out_path = dict_local["output_path"]
         FM.dir_copy(in_path, out_path)
 
 
@@ -226,6 +234,7 @@ class TASK_MAP_PLATE(TASK):
     def execute_specify(self, dict_local):
         input_path_csv = dict_local["input_path_csv"]
         input_path_metadata = dict_local["input_path_metadata"]
+        relative_path_raw = []
         output_path = dict_local["output_path"]
         csv_names = (dict_local["csv_names_list"]).split(",")
         map_plate.combine(input_path_csv, input_path_metadata, output_path, csv_names)
