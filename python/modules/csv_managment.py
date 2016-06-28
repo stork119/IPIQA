@@ -18,7 +18,7 @@ def merge(csv_name, subdir_list, deltimer = ","):
     for line in open(FM.path_join(subdir_list[0], csv_name), "r"):
         if num == 0: #adding first line from the first input file (to include the header)
             tmp = [x for x in line.rstrip().split(deltimer)]
-            tmp.append("PositionName")
+            tmp.append("well.name")
             output.append(tmp)
             num = 1
         else:

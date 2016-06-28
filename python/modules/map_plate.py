@@ -12,7 +12,7 @@ def _preparing_output_csv(input_data, output_path, mp_data, names):
         if num == 0: 
             new_line = line
             for i in range(len(line)):
-                if line[i] == "PositionName":
+                if line[i] == "well.name":
                     position = i
             for j in names:
                 new_line.append(j)
@@ -101,6 +101,5 @@ def combine(path_csv, path_map_plate, path_output, csv_names, deltimer = "\t", c
         if FM.path_check_existence(f_paths_output[i]):
             FM.dir_remove(f_paths_output[i])
         out = _preparing_output_csv(in_data, f_paths_output[i], mp_output, names)
-        print(f_paths_output[i])
         CSV_M.write_csv(f_paths_output[i], deltimer, out)
         
