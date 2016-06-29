@@ -176,9 +176,12 @@ def folder_copy(in_path, out_path):
         file_copy(f, copied_dir_path)
     for f in dirs_paths_list:
         folder_copy(f, copied_dir_path)
-      
+
 def file_copy(in_path, out_path):
+    if path_check_existence(out_path):
+        logger.warning("File %s already exists. Data will be overwritten.", out_path)
     if path_check_existence(in_path):
+        os.makedirs(os.path.dirname(out_path), exist_ok = True) # creating parent directory tree for file
         try:
             shutil.copy(in_path, out_path)
             return out_path
