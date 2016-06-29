@@ -143,22 +143,23 @@ class TASK_MERGE(TASK):
     def execute_specify(self, dict_local):
         in_path = dict_local["input_path"]
         output_path = dict_local["output_path"]
-        subdir_list = FM.dir_get_paths(in_path)
+        main_subdir_list = FM.dir_get_paths(in_path)
         csv_names = (dict_local["csv_names_list"]).split(",")
         try:
             deltimer = dict_local["deltimer"]
         except:
             deltimer = "," #choose separator
         for csv_name in csv_names:
+            subdir_list = CSV_M.filter_subdir_list(main_subdir_list, csv_name) #filtering directiories containing given csv file
             data = CSV_M.merge(csv_name, subdir_list)
-            """extension = FM.file_get_extension(csv_name)
+            extension = FM.file_get_extension(csv_name)
             len_ext = len(extension)
-            name = csv_name[:-(len_ext)] # for files different then csv...""" 
-            name = csv_name[:-4] 
+            name = csv_name[:-(len_ext)]
             dict_local[name] = data
             #Saving data
             out_path = FM.path_join(output_path, csv_name)
             if FM.path_check_existence(out_path):
+                logger.warning("File %s already exists. Removing old data.", out_path)
                 FM.dir_remove(out_path)
             CSV_M.write_csv(out_path, deltimer, data) #if we would like to write_csv somewhere...
 

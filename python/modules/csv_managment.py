@@ -57,3 +57,11 @@ def write_csv(path, deltimer, data = None, key = ""):
     with open(path, 'w') as f:
         for row in data:
             f.write(deltimer.join(row) + "\n")
+
+def filter_subdir_list(main_subdir_list, csv_name):
+    final_list = []
+    for subdir in main_subdir_list:
+        path = FM.path_join(subdir, csv_name)
+        if FM.path_check_existence(path):
+            final_list.append(subdir)
+    return final_list
