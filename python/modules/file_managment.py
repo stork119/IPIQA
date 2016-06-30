@@ -162,24 +162,28 @@ def dir_copy(in_path, out_path):
     elif os.path.isdir(in_path):
         folder_copy(in_path, out_path)
     else:
-        logging.info("Unable to remove %s. Object not found.", path)   
+        logging.info("Unable to copy %s. Object not found.", path)   
 
 def folder_copy(in_path, out_path):
     copied_dir_path = out_path
     if path_check_existence(copied_dir_path):
-        logger.warning("Directory %s already exists. Removing old data.", copied_dir_path)
+        logging.warning("Directory %s already exists. Removing old data.", copied_dir_path)
         dir_remove(copied_dir_path)
     os.makedirs(copied_dir_path)
     files_paths_list = file_get_paths(in_path)
     dirs_paths_list = dir_get_paths(in_path)
     for f in files_paths_list:
-        file_copy(f, copied_dir_path)
+        _file_copy(f, copied_dir_path)
     for f in dirs_paths_list:
-        folder_copy(f, copied_dir_path)
+        folder_copy(f, path_join(copied_dir_path, path_extract_name(f)))
 
 def file_copy(in_path, out_path):
-    if path_check_existence(out_path):
-        logger.warning("File %s already exists. Data will be overwritten.", out_path)
+    dst = path_join(out_path, path_extract_name(in_path))
+    if path_check_existence(dst):
+        logging.warning("File %s already exists. Data will be overwritten.", dst)
+    _file_copy(in_path, out_path)
+
+def _file_copy(in_path, out_path):
     if path_check_existence(in_path):
         os.makedirs(os.path.dirname(out_path), exist_ok = True) # creating parent directory tree for file
         try:

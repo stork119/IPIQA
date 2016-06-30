@@ -234,7 +234,8 @@ class TASK_MAP_PLATE(TASK):
 
     def execute_specify(self, dict_local):
         input_path_csv = dict_local["input_path_csv"]
-        input_path_metadata = dict_local["input_path_metadata"]
+        #input_path_metadata = dict_local["input_path_metadata"]
+        input_path_metadata = FM.path_join(dict_local["input_path_metadata"], "args")
         relative_path_raw = []
         output_path = dict_local["output_path"]
         csv_names = (dict_local["csv_names_list"]).split(",")
