@@ -2,19 +2,19 @@
 <main>
     <CONFIG>
         <!-- Main configurations: -->
-        <parameter key="number_of_cores" value= "10"/>
+        <parameter key="number_of_cores" value= "12"/>
         <parameter key="experiment_finished" value="TRUE"/>
         <!-- Set up MAIN input/output paths here: [i.e. path to experiments, given experiment dir can be selected later]-->
         <parameter key="analysis_in_path" value="Z:\EXPERIMENT\"/>
         <parameter key="pipeline_in_path" value="E:\AG\PathwayPackage\resources\cp_pipelines\2016-06-23-DAPI\"/> <!--pipeline-nuclei.cppipe -->
         <parameter key="analysis_out_path" value="E:\AG\PathwayPackage\resources\output\2016-01-23-EG13\"/>
         <parameter key="metadata_in_path" value = "Z:\pSTAT1-summary\2016-01-23-EG13\metadata\"/>
-        <parameter key="cp_path" value = "Z:\pSTAT1-summary\2016-01-23-EG13\metadata\"/>
+        <parameter key="cp_path" value = "C:\Program Files\CellProfiler\"/>
         <!-- Set up relatives input/output paths here: [given experiment subpath etc]-->
         <parameter key="exp_part_1"  value="2016-01-23-EG13-01\2016-01-23_000\"/>
         <parameter key="exp_part_2"  value="2016-01-19-EG12-02\2016-01-19_003\"/>
         <parameter key="pipeline_1"  value="pipeline.cppipe"/>
-        <parameter key="csv_names_list" value = "Nuclei.csv,ExpandedNucleiLess.csv,ExpandedNucleiMore.csv,ShrinkedNuclei.csv,RingCytoplasm.csv"/>
+        <parameter key="csv_names_list" value = "Nuclei.csv,ShrinkedNuclei.csv"/>
         <!-- Building up output analysis directory structure: -->
         <parameter key="pathway_data_path_rel"  value="data_pathway\"/>
         <parameter key="quantify_data_raw_path_rel" value="raw\data_quantify\"/>
@@ -64,7 +64,7 @@
 						<parameter key="quantify_data_raw_path.2" value="quantify_data_raw_path_rel"/>
 						<parameter key="quantify_data_raw_path.3" value="rel_path"/>
 					</parameters_by_name>
-					<TASK class="TASK_CHECK_COMPLETNESS">
+					<!--<TASK class="TASK_CHECK_COMPLETNESS">
 						<parameters_by_value/>
 						<parameters_by_name>
 							<parameter key="input_path.1" value="input_path"/>
@@ -73,6 +73,31 @@
 						<update_by_value/>
 						<update_by_name/>
 					</TASK>
+					<TASK class="TASK_DOWNLOAD">
+						<parameters_by_value>
+							<parameter key="by_url" value="FALSE"/>
+						</parameters_by_value>
+						<parameters_by_name>
+							<parameter key="input_path.1" value="input_path"/>
+							<parameter key="input_path.2" value="folder_name"/>
+							<parameter key="output_path.1" value="pathway_data_path"/>
+							<parameter key="output_path.2" value="folder_name"/>
+						</parameters_by_name>
+						<update_by_value/>
+						<update_by_name/>
+					</TASK>
+					<TASK class="TASK_QUANTIFY">
+						<parameters_by_value>
+						</parameters_by_value>
+						<parameters_by_name>
+							<parameter key="input_path.1"    value="pathway_data_path"/>
+							<parameter key="input_path.2"  value="folder_name"/>
+							<parameter key="output_path.1" value="quantify_data_raw_path"/> 
+							<parameter key="output_path.2"  value="folder_name"/>
+						</parameters_by_name>
+						<update_by_value/>
+						<update_by_name/>
+					</TASK> -->
 					<update_by_value/>
 					<update_by_name/>
 				</TASK>
@@ -86,7 +111,7 @@
 					<parameter key="quantify_data_raw_path.3" value="rel_path"/>
 				</update_by_name>
 			</TASK>
-			<TASK class="TASK_DOWNLOAD"> <!-- Downloading (copying) pipeline -->
+			<!--<<TASK class="TASK_DOWNLOAD"> <!-- Downloading (copying) pipeline 
 				<parameters_by_value>
 				</parameters_by_value>
 				<parameters_by_name>
@@ -117,7 +142,7 @@
 				</parameters_by_name>
 				<update_by_value/>
 				<update_by_name/>
-			</TASK>
+			</TASK> -->
 			<update_by_value/>
 			<update_by_name/>
 		</TASK>
@@ -149,7 +174,7 @@
 						<parameter key="quantify_data_raw_path.2" value="quantify_data_raw_path_rel"/>
 						<parameter key="quantify_data_raw_path.3" value="rel_path"/>
 					</parameters_by_name>
-					<TASK class="TASK_CHECK_COMPLETNESS">
+					<!--<TASK class="TASK_CHECK_COMPLETNESS">
 						<parameters_by_value/>
 						<parameters_by_name>
 							<parameter key="input_path.1" value="input_path"/>
@@ -158,6 +183,31 @@
 						<update_by_value/>
 						<update_by_name/>
 					</TASK>
+					<TASK class="TASK_DOWNLOAD">
+						<parameters_by_value>
+							<parameter key="by_url" value="FALSE"/>
+						</parameters_by_value>
+						<parameters_by_name>
+							<parameter key="input_path.1" value="input_path"/>
+							<parameter key="input_path.2" value="folder_name"/>
+							<parameter key="output_path.1" value="pathway_data_path"/>
+							<parameter key="output_path.2" value="folder_name"/>
+						</parameters_by_name>
+						<update_by_value/>
+						<update_by_name/>
+					</TASK>
+					<TASK class="TASK_QUANTIFY">
+						<parameters_by_value>
+						</parameters_by_value>
+						<parameters_by_name>
+							<parameter key="input_path.1"    value="pathway_data_path"/>
+							<parameter key="input_path.2"  value="folder_name"/>
+							<parameter key="output_path.1" value="quantify_data_raw_path"/> 
+							<parameter key="output_path.2"  value="folder_name"/>
+						</parameters_by_name>
+						<update_by_value/>
+						<update_by_name/>
+					</TASK> -->
 					<update_by_value/>
 					<update_by_name/>
 				</TASK>
@@ -171,7 +221,7 @@
 					<parameter key="quantify_data_raw_path.3" value="rel_path"/>
 				</update_by_name>
 			</TASK>
-			<TASK class="TASK_DOWNLOAD"> <!-- Downloading (copying) pipeline -->
+			<!--<TASK class="TASK_DOWNLOAD"> <!-- Downloading (copying) pipeline
 				<parameters_by_value>
 				</parameters_by_value>
 				<parameters_by_name>
@@ -201,17 +251,17 @@
 					<parameter key="output_path" value = "quantify_data_raw_path"/>
 				</parameters_by_name>
 				<update_by_value/>
-				<update_by_name/>
+				<update_by_name/> -->
 			</TASK>
 			<TASK class="TASK_R">
 				<parameters_by_value>
 					<parameter key="function_name" value = "plot_histogram"/>
 					<parameter key="r_script_path" value = "C://Users//Pathway//Documents//PathwayPackage//R//plot_histogram.R"/>
-					<parameter key="input_path.1" value = "E:\AG\PathwayPackage\resources\output\2016-01-23-EG13\raw\data_quantify\2016-01-19-EG12-02\2016-01-19_003\"/>
+					<parameter key="input_path.1" value = "E:\AG\PathwayPackage\resources\output\2016-01-23-EG13\raw\data_quantify\2016-01-19-EG12-02\2016-01-19_003\A01\"/>
 					<parameter key="input_path.2" value = "Nuclei.csv"/>
 					<parameter key="delimiter" value = "\t"/>
-					<parameter key="output_path" value = "E:\AG\PathwayPackage\resources\output\2016-01-23-EG13\figures\"/>
-					<parameter key="outfile_name" value = "plot_histogram.pdf"/>
+					<parameter key="filename.1" value = "E:\AG\PathwayPackage\resources\output\2016-01-23-EG13\figures\"/>
+					<parameter key="filename.2" value = "plot_histogram.pdf"/>
 				</parameters_by_value>
 				<parameters_by_name>
 					<parameter key="input_path.1" value = "quantify_data_raw_path"/>
