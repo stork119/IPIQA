@@ -44,24 +44,32 @@ def _making_path_list(main_path, file_list): # maybe this should be in file_mana
         path_list.append(path)
     return path_list
 
-def _parsing_matrix(path, deltimer):
+def _parsing_matrix(path, deltimer, exp_part):
     active_wells = []
     data = CSV_M.read_csv(path, deltimer)
     for row in range(len(data)):
         for col in range(len(data[row])):
-            if data[row][col] == "1":
+            if data[row][col] == exp_part:
                 nums = [row, col]
                 active_wells.append(nums)
     return active_wells
 
-def _parsing_map_plate(mp_path, paths_mp, deltimer):
+def _parsing_map_plate(mp_path, paths_mp, deltimer, exp_part, exp_name):
     param_dict = {}
     active_path = FM.path_join(mp_path, "args_active.csv")
     names_path = FM.path_join(mp_path, "args_ind.csv")
-    active_wells = _parsing_matrix(active_path, deltimer)
+    positions_path = FM.path_join(mp_path, "args_names.csv")
+    if FM.path_check_existence(positions_path):
+        tmp = True
+    active_wells = _parsing_matrix(active_path, deltimer, exp_part)
     for well in active_wells:
-        result = []
         name = _collecting_exp_settings(names_path, well, deltimer)
+        result = []
+        if tmp == True:
+            result.append(_collecting_exp_settings(positions_path, well, deltimer))
+        else:
+            result.append(name)
+        result.append(exp_name)
         for mp_file in paths_mp:
             param = _collecting_exp_settings(mp_file, well, deltimer)
             result.append(param)
@@ -75,6 +83,8 @@ def _collecting_exp_settings(mp_file, well, deltimer):
     
 def _getting_column_titles(abs_path, paths):
     names = []
+    names.append("position.name")
+    names.append("exp.id")
     for path in paths:
         rel_path = FM.path_get_relative(abs_path, path)
         fullname = ".".join(FM._path_split(rel_path))
@@ -84,12 +94,25 @@ def _getting_column_titles(abs_path, paths):
     #names = ",".join(names)
     return names
 
-def combine(path_csv, path_map_plate, path_output, csv_names, deltimer = "\t", csv_deltimer = ","):
+def _getting_exp_name(path_csv):
+    #E:\AG\PathwayPackage\resources\output\2016-01-23-EG13\raw\data_quantify\2016-01-19-EG12-02\2016-01-19_003\costam.csv
+    name = FM._path_split(path_csv)
+    name = name[-3:][0] #awfull hardcoding, will be replaced when ID will showup in metadata
+    return name
+
+def getting_exp_part(path):
+    name = _getting_exp_name(path)
+    exp_id = name.split("-")[4]
+    return exp_id
+
+def combine(path_csv, path_map_plate, path_output, csv_names, deltimer = "\t", csv_deltimer = ",", exp_part = "1"):
+    exp_name = _getting_exp_name(path_csv)
     f_paths_map_plate = _getting_paths_mp(path_map_plate)
+    f_paths_map_plate = sorted(f_paths_map_plate, key = str)
     f_paths_output = _making_path_list(path_output, csv_names)
     if isinstance(path_csv,str):
         f_paths_csv = _making_path_list(path_csv, csv_names)
-    mp_output = _parsing_map_plate(path_map_plate, f_paths_map_plate, deltimer)
+    mp_output = _parsing_map_plate(path_map_plate, f_paths_map_plate, deltimer, exp_part, exp_name) # exp_part
     names = _getting_column_titles(path_map_plate, f_paths_map_plate)
     for i in range(len(f_paths_output)):
         if isinstance(path_csv,dict):

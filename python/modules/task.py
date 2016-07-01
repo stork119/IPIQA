@@ -234,12 +234,16 @@ class TASK_MAP_PLATE(TASK):
 
     def execute_specify(self, dict_local):
         input_path_csv = dict_local["input_path_csv"]
-        #input_path_metadata = dict_local["input_path_metadata"]
-        input_path_metadata = FM.path_join(dict_local["input_path_metadata"], "args")
-        relative_path_raw = []
+        input_path_metadata = dict_local["input_path_metadata"]
+        #input_path_metadata = FM.path_join(dict_local["input_path_metadata"], "args")
         output_path = dict_local["output_path"]
         csv_names = (dict_local["csv_names_list"]).split(",")
-        map_plate.combine(input_path_csv, input_path_metadata, output_path, csv_names)
+        try:
+            ep = dict_local["exp_part"]
+        except:
+            ep = map_plate.getting_exp_part(input_path_csv)
+            ep = str(int(ep))
+        map_plate.combine(input_path_csv, input_path_metadata, output_path, csv_names, exp_part = ep)
 
 
 class TASK_R(TASK):
