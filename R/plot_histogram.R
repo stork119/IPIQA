@@ -19,7 +19,7 @@ try({package.list <- list("ggplot2")
 })
 
 ### sources ###
-wd.tmp <- "X:/EG/CellProfiller/Analysis/2016-06-16-pstat1-summary/"
+wd.tmp <- "C:/Users/Pathway/Documents/PathwayPackage/R/"
 source(paste(wd.tmp, "theme_jetka.R", sep = ""))
 
 
@@ -39,7 +39,8 @@ plot_histogram <- function(data,
                            plot.title = "",
                            theme.text_size = 12,
                            line.size = 1.5){
-  
+  print(colnames(data))
+  print(x %in% colnames(data))
   if(nrow(data) > data_nrow_min){  
     gplot <- ggplot(data = data) +
       geom_histogram(aes_string(x = x, "..density.."), binwidth = bin_width) +
