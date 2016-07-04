@@ -252,19 +252,18 @@ class TASK_R(TASK):
         TASK.__init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args)
 
     def execute_specify(self, dict_local):
-        output_path = dict_local["output_path"]
+        output_path = dict_local["r_output_path"]
         if not FM.path_check_existence(output_path):
             os.makedirs(output_path)
-        outfile_name = dict_local["outfile_name"]
-        full_output_path = FM.path_join(output_path, outfile_name)
-        dict_local["output_path"] = full_output_path
-        function_name = dict_local["function_name"]
         """abs_path = "C://Users//Pathway//Documents//PathwayPackage//"  || = dict_local["abs_path"]
         script_name = "pp_boxplot.R" || = dict_local["script_name"]
         r_script_path = FM.path_join(abs_path, "R", script_name)"""
+        function_name = dict_local["function_name"]
         r_script_path = dict_local["r_script_path"]
-        input_path = dict_local["input_path"]
+        input_path = dict_local["r_input_path"]
+        input_filename = dict_local["r_input_filename"]
+        input_path = FM.path_join(input_path, input_filename) #!!!
         delimiter = dict_local["delimiter"]
-        external_params = ["function_name", "r_script_path", "input_path", "delimiter", "outfile_name"] # !!! warning, tmp hardcoding
+        external_params = ["function_name", "r_script_path", "r_input_path", "delimiter", "r_output_path", "r_input_filename"] # !!! warning, tmp hardcoding
         param_dict = R_connection.prepare_param_dict(dict_local, self.parameters_by_value, self.parameters_by_name, external_params)
-        R_connection.make_boxplot(param_dict, input_path, r_script_path, function_name, delimiter = "\t")
+        R_connection.make_boxplot(param_dict, input_path, r_script_path, function_name, delimiter)

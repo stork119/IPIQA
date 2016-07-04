@@ -1,6 +1,7 @@
 #! /usr/bin/python
 import rpy2.robjects as robjects
 from rpy2.robjects.vectors import DataFrame
+import modules.csv_managment as CSV_M
 
 def make_boxplot(param_dict, input_path, r_script_path, function_name, delimiter = "\t"):
     data = DataFrame.from_csvfile(input_path, sep = delimiter)
@@ -16,6 +17,7 @@ def prepare_param_dict(local_dict, parameters_by_value, parameters_by_name, exte
     keys_by_value = list(parameters_by_value.keys())
     keys_by_name = list(parameters_by_name.keys())
     keys_list = set(keys_by_value + keys_by_name)
+    keys_list = [i.split(".")[0] for i in keys_list]
     param_dict = {}
     for key in local_dict:
         for element in keys_list:
