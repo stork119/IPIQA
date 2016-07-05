@@ -12,7 +12,7 @@
         <parameter key="cp_path" value = "C:\Program Files\CellProfiler\"/>
         <!-- Set up relatives input/output paths here: [given experiment subpath etc]-->
         <parameter key="exp_part_1"  value="2016-01-23-EG13-01\2016-01-23_000\"/>
-        <parameter key="exp_part_2"  value="2016-01-19-EG12-02\2016-01-19_003\"/>
+        <parameter key="exp_part_2"  value="2016-01-23-EG13-02\2016-01-23_000"/>
         <parameter key="pipeline_1"  value="pipeline.cppipe"/>
         <parameter key="csv_names_list" value = "Nuclei.csv,ShrinkedNuclei.csv"/>
         <!-- Building up output analysis directory structure: -->
