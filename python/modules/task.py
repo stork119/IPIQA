@@ -244,7 +244,7 @@ class TASK_MAP_PLATE(TASK):
         csv_names = (dict_local["csv_names_list"]).split(",")
         exp_id = dict_local["exp_id"]
         try:
-            exp_part_id = dict_global["exp_part"]
+            exp_part_id = dict_local["exp_part"]
             exp_parts = dict_local["exp_parts"]
         except:
             exp_part_id = "1" 
@@ -289,7 +289,7 @@ class TASK_MERGE_CSV(TASK):
         except:
             delimiter = "\t" #choose separator
         for csv_name in csv_names:
-            data = CSV_M.merge_csv(csv_name, in_path_list, delimiter)
+            data = CSV_M.simple_merge(csv_name, in_path_list, delimiter)
             #Saving data
             out_path = FM.path_join(output_path, csv_name)
             if FM.path_check_existence(out_path):

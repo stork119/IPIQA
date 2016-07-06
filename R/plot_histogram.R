@@ -19,7 +19,7 @@ try({package.list <- list("ggplot2")
 })
 
 ### sources ###
-wd.tmp <- "X:/EG/CellProfiller/Analysis/2016-06-16-pstat1-summary/"
+wd.tmp <- "C:/Users/Pathway/Documents/PathwayPackage/R/"
 source(paste(wd.tmp, "theme_jetka.R", sep = ""))
 
 

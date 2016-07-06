@@ -16,7 +16,7 @@
         <parameter key="exp_part_1_id"  value="1"/>
         <parameter key="exp_part_2_id"  value="2"/>
         <parameter key="exp_part_1_path"  value="2016-01-23-EG13-01\2016-01-23_000\"/>
-        <parameter key="exp_part_2_path"  value="2016-01-23-EG13-02\2016-01-23_000"/>
+        <parameter key="exp_part_2_path"  value="2016-01-23-EG13-02\2016-01-23_000\"/>
         <parameter key="pipeline_1"  value="pipeline.cppipe"/>
         <parameter key="csv_names_list" value = "Nuclei.csv,ShrinkedNuclei.csv"/>
         <!-- Building up output analysis directory structure: -->
@@ -175,7 +175,7 @@
 			<parameters_by_value>
 			</parameters_by_value>
 			<parameters_by_name>
-				<parameter key="exp_part"  value="exp_part_1_id"/>
+				<parameter key="exp_part"  value="exp_part_2_id"/>
 				<parameter key="rel_path"  value="exp_part_2_path"/>
 				<parameter key="pipeline.1"  value="pipeline_in_path"/>
 				<parameter key="pipeline.2"  value="pipeline_1"/>
