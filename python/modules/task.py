@@ -135,7 +135,7 @@ class TASK_QUANTIFY(TASK):
         cpm.run_cp_by_cmd(cp_path, in_path, out_path, pipeline)
 
    
-class TASK_MERGE(TASK):
+class TASK_MERGE_SUBDIR_CSV(TASK):
   
     def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args = {}):
         TASK.__init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args)
@@ -146,12 +146,12 @@ class TASK_MERGE(TASK):
         main_subdir_list = FM.dir_get_paths(in_path)
         csv_names = (dict_local["csv_names_list"]).split(",")
         try:
-            deltimer = dict_local["deltimer"]
+            delimiter = dict_local["delimiter"]
         except:
-            deltimer = "," #choose separator
+            delimiter = "," #choose separator
         for csv_name in csv_names:
             subdir_list = CSV_M.filter_subdir_list(main_subdir_list, csv_name) #filtering directiories containing given csv file
-            data = CSV_M.merge(csv_name, subdir_list)
+            data = CSV_M.merge_subdir_csv(csv_name, subdir_list)
             extension = FM.file_get_extension(csv_name)
             len_ext = len(extension)
             name = csv_name[:-(len_ext)]
@@ -161,7 +161,7 @@ class TASK_MERGE(TASK):
             if FM.path_check_existence(out_path):
                 logger.warning("File %s already exists. Removing old data.", out_path)
                 FM.dir_remove(out_path)
-            CSV_M.write_csv(out_path, deltimer, data) #if we would like to write_csv somewhere...
+            CSV_M.write_csv(out_path, delimiter, data) #if we would like to write_csv somewhere...
 
 
 class TASK_PARALLELIZE(TASK):
@@ -241,7 +241,7 @@ class TASK_MAP_PLATE(TASK):
         try:
             ep = dict_local["exp_part"]
         except:
-            ep = map_plate.getting_exp_part(input_path_csv)
+            ep = map_plate.getting_exp_part(input_path_csv)#!!!!!! TODO
             ep = str(int(ep))
         map_plate.combine(input_path_csv, input_path_metadata, output_path, csv_names, exp_part = ep)
 
@@ -267,3 +267,28 @@ class TASK_R(TASK):
         external_params = ["function_name", "r_script_path", "r_input_path", "delimiter", "r_output_path", "r_input_filename"] # !!! warning, tmp hardcoding
         param_dict = R_connection.prepare_param_dict(dict_local, self.parameters_by_value, self.parameters_by_name, external_params)
         R_connection.make_boxplot(param_dict, input_path, r_script_path, function_name, delimiter)
+
+class TASK_MERGE_CSV(TASK):
+  
+    def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args = {}):
+        TASK.__init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args)
+
+    def execute_specify(self, dict_local):
+        in_path_list = []
+        in_path_list.append(dict_local["input_path_1"])
+        in_path_list.append(dict_local["input_path_2"])
+        csv_names = (dict_local["csv_names_list"]).split(",")
+        output_path = dict_local["output_path"]
+        try:
+            delimiter = dict_local["delimiter"]
+        except:
+            delimiter = "\t" #choose separator
+        for csv_name in csv_names:
+            data = CSV_M.merge_csv(csv_name, in_path_list, delimiter)
+            #Saving data
+            out_path = FM.path_join(output_path, csv_name)
+            if FM.path_check_existence(out_path):
+                logger.warning("File %s already exists. Removing old data.", out_path)
+                FM.dir_remove(out_path)
+            CSV_M.write_csv(out_path, delimiter, data) #if we would like to write_csv somewhere...
+            # PLACEHOLDER adding data to dictionary 

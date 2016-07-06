@@ -5,7 +5,7 @@ import modules.file_managment as FM
 logger = logging.getLogger(__name__)
 logger.info("Executing csv (merge) module.")
 
-def merge(csv_name, subdir_list, deltimer = ","): 
+def merge_subdir_csv(csv_name, subdir_list, deltimer = ",", column_name = "well.name"): 
     """csv_names = the list of filenames with given CP output data (for example: Nuclei.csv,Cytoplasm.csv)
     subdir_list = the list of subdir's paths, each of subdir contains data of given well"""
     output= []
@@ -18,7 +18,7 @@ def merge(csv_name, subdir_list, deltimer = ","):
     for line in open(FM.path_join(subdir_list[0], csv_name), "r"):
         if num == 0: #adding first line from the first input file (to include the header)
             tmp = [x for x in line.rstrip().split(deltimer)]
-            tmp.append("well.name")
+            tmp.append(column_name)
             output.append(tmp)
             num = 1
         else:
@@ -39,6 +39,26 @@ def merge(csv_name, subdir_list, deltimer = ","):
             output.append(tmp)
         f.close()
     logger.info("%s data successfully merged.", csv_name)
+    return output
+
+def simple_merge(csv_name, input_paths, delimiter, header = True):
+    full_paths = [FM.path_join(path, csv_name) for path in input_paths]
+    tmp = 0
+    output = []
+    for f in full_paths:
+        try:
+            data = read_csv(f, mark = delimiter)
+        except:
+            logger.error("Cannot read csv input file: %s. Unable to perform merge.", f)
+            break
+        if tmp == 0:
+            tmp = 1
+            output = data
+        else:
+            if header == True:
+                output = output + data[1:]
+            else:
+                output = output + data
     return output
 
 def read_csv(path, mark, dict_local = {}, key_name = ""):
