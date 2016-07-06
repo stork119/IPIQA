@@ -1,8 +1,11 @@
 #! /usr/bin/python
-import string, os
+import string, os, logging
 import modules.file_managment as FM
 import modules.csv_managment as CSV_M
 import csv
+
+logger = logging.getLogger(__name__)
+logger.info("Executing map_plate module.")
 
 def _preparing_output_csv(input_data, output_path, mp_data, names):
     output_data = []
@@ -54,7 +57,7 @@ def _parsing_matrix(path, deltimer, exp_part):
                 active_wells.append(nums)
     return active_wells
 
-def _parsing_map_plate(mp_path, paths_mp, deltimer, exp_part, exp_name):
+def _parsing_map_plate(mp_path, paths_mp, deltimer, exp_part, exp_name, exp_parts_all):
     param_dict = {}
     active_path = FM.path_join(mp_path, "args_active.csv")
     names_path = FM.path_join(mp_path, "args_ind.csv")
@@ -70,6 +73,8 @@ def _parsing_map_plate(mp_path, paths_mp, deltimer, exp_part, exp_name):
         else:
             result.append(name)
         result.append(exp_name)
+        result.append(exp_parts_all)
+        result.append(exp_part)
         for mp_file in paths_mp:
             param = _collecting_exp_settings(mp_file, well, deltimer)
             result.append(param)
@@ -85,6 +90,8 @@ def _getting_column_titles(abs_path, paths):
     names = []
     names.append("position.name")
     names.append("exp.id")
+    names.append("exp.parts")
+    names.append("exp.part.id")
     for path in paths:
         rel_path = FM.path_get_relative(abs_path, path)
         fullname = ".".join(FM._path_split(rel_path))
@@ -94,35 +101,29 @@ def _getting_column_titles(abs_path, paths):
     #names = ",".join(names)
     return names
 
-def _getting_exp_name(path_csv):
-    #E:\AG\PathwayPackage\resources\output\2016-01-23-EG13\raw\data_quantify\2016-01-19-EG12-02\2016-01-19_003\costam.csv
-    name = FM._path_split(path_csv)
-    name = name[-3:][0] #awfull hardcoding, will be replaced when ID will showup in metadata
-    return name
-
 def getting_exp_part(path):
     name = _getting_exp_name(path)
     exp_id = name.split("-")[4]
     return exp_id
 
-def combine(path_csv, path_map_plate, path_output, csv_names, deltimer = "\t", csv_deltimer = ",", exp_part = "1"):
-    exp_name = _getting_exp_name(path_csv)
+def combine(path_csv, path_map_plate, path_output, csv_names, exp_id, exp_part, exp_parts_all, deltimer = "\t", csv_deltimer = ","):
     f_paths_map_plate = _getting_paths_mp(path_map_plate)
     f_paths_map_plate = sorted(f_paths_map_plate, key = str)
     f_paths_output = _making_path_list(path_output, csv_names)
     if isinstance(path_csv,str):
         f_paths_csv = _making_path_list(path_csv, csv_names)
-    mp_output = _parsing_map_plate(path_map_plate, f_paths_map_plate, deltimer, exp_part, exp_name) # exp_part
+    mp_output = _parsing_map_plate(path_map_plate, f_paths_map_plate, deltimer, exp_part, exp_id, exp_parts_all)
     names = _getting_column_titles(path_map_plate, f_paths_map_plate)
     for i in range(len(f_paths_output)):
         if isinstance(path_csv,dict):
-            in_data = paths_csv[csv_names[i]]  
+            in_data = paths_csv[csv_names[i]]  # return dictrionary
         elif isinstance(path_csv,str):
-            in_data = CSV_M.read_csv(f_paths_csv[i], csv_deltimer)
+            in_data = CSV_M.read_csv(f_paths_csv[i], csv_deltimer) # write to file  
         else:
-            break #might be some error msg
+            logger.error("Wrong itput data. map_plate module requires list of paths or dictionary as an input.")
+            break
         if FM.path_check_existence(f_paths_output[i]):
             FM.dir_remove(f_paths_output[i])
         out = _preparing_output_csv(in_data, f_paths_output[i], mp_output, names)
         CSV_M.write_csv(f_paths_output[i], deltimer, out)
-        
+        # PLACEHOLDER add data to dictionary

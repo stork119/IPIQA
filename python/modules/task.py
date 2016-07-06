@@ -232,19 +232,24 @@ class TASK_MAP_PLATE(TASK):
     def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name,  args = {}):
         TASK.__init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args)
 
+class TASK_MAP_PLATE(TASK):
+  
+    def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name,  args = {}):
+        TASK.__init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args)
+
     def execute_specify(self, dict_local):
         input_path_csv = dict_local["input_path_csv"]
         input_path_metadata = dict_local["input_path_metadata"]
-        #input_path_metadata = FM.path_join(dict_local["input_path_metadata"], "args")
         output_path = dict_local["output_path"]
         csv_names = (dict_local["csv_names_list"]).split(",")
+        exp_id = dict_local["exp_id"]
         try:
-            ep = dict_local["exp_part"]
+            exp_part_id = dict_global["exp_part"]
+            exp_parts = dict_local["exp_parts"]
         except:
-            ep = map_plate.getting_exp_part(input_path_csv)#!!!!!! TODO
-            ep = str(int(ep))
-        map_plate.combine(input_path_csv, input_path_metadata, output_path, csv_names, exp_part = ep)
-
+            exp_part_id = "1" 
+            exp_parts = "1"
+        map_plate.combine(input_path_csv, input_path_metadata, output_path, csv_names, exp_id, exp_part_id, exp_parts)
 
 class TASK_R(TASK):
   
