@@ -7,7 +7,7 @@
         <!-- Set up MAIN input/output paths here: [i.e. path to experiments, given experiment dir can be selected later]-->
         <parameter key="analysis_in_path" value="Z:\EXPERIMENT\"/>
         <parameter key="pipeline_in_path" value="E:\AG\PathwayPackage\resources\cp_pipelines\2016-06-23-DAPI\"/> <!--pipeline-nuclei.cppipe -->
-        <parameter key="analysis_out_path" value="E:\AG\PathwayPackage\resources\output\proba22\"/>
+        <parameter key="analysis_out_path" value="E:\AG\PathwayPackage\resources\output\2016-01-23-EG13\"/>
         <parameter key="metadata_in_path" value = "Z:\pSTAT1-summary\2016-01-23-EG13\metadata\"/>
         <parameter key="cp_path" value = "C:\Program Files\CellProfiler\"/>
         <!-- Set up relatives input/output paths here: [given experiment subpath etc]-->
@@ -25,17 +25,6 @@
     <TASK class="TASK_QUEUE"> <!-- Main Queue -->
         <parameters_by_value/>
         <parameters_by_name/>
-		<TASK class="TASK_DOWNLOAD"> <!-- Downloading (copying) metadata -->
-			<parameters_by_value>
-			</parameters_by_value>
-			<parameters_by_name>
-				<parameter key="output_path.1" value="analysis_out_path"/>
-				<parameter key="output_path.2" value="metadata_path_rel"/>
-				<parameter key="input_path" value="metadata_in_path"/>
-			</parameters_by_name>
-			<update_by_value/>
-			<update_by_name/>
-		</TASK>
 		<TASK class="TASK_QUEUE"> <!-- Experiment part 1 (Queue) -->
 			<parameters_by_value>
 				<parameter key="exp_part"  value="1"/>
@@ -76,19 +65,6 @@
 						<update_by_value/>
 						<update_by_name/>
 					</TASK>
-					<TASK class="TASK_DOWNLOAD">
-						<parameters_by_value>
-							<parameter key="by_url" value="FALSE"/>
-						</parameters_by_value>
-						<parameters_by_name>
-							<parameter key="input_path.1" value="input_path"/>
-							<parameter key="input_path.2" value="folder_name"/>
-							<parameter key="output_path.1" value="pathway_data_path"/>
-							<parameter key="output_path.2" value="folder_name"/>
-						</parameters_by_name>
-						<update_by_value/>
-						<update_by_name/>
-					</TASK>
 					<update_by_value/>
 					<update_by_name/>
 				</TASK>
@@ -102,17 +78,22 @@
 					<parameter key="quantify_data_raw_path.3" value="rel_path"/>
 				</update_by_name>
 			</TASK>
-			<TASK class="TASK_DOWNLOAD"> <!-- Downloading (copying) pipeline -->
-				<parameters_by_value>
-				</parameters_by_value>
-				<parameters_by_name>
-					<parameter key="output_path.1" value="quantify_data_raw_path"/>
-					<parameter key="output_path.2" value="pipeline_path_rel"/>
-					<parameter key="input_path" value="pipeline"/>
-				</parameters_by_name>
-				<update_by_value/>
-				<update_by_name/>
-			</TASK>
+			<update_by_value/>
+			<update_by_name/>
+		</TASK>
+		<TASK class="TASK_MERGE_BY_LIST">
+			<parameters_by_value>
+			</parameters_by_value>
+			<parameters_by_name>
+				<parameter key="input_path_1.1" value="analysis_out_path"/>
+				<parameter key="input_path_1.2" value="quantify_data_raw_path_rel"/>
+				<parameter key="input_path_1.3" value="exp_part_1"/>
+				<parameter key="input_path_2.1" value="analysis_out_path"/>
+				<parameter key="input_path_2.2" value="quantify_data_raw_path_rel"/>
+				<parameter key="input_path_2.3" value="exp_part_2"/>
+				<parameter key="output_path.1" value="analysis_out_path"/>
+				<parameter key="output_path.2" value="quantify_data_raw_path_rel"/>
+			</parameters_by_name>
 			<update_by_value/>
 			<update_by_name/>
 		</TASK>
