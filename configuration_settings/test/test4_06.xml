@@ -24,7 +24,7 @@
         <parameter key="quantify_data_raw_path_rel" value="raw\data_quantify\"/>
         <parameter key="metadata_path_rel"  value="metadata\"/>
         <parameter key="pipeline_path_rel" value="cellprofiler\"/>
-        <parameter key="figures_raw_path_rel" value="raw\figues\"/>
+        <parameter key="figures_raw_path_rel" value="raw\figures\"/>
     </CONFIG>
     <TASK class="TASK_QUEUE"> <!-- Main Queue -->
         <parameters_by_value/>
@@ -105,23 +105,34 @@
 						<update_by_value/>
 						<update_by_name/>
 					</TASK>
-					<TASK class="TASK_R">
+					<TASK class="TASK_READ_DATAFRAME_FROM_CSV">
 						<parameters_by_value>
-							<parameter key="function_name" value = "plot_histogram"/>
-							<parameter key="r_script_path" value = "C://Users//Pathway//Documents//PathwayPackage//R//plot_histogram.R"/>
-							<parameter key="r_input_filename" value = "Nuclei.csv"/>
 							<parameter key="delimiter" value = ","/>
-							<parameter key="filename.3" value = "_histogram.pdf"/>
+							<parameter key="dict_key_name" value = "data_nuclei"/>
+							<parameter key="filename" value = "nuclei.csv"/>
 						</parameters_by_value>
 						<parameters_by_name>
-							<parameter key="r_output_path.1" value = "r_data_path"/>
-							<parameter key="filename.1" value = "r_data_path"/>
-							<parameter key="filename.2" value = "folder_name"/>
-							<parameter key="r_input_path.1" value = "quantify_data_raw_path"/>
-							<parameter key="r_input_path.2" value = "folder_name"/>
+							<parameter key="input_path.1" value = "quantify_data_raw_path"/>
+							<parameter key="input_path.2" value = "folder_name"/>
 						</parameters_by_name>
 						<update_by_value/>
-						<update_by_name/>
+						<update_by_name>
+							<parameter key="data_r" value = "data_nuclei"/>
+						</update_by_name>
+					</TASK>
+					<TASK class="TASK_R">
+						<parameters_by_value>
+							<parameter key="r_function_name" value = "plot_histogram"/>
+							<parameter key="r_script_path" value = "C://Users//Pathway//Documents//IPIQA//PathwayPackage//R//plot_histogram.R"/>
+							<parameter key="filename.2" value = "_histogram"/>
+						</parameters_by_value>
+						<parameters_by_name>
+							<parameter key="output_path" value = "r_data_path"/>
+							<parameter key="filename.1" value = "folder_name"/>
+							<parameter key="data" value = "data_r"/>
+						</parameters_by_name>
+						<update_by_value/>
+						<update_by_name/>  
 					</TASK>
 					<update_by_value/>
 					<update_by_name/>
@@ -236,23 +247,34 @@
 						<update_by_value/>
 						<update_by_name/>
 					</TASK>
-					<TASK class="TASK_R">
+					<TASK class="TASK_READ_DATAFRAME_FROM_CSV">
 						<parameters_by_value>
-							<parameter key="function_name" value = "plot_histogram"/>
-							<parameter key="r_script_path" value = "C://Users//Pathway//Documents//PathwayPackage//R//plot_histogram.R"/>
-							<parameter key="r_input_filename" value = "Nuclei.csv"/>
 							<parameter key="delimiter" value = ","/>
-							<parameter key="filename.3" value = "_histogram.pdf"/>
+							<parameter key="dict_key_name" value = "data_nuclei"/>
+							<parameter key="filename" value = "nuclei.csv"/>
 						</parameters_by_value>
 						<parameters_by_name>
-							<parameter key="r_output_path.1" value = "r_data_path"/>
-							<parameter key="filename.1" value = "r_data_path"/>
-							<parameter key="filename.2" value = "folder_name"/>
-							<parameter key="r_input_path.1" value = "quantify_data_raw_path"/>
-							<parameter key="r_input_path.2" value = "folder_name"/>
+							<parameter key="input_path.1" value = "quantify_data_raw_path"/>
+							<parameter key="input_path.2" value = "folder_name"/>
 						</parameters_by_name>
 						<update_by_value/>
-						<update_by_name/>
+						<update_by_name>
+							<parameter key="data_r" value = "data_nuclei"/>
+						</update_by_name>
+					</TASK>
+					<TASK class="TASK_R">
+						<parameters_by_value>
+							<parameter key="r_function_name" value = "plot_histogram"/>
+							<parameter key="r_script_path" value = "C://Users//Pathway//Documents//IPIQA//PathwayPackage//R//plot_histogram.R"/>
+							<parameter key="filename.2" value = "_histogram"/>
+						</parameters_by_value>
+						<parameters_by_name>
+							<parameter key="output_path" value = "r_data_path"/>
+							<parameter key="filename.1" value = "folder_name"/>
+							<parameter key="data" value = "data_r"/>
+						</parameters_by_name>
+						<update_by_value/>
+						<update_by_name/>  
 					</TASK>
 					<update_by_value/>
 					<update_by_name/>

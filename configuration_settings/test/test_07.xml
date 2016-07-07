@@ -7,12 +7,16 @@
         <!-- Set up MAIN input/output paths here: [i.e. path to experiments, given experiment dir can be selected later]-->
         <parameter key="analysis_in_path" value="Z:\EXPERIMENT\"/>
         <parameter key="pipeline_in_path" value="E:\AG\PathwayPackage\resources\cp_pipelines\2016-06-23-DAPI\"/> <!--pipeline-nuclei.cppipe -->
-        <parameter key="analysis_out_path" value="E:\AG\PathwayPackage\resources\output\2016-01-23-EG13\"/>
+        <parameter key="analysis_out_path" value="E:\AG\analysis_output\"/>
         <parameter key="metadata_in_path" value = "Z:\pSTAT1-summary\2016-01-23-EG13\metadata\"/>
         <parameter key="cp_path" value = "C:\Program Files\CellProfiler\"/>
         <!-- Set up relatives input/output paths here: [given experiment subpath etc]-->
-        <parameter key="exp_part_1"  value="2016-01-23-EG13-01\2016-01-23_000\"/>
-        <parameter key="exp_part_2"  value="2016-01-19-EG12-02\2016-01-19_003\"/>
+        <parameter key="exp_id"  value="2016-01-23-EG13"/>
+        <parameter key="exp_parts"  value="2"/>
+        <parameter key="exp_part_1_id"  value="1"/>
+        <parameter key="exp_part_2_id"  value="2"/>
+        <parameter key="exp_part_1_path"  value="2016-01-23-EG13-01\2016-01-23_000\"/>
+        <parameter key="exp_part_2_path"  value="2016-01-23-EG13-02\2016-01-23_000\"/>
         <parameter key="pipeline_1"  value="pipeline.cppipe"/>
         <parameter key="csv_names_list" value = "Nuclei.csv,ShrinkedNuclei.csv"/>
         <!-- Building up output analysis directory structure: -->
@@ -20,17 +24,17 @@
         <parameter key="quantify_data_raw_path_rel" value="raw\data_quantify\"/>
         <parameter key="metadata_path_rel"  value="metadata\"/>
         <parameter key="pipeline_path_rel" value="cellprofiler\"/>
-        <parameter key="figures_raw_path_rel" value="raw\figues\"/>
+        <parameter key="figures_raw_path_rel" value="raw\figures\"/>
     </CONFIG>
     <TASK class="TASK_QUEUE"> <!-- Main Queue -->
         <parameters_by_value/>
         <parameters_by_name/>
 		<TASK class="TASK_QUEUE"> <!-- Experiment part 1 (Queue) -->
 			<parameters_by_value>
-				<parameter key="exp_part"  value="1"/>
 			</parameters_by_value>
 			<parameters_by_name>
-				<parameter key="rel_path"  value="exp_part_1"/>
+				<parameter key="exp_part"  value="exp_part_1_id"/>
+				<parameter key="rel_path"  value="exp_part_1_path"/>
 				<parameter key="pipeline.1"  value="pipeline_in_path"/>
 				<parameter key="pipeline.2"  value="pipeline_1"/>
 			</parameters_by_name>
@@ -56,11 +60,107 @@
 						<parameter key="r_data_path.2" value="figures_raw_path_rel"/>
 						<parameter key="r_data_path.3" value="rel_path"/>
 					</parameters_by_name>
-					<TASK class="TASK_CHECK_COMPLETNESS">
-						<parameters_by_value/>
+					<TASK class="TASK_READ_DATAFRAME_FROM_CSV">
+						<parameters_by_value>
+							<parameter key="delimiter" value = ","/>
+							<parameter key="dict_key_name" value = "data_nuclei"/>
+							<parameter key="filename" value = "nuclei.csv"/>
+						</parameters_by_value>
 						<parameters_by_name>
-							<parameter key="input_path.1" value="input_path"/>
-							<parameter key="input_path.2" value="folder_name"/>
+							<parameter key="input_path.1" value = "quantify_data_raw_path"/>
+							<parameter key="input_path.2" value = "folder_name"/>
+						</parameters_by_name>
+						<update_by_value/>
+						<update_by_name>
+							<parameter key="data_r" value = "data_nuclei"/>
+						</update_by_name>
+					</TASK>
+					<TASK class="TASK_R">
+						<parameters_by_value>
+							<parameter key="r_function_name" value = "plot_histogram"/>
+							<parameter key="r_script_path" value = "C://Users//Pathway//Documents//IPIQA//PathwayPackage//R//plot_histogram.R"/>
+							<parameter key="filename.2" value = "_histogram"/>
+						</parameters_by_value>
+						<parameters_by_name>
+							<parameter key="output_path" value = "r_data_path"/>
+							<parameter key="filename.1" value = "folder_name"/>
+							<parameter key="data" value = "data_r"/>
+						</parameters_by_name>
+						<update_by_value/>
+						<update_by_name/>  
+					</TASK>
+					<update_by_value/>
+					<update_by_name/>
+				</TASK>
+				<update_by_value/>
+				<update_by_name>
+					<parameter key="pathway_data_path" value="analysis_out_path"/>
+					<parameter key="pathway_data_path.2" value="pathway_data_path_rel"/>
+					<parameter key="pathway_data_path.3" value="rel_path"/>
+					<parameter key="quantify_data_raw_path.1" value="analysis_out_path"/>
+					<parameter key="quantify_data_raw_path.2" value="quantify_data_raw_path_rel"/>
+					<parameter key="quantify_data_raw_path.3" value="rel_path"/>
+				</update_by_name>
+			</TASK>
+			<update_by_value/>
+			<update_by_name/>
+		</TASK>
+		<TASK class="TASK_QUEUE"> <!-- Experiment part 2 (Queue) -->
+			<parameters_by_value>
+			</parameters_by_value>
+			<parameters_by_name>
+				<parameter key="exp_part"  value="exp_part_2_id"/>
+				<parameter key="rel_path"  value="exp_part_2_path"/>
+				<parameter key="pipeline.1"  value="pipeline_in_path"/>
+				<parameter key="pipeline.2"  value="pipeline_1"/>
+			</parameters_by_name>
+			<TASK class="TASK_PARALLELIZE_PATH">
+				<parameters_by_value>
+					<parameter key="sleep_time"  value="120"/>
+					<parameter key="folders_number" value="7"/>
+				</parameters_by_value>
+				<parameters_by_name>
+					<parameter key="input_path.1" value = "analysis_in_path"/>
+					<parameter key="input_path.2"  value="rel_path"/> 
+				</parameters_by_name>
+				<TASK class="TASK_QUEUE">
+					<parameters_by_value/>
+					<parameters_by_name>
+						<parameter key="pathway_data_path.1" value="analysis_out_path"/>
+						<parameter key="pathway_data_path.2" value="pathway_data_path_rel"/>
+						<parameter key="pathway_data_path.3" value="rel_path"/>
+						<parameter key="quantify_data_raw_path.1" value="analysis_out_path"/>
+						<parameter key="quantify_data_raw_path.2" value="quantify_data_raw_path_rel"/>
+						<parameter key="quantify_data_raw_path.3" value="rel_path"/>
+						<parameter key="r_data_path.1" value="analysis_out_path"/>
+						<parameter key="r_data_path.2" value="figures_raw_path_rel"/>
+						<parameter key="r_data_path.3" value="rel_path"/>
+					</parameters_by_name>
+					<TASK class="TASK_READ_DATAFRAME_FROM_CSV">
+						<parameters_by_value>
+							<parameter key="delimiter" value = ","/>
+							<parameter key="dict_key_name" value = "data_nuclei"/>
+							<parameter key="filename" value = "nuclei.csv"/>
+						</parameters_by_value>
+						<parameters_by_name>
+							<parameter key="input_path.1" value = "quantify_data_raw_path"/>
+							<parameter key="input_path.2" value = "folder_name"/>
+						</parameters_by_name>
+						<update_by_value/>
+						<update_by_name>
+							<parameter key="data_r" value = "data_nuclei"/>
+						</update_by_name>
+					</TASK>
+					<TASK class="TASK_R">
+						<parameters_by_value>
+							<parameter key="r_function_name" value = "plot_histogram"/>
+							<parameter key="r_script_path" value = "C://Users//Pathway//Documents//IPIQA//PathwayPackage//R//plot_histogram.R"/>
+							<parameter key="filename.2" value = "_histogram"/>
+						</parameters_by_value>
+						<parameters_by_name>
+							<parameter key="output_path" value = "r_data_path"/>
+							<parameter key="filename.1" value = "folder_name"/>
+							<parameter key="data" value = "data_r"/>
 						</parameters_by_name>
 						<update_by_value/>
 						<update_by_name/>
@@ -81,16 +181,16 @@
 			<update_by_value/>
 			<update_by_name/>
 		</TASK>
-		<TASK class="TASK_MERGE_BY_LIST">
+		<TASK class="TASK_MERGE_CSV">
 			<parameters_by_value>
 			</parameters_by_value>
 			<parameters_by_name>
 				<parameter key="input_path_1.1" value="analysis_out_path"/>
 				<parameter key="input_path_1.2" value="quantify_data_raw_path_rel"/>
-				<parameter key="input_path_1.3" value="exp_part_1"/>
+				<parameter key="input_path_1.3" value="exp_part_1_path"/>
 				<parameter key="input_path_2.1" value="analysis_out_path"/>
 				<parameter key="input_path_2.2" value="quantify_data_raw_path_rel"/>
-				<parameter key="input_path_2.3" value="exp_part_2"/>
+				<parameter key="input_path_2.3" value="exp_part_2_path"/>
 				<parameter key="output_path.1" value="analysis_out_path"/>
 				<parameter key="output_path.2" value="quantify_data_raw_path_rel"/>
 			</parameters_by_name>
