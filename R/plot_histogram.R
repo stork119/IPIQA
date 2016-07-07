@@ -19,39 +19,40 @@ try({package.list <- list("ggplot2")
 })
 
 ### sources ###
-wd.tmp <- "C:/Users/Pathway/Documents/PathwayPackage/R/"
+wd.tmp <- "C:/Users/Pathway/Documents/IPIQA/PathwayPackage/R/"
 source(paste(wd.tmp, "theme_jetka.R", sep = ""))
-
 
 #### plot_histogram ####
 plot_histogram <- function(data,
+                           output_path = "",
                            filename = "",
                            x = "Intensity_IntegratedIntensity_DAPI",
                            data_nrow_min = 10,
                            ylab = "density",
                            xlab = x,
-                           xlim.min = 0,
-                           xlim.max = max(data[,x]),
+                           xlim_min = 0,
+                           xlim_max = max(data[,x]),
                            bin_number = 50,
-                           bin_width = (xlim.max - xlim.min)/bin_number,
-                           plot.width = 24,
-                           plot.height = 8,
-                           plot.title = "",
-                           theme.text_size = 12,
-                           line.size = 1.5,
-                           save.plot = TRUE){
-  
+                           bin_width = (xlim_max - xlim_min)/bin_number,
+                           plot_width = 24,
+                           plot_height = 8,
+                           plot_title = "",
+                           theme_text_size = 12,
+                           line_size = 1.5,
+                           save_plot = TRUE,
+                           ...){
   if(nrow(data) > data_nrow_min){  
     gplot <- ggplot(data = data) +
       geom_histogram(aes_string(x = x, "..density.."), binwidth = bin_width) +
-      xlim(xlim.min, xlim.max) + 
-      ggtitle(plot.title) +
-      theme_jetka(text_size = theme.text_size)
-    if(save.plot){
-      ggsave(filename = paste(filename, ".pdf", sep = ""),
+      xlim(xlim_min, xlim_max) + 
+      ggtitle(plot_title) +
+      theme_jetka(text_size = theme_text_size)
+    if(save_plot){
+      try({dir.create(path = output_path, recursive = TRUE)})
+      ggsave(filename = paste(output_path, "/", filename, ".pdf", sep = ""),
              plot = gplot,
-             width = plot.width,
-             height = plot.height,
+             width = plot_width,
+             height = plot_height,
              useDingbats = FALSE)
     }
     return(gplot)
@@ -62,64 +63,64 @@ plot_histogram <- function(data,
 
 #### plot_histogram_list ####
 plot_histogram_list <- function(data,
-                                path,
+                                output_path,
                                 filename = "boxplot", 
-                                grid.col,
-                                grid.col.name = grid.col,
-                                args.filename = list(),
+                                grid_col,
+                                grid_col_name = grid_col,
+                                args_filename = list(),
                                 x = "Intensity_IntegratedIntensity_DAPI",
                                 data_nrow_min = 10,
                                 ylab = "density",
                                 xlab = x,
-                                xlim.min = 0,
-                                xlim.max = max(data[,x]),
+                                xlim_min = 0,
+                                xlim_max = max(data[,x]),
                                 bin_number = 50,
-                                bin_width = (xlim.max - xlim.min)/bin_number,
-                                plot.width = 24,
-                                plot.height = 8,
-                                plot.title = "",
-                                theme.text_size = 12,
-                                line.size = 1.5
+                                bin_width = (xlim_max - xlim_min)/bin_number,
+                                plot_width = 24,
+                                plot_height = 8,
+                                plot_title = "",
+                                theme_text_size = 12,
+                                line_size = 1.5,
+                                ...
                                 
 ){
+  try({dir.create(path = output_path, recursive = TRUE, showWarnings = FALSE)})
   
-  
-  grid <- expand.grid(sapply(grid.col, function(g){unique(data[,g])}))
+  grid <- expand.grid(sapply(grid_col, function(g){unique(data[,g])}))
   plots.list <- list()
   
 
-  filename.global <- paste(path,
+  filename.global <- paste(output_path,
                            filename,
                            sep = "/")
   
-  dir.create(path = path, recursive = TRUE)
   
   for(i in 1:nrow(grid)){  
     try({
       data.tmp <- data[as.logical(
         apply(
-          sapply(1:length(grid.col),
+          sapply(1:length(grid_col),
                  function(j){ 
-                   data[,grid.col[j]] == grid[i,j]}),
+                   data[,grid_col[j]] == grid[i,j]}),
           1,
           prod)),]
       
-      plot.title <- paste("cells = ",
+      plot_title <- paste("cells = ",
                           data.tmp$cells[1],
-                          paste(sapply(1:length(grid.col),
+                          paste(sapply(1:length(grid_col),
                                        function(j){ 
-                                         paste(grid.col.name[j], "=", grid[i,j])}
+                                         paste(grid_col_name[j], "=", grid[i,j])}
                           ), collapse = " ")
       )
     
       plots.list[[i]] <-   plot_histogram(data.tmp,
                                           x = x,
-                                          plot.width = plot.width,
-                                          plot.height = plot.height,
-                                          plot.title = plot.title,
-                                          theme.text_size = theme.text_size,
-                                          line.size = line.size,
-                                          save.plot = FALSE
+                                          plot_width = plot_width,
+                                          plot_height = plot_height,
+                                          plot_title = plot_title,
+                                          theme_text_size = theme_text_size,
+                                          line_size = line_size,
+                                          save_plot = FALSE
                                           
       )
     })
@@ -128,8 +129,8 @@ plot_histogram_list <- function(data,
   try({dev.off()})
   pdf(file = paste(filename.global, ".pdf", sep = ""),
       useDingbats = FALSE,
-      width = plot.width,
-      height = plot.height)
+      width = plot_width,
+      height = plot_height)
   l <- lapply(plots.list, print)
   dev.off()
 }
@@ -137,37 +138,37 @@ plot_histogram_list <- function(data,
 
 #### plot_histogram_grid ####
 plot_histogram_grid <- function(data,
-                                path,
+                                output_path,
                                 filename,
                                 x = "Intensity_IntegratedIntensity_DAPI",
-                                grid.x,
-                                grid.y,
+                                grid_x,
+                                grid_y,
                                 data_nrow_min = 10,
-                                ylab = grid.y,
-                                xlab = grid.x,
-                                xlim.min = 0,
-                                xlim.max = max(data[,x]),
+                                ylab = grid_y,
+                                xlab = grid_x,
+                                xlim_min = 0,
+                                xlim_max = max(data[,x]),
                                 bin_number = 50,
-                                bin_width = (xlim.max - xlim.min)/bin_number,
-                                plot.width = 64,
-                                plot.height = 64,
-                                plot.title = "",
-                                theme.text_size = 48,
-                                line.size = 1.5){
-  dir.create(path = path, recursive = TRUE)
-  data[,grid.x] <- factor(data[,grid.x])
-  data[,grid.y] <- factor(data[,grid.y])
+                                bin_width = (xlim_max - xlim_min)/bin_number,
+                                plot_width = 64,
+                                plot_height = 64,
+                                plot_title = "",
+                                theme_text_size = 48,
+                                line_size = 1.5){
+  try({dir.create(path = output_path, recursive = TRUE, showWarnings = FALSE)})
+  data[,grid_x] <- factor(data[,grid_x])
+  data[,grid_y] <- factor(data[,grid_y])
   if(nrow(data) > data_nrow_min){  
     gplot <- ggplot(data = data) +
       geom_histogram(aes_string(x = x, "..density.."), binwidth = bin_width) +
-      facet_grid(facets = paste(grid.x, "~", grid.y, sep =" " )) +
-      xlim(xlim.min, xlim.max) + 
-      ggtitle(plot.title) +
-      theme_jetka(text_size = theme.text_size)
-    ggsave(filename = paste(path, "/", filename, ".pdf", sep = ""),
+      facet_grid(facets = paste(grid_x, "~", grid_y, sep =" " )) +
+      xlim(xlim_min, xlim_max) + 
+      ggtitle(plot_title) +
+      theme_jetka(text_size = theme_text_size)
+    ggsave(filename = paste(output_path, "/", filename, ".pdf", sep = ""),
            plot = gplot,
-           width = plot.width,
-           height = plot.height,
+           width = plot_width,
+           height = plot_height,
            useDingbats = FALSE,
            limitsize = FALSE)
     return(gplot)
