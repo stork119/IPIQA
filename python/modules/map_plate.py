@@ -101,11 +101,6 @@ def _getting_column_titles(abs_path, paths):
     #names = ",".join(names)
     return names
 
-def getting_exp_part(path):
-    name = _getting_exp_name(path)
-    exp_id = name.split("-")[4]
-    return exp_id
-
 def combine(path_csv, path_map_plate, path_output, csv_names, exp_id, exp_part, exp_parts_all, deltimer = "\t", csv_deltimer = ","):
     f_paths_map_plate = _getting_paths_mp(path_map_plate)
     f_paths_map_plate = sorted(f_paths_map_plate, key = str)
