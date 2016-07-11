@@ -7,7 +7,7 @@ import csv
 logger = logging.getLogger(__name__)
 logger.info("Executing map_plate module.")
 
-def _preparing_output_csv(input_data, output_path, mp_data, names):
+def _preparing_output_csv(input_data, output_path, mp_data, names, mp_deltimer, csv_deltimer):
     output_data = []
     num = 0
     position = 0 
@@ -23,8 +23,10 @@ def _preparing_output_csv(input_data, output_path, mp_data, names):
             num = 1
         else:
             new_line = line
-            key = line[position]           
-            new_line.append(mp_data[key])
+            key = line[position]
+            mp_data_line = mp_data[key]
+            mp_data_line = mp_data_line.replace(mp_deltimer, csv_deltimer)
+            new_line.append(mp_data_line)
             output_data.append(new_line)
     return output_data
 
@@ -101,13 +103,13 @@ def _getting_column_titles(abs_path, paths):
     #names = ",".join(names)
     return names
 
-def combine(path_csv, path_map_plate, path_output, csv_names, exp_id, exp_part, exp_parts_all, deltimer = "\t", csv_deltimer = ","):
+def combine(path_csv, path_map_plate, path_output, csv_names, exp_id, exp_part, exp_parts_all, mp_deltimer = "\t", csv_deltimer = ","):
     f_paths_map_plate = _getting_paths_mp(path_map_plate)
     f_paths_map_plate = sorted(f_paths_map_plate, key = str)
     f_paths_output = _making_path_list(path_output, csv_names)
     if isinstance(path_csv,str):
         f_paths_csv = _making_path_list(path_csv, csv_names)
-    mp_output = _parsing_map_plate(path_map_plate, f_paths_map_plate, deltimer, exp_part, exp_id, exp_parts_all)
+    mp_output = _parsing_map_plate(path_map_plate, f_paths_map_plate, mp_deltimer, exp_part, exp_id, exp_parts_all)
     names = _getting_column_titles(path_map_plate, f_paths_map_plate)
     for i in range(len(f_paths_output)):
         if isinstance(path_csv,dict):
@@ -119,6 +121,6 @@ def combine(path_csv, path_map_plate, path_output, csv_names, exp_id, exp_part, 
             break
         if FM.path_check_existence(f_paths_output[i]):
             FM.dir_remove(f_paths_output[i])
-        out = _preparing_output_csv(in_data, f_paths_output[i], mp_output, names)
-        CSV_M.write_csv(f_paths_output[i], deltimer, out)
+        out = _preparing_output_csv(in_data, f_paths_output[i], mp_output, names, mp_deltimer, csv_deltimer)
+        CSV_M.write_csv(f_paths_output[i], csv_deltimer, out)
         # PLACEHOLDER add data to dictionary
