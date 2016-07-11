@@ -227,6 +227,66 @@ class TASK_PARALLELIZE_PATH(TASK_PARALLELIZE): #all objects (folders) in given d
         return dir_list, folders_number
 
 
+class TASK_SYNCHRONOUSLY(TASK):
+
+    def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args):
+        TASK.__init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args)
+        self.task_list = args['task_list']
+        self.config_dict = args['config_dict']
+
+    def execute_specify(self, dict_local):
+        dir_list, folders_number = self.parsing_elements_list(dict_local)
+        processes_number = int(dict_local["number_of_cores"])
+        sleep_time = int(dict_local["sleep_time"])
+        new_dirs = dir_list
+        while True:
+            if len(new_dirs) > 0:
+                for element in new_dirs:
+                    args = (dict_local, element)
+                    self._execute_queue(args)
+            if len(dir_list) >= folders_number:
+                break
+            sleep(sleep_time)
+            input_path = str(dict_local["input_path"])
+            new_dir_list = FM.dir_get_names(input_path)
+            new_dirs = [i for i in new_dir_list if i not in dir_list]
+            dir_list = new_dir_list
+
+    def _execute_queue(self, args):
+        dict_local, element = args
+        dict_local["folder_name"] = element
+        for task in self.task_list:
+            task.execute(dict_local)
+
+   
+class TASK_SYNCHRONOUSLY_LIST(TASK_SYNCHRONOUSLY): # list of objects (folders)
+
+    def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args):
+        TASK_PARALLELIZE.__init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args)
+
+    def parsing_elements_list(self, dict_local):
+        paths = []
+        input_path = str(dict_local["input_path"])
+        folder_list = (dict_local["folders_list"]).split(",")
+        for folder in folder_list:
+            path = FM.path_join(input_path, folder)
+            paths.append(path)
+        folders_number = len(paths)
+        return paths, folders_number
+
+
+class TASK_SYNCHRONOUSLY_PATH(TASK_SYNCHRONOUSLY): #all objects (folders) in given directory (path)
+
+    def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args):
+        TASK_PARALLELIZE.__init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args)
+        self.config_dict = args['config_dict']
+
+    def parsing_elements_list(self, dict_local):
+        folders_number = int(dict_local["folders_number"])
+        input_path = str(dict_local["input_path"])
+        dir_list = FM.dir_get_names(input_path)
+        return dir_list, folders_number
+
 class TASK_MAP_PLATE(TASK):
   
     def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name,  args = {}):
@@ -277,7 +337,7 @@ class TASK_READ_DATAFRAME_FROM_CSV(TASK):
         try:
             delimiter = dict_local["delimiter"]
         except:
-            delimiter = "\t"
+            delimiter = ","
         data = R_connection.read_dataframe_from_csv(input_path, delimiter)
         dict_local[dict_key_name] = data
 
@@ -295,7 +355,7 @@ class TASK_MERGE_CSV(TASK):
         try:
             delimiter = dict_local["delimiter"]
         except:
-            delimiter = "\t" #choose separator
+            delimiter = "," #choose separator
         for csv_name in csv_names:
             data = CSV_M.simple_merge(csv_name, in_path_list, delimiter)
             #Saving data
