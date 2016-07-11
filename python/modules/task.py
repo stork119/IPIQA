@@ -322,7 +322,8 @@ class TASK_R(TASK):
         external_params = ["r_function_name", "r_script_path"] 
         # PLACEHOLDER for adding more external params
         param_dict = R_connection.prepare_param_dict(dict_local, self.parameters_by_value, self.parameters_by_name, external_params)
-        R_connection.execute_r_script(param_dict, r_script_path, r_function_name)
+        output_dict = R_connection.execute_r_script(param_dict, r_script_path, r_function_name)
+        dict_local.update(output_dict)
 
 class TASK_READ_DATAFRAME_FROM_CSV(TASK):
   
