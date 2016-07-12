@@ -37,7 +37,11 @@ def main():
     else:
         settings_list = [settings_path]
     for setts in settings_list:
-        pipeline, config_dict = XML_P.parse(setts)
-        pipeline.execute(config_dict)
+        logger.info("Current xml settings: %s", setts)
+        try:
+            pipeline, config_dict = XML_P.parse(setts)
+            pipeline.execute(config_dict)
+        except:
+            logger.error("Settings %s error.", setts)
 if __name__ == "__main__":
     main()
