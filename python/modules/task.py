@@ -5,6 +5,7 @@ import modules.cellprofiler as cpm
 import modules.csv_managment as CSV_M
 import modules.map_plate as map_plate
 import modules.r_connection as R_connection
+import modules.ffc as ffc
 from time import sleep
 import multiprocessing 
 import logging
@@ -133,7 +134,6 @@ class TASK_QUANTIFY(TASK):
         pipeline = dict_local["pipeline"]
         #cpm.check_pipeline(pipeline)
         cpm.run_cp_by_cmd(cp_path, in_path, out_path, pipeline)
-
    
 class TASK_MERGE_SUBDIR_CSV(TASK):
   
@@ -292,11 +292,6 @@ class TASK_MAP_PLATE(TASK):
     def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name,  args = {}):
         TASK.__init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args)
 
-class TASK_MAP_PLATE(TASK):
-  
-    def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name,  args = {}):
-        TASK.__init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args)
-
     def execute_specify(self, dict_local):
         input_path_csv = dict_local["input_path_csv"]
         input_path_metadata = dict_local["input_path_metadata"]
@@ -324,7 +319,27 @@ class TASK_R(TASK):
         param_dict = R_connection.prepare_param_dict(dict_local, self.parameters_by_value, self.parameters_by_name, external_params)
         output_dict = R_connection.execute_r_script(param_dict, r_script_path, r_function_name)
         dict_local.update(output_dict)
+        
+class TASK_FFC_READ(TASK):
+  
+    def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name,  args = {}):
+        TASK.__init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args)
 
+    def execute_specify(self, dict_local):
+        # Check if user set input an output paths
+        output_dict = ffc.read_camcor(dict_local, self.parameters_by_value, self.parameters_by_name)
+        dict_local.update(output_dict)
+
+class TASK_FFC_APPLY(TASK):
+  
+    def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name,  args = {}):
+        TASK.__init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args)
+
+    def execute_specify(self, dict_local):
+        # Check if user set input an output paths
+        output_dict = ffc.apply_camcor(dict_local, self.parameters_by_value, self.parameters_by_name)
+        dict_local.update(output_dict)
+        
 class TASK_READ_DATAFRAME_FROM_CSV(TASK):
   
     def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name,  args = {}):
