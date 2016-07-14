@@ -26,14 +26,14 @@ class TASK():
         logger.debug("TASK (class) name: %s", task_name)
         dict_local = dict_global.copy()
        # temp_dict = dict_global.copy()
-        logger.debug("dict_local before update: %s", (dict_local))
+        logger.debug("dict_local before update: %s", (dict_local.keys()))
         dict_local = self.update_dict(dict_local, dict_local, self.parameters_by_value, self.parameters_by_name) #check out if its working 
-        logger.debug("dict_local after update: %s", dict_local)
+        logger.debug("dict_local after update: %s", dict_local.keys())
         self.execute_specify(dict_local)
-        logger.debug("dict_local after execute_specify: %s", dict_local) #dunno if its needed
-        logger.debug("dict_global before update: %s", dict_global)
+        logger.debug("dict_local after execute_specify: %s", dict_local.keys()) #dunno if its needed
+        logger.debug("dict_global before update: %s", dict_global.keys())
         dict_global = self.update_dict(dict_global, dict_local, self.updates_by_value, self.updates_by_name)
-        logger.debug("dict_global after update: %s", dict_global)
+        logger.debug("dict_global after update: %s", dict_global.keys())
         return dict_global
 
     def update_dict(self, dict_out, dict_in, list_by_value, list_by_name):
@@ -45,9 +45,9 @@ class TASK():
             value = dict_in[v]
             dict_out[k] = value
             logger.debug("Dict_out new key, value (updated by name): %s, %s", k, value)
-        logger.debug("Dict_out before concatenation: %s", dict_out)
+        logger.debug("Dict_out before concatenation: %s", dict_out.keys())
         dict_out = self.concatenation_name_nr(dict_out)
-        logger.debug("Dict_out after concatenation: %s", dict_out)        
+        logger.debug("Dict_out after concatenation: %s", dict_out.keys())        
         return dict_out
 
     def concatenation_name_nr(self, dict_out):      
@@ -73,6 +73,17 @@ class TASK():
             dict_out = temp_dict.copy()
         return dict_out
 
+class TASK_FOR(TASK):
+  
+    def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args):
+        TASK.__init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args)
+        self.variables_list = args['variables_list']
+        self.task_do = args['task_do']
+        
+    def execute_specify(self, dict_local):
+        for variable in self.variables_list:
+            dict_local_for = self.update_dict(dict_local, dict_local, variable['parameters_by_value'], variable['parameters_by_name'])
+            self.task_do.execute(dict_local_for)
 
 class TASK_QUEUE(TASK):
   

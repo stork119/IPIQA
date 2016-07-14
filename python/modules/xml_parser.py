@@ -33,15 +33,36 @@ def _create_queue_task(queue):
         task_name = request.get('class')
         if task_name == "TASK_QUEUE" or task_name.startswith("TASK_PARALLELIZE") or task_name.startswith("TASK_SYNCHRONOUSLY"):
             task = _create_queue_task(request)
+        elif task_name == "TASK_FOR":
+            task = _create_for_task(request)
         else:
             task = _create_task(request)
         task_list.append(task)
     #print(task_list)
-    if queue.get('class').startswith("TASK_PARALLELIZE") or queue.get('class').startswith("TASK_SYNCHRONOUSLY"):
-        pipeline = _create_task(queue, task_list)
-    else:
-        pipeline = _create_task(queue, task_list)
+    pipeline = _create_task(queue, task_list)
     return pipeline
+
+def _create_for_task(queue):
+    variables = queue.find('VARIABLES')
+    variables_list = []
+    for request in variables.findall('VARIABLE'):
+        parameters_by_value = _get_settings_dict(request, "parameters_by_value") # getting dicts of settings and updates
+        parameters_by_name = _get_settings_dict(request, "parameters_by_name")
+        variables_list.append({'parameters_by_value' : parameters_by_value, 'parameters_by_name' : parameters_by_name})
+    task_request = queue.find('TASK')
+    task_name = task_request.get('class')
+    if task_name == "TASK_QUEUE" or task_name.startswith("TASK_PARALLELIZE") or task_name.startswith("TASK_SYNCHRONOUSLY"):
+        task_do = _create_queue_task(task_request)
+    elif  task_name == "TASK_FOR":
+        task_do = _create_for_task(task_request)
+    else:
+        task_do = _create_task(task_request)  
+    task = TK.TASK_FOR(OrderedDict(),
+                       OrderedDict(),
+                       OrderedDict(),
+                       OrderedDict(),
+                       {'variables_list' : variables_list, 'task_do' : task_do}) #creating task class objects
+    return task
 
   
 def _get_settings_dict(task, setup):
