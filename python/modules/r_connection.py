@@ -1,6 +1,11 @@
 #! /usr/bin/python
-import rpy2.robjects as robjects
-from rpy2.robjects.vectors import DataFrame
+import logging
+logger = logging.getLogger(__name__)
+try:
+    import rpy2.robjects as robjects
+    from rpy2.robjects.vectors import DataFrame
+except:
+    logger.warning("Rpy2 import error. The package is not installed. R scripts processing is not available.")
 
 def execute_r_script(param_dict, r_script_path, function_name):
     r_source = robjects.r['source']
