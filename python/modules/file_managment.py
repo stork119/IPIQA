@@ -54,7 +54,7 @@ def path_get_relative(abs_path, destination_path):
     rel_path = [x for x in dir_path if x not in abs_path]
     end_slash = _path_check_end_slash(destination_path)
     rel_path = _unification_by_list(rel_path, end_slash)
-    logger.debug("Creating relative path completed. Absolute path: %s, destination path: %s, relative path:", abs_path, destination_path, rel_path)
+    logger.debug("Creating relative path completed. Absolute path: %s, destination path: %s, relative path: %s", abs_path, destination_path, rel_path)
     return rel_path
 
 def _unification_by_list(path, end_slash = False): #Join list of path pieces 

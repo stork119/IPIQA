@@ -43,7 +43,7 @@ plot_boxplot_compare <- function(data,
                                legend.position = "bottom",
                                plot_fun = "geom_boxplot",
                                theme.text_size = 12){
-  data[,y] <- 65535 * data[,y]
+  data[,y] <- 65535*data[,y]
   ylim.max <- 1.2*max(data[,y])
   gplot <- ggplot(data = data, 
                   aes_string(x = x,
