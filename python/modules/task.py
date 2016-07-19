@@ -45,7 +45,7 @@ class TASK():
             try:
                 value = dict_in[v]
             except:
-                ("Dictionary update_by_name error. Given key (%s) doesn't exist in dictionary", v)
+                logger.error("Dictionary update_by_name error. Given key (%s) doesn't exist in dictionary", v)
             dict_out[k] = value
             logger.debug("Dict_out new key, value (updated by name): %s, %s", k, value)
         logger.debug("Dict_out before concatenation: %s", dict_out.keys())
