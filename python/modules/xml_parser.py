@@ -89,7 +89,10 @@ def parse(input_path):
     try:
         tree = ET.parse(input_path)
     except:
-        logger.error("Wrong input_settings path.")
+        if FM.path_check_existence(input_path):
+            logger.error("Input_settings parsing error. Cannot parse %s as XML.", input_path)
+        else:
+            logger.error("Given input_settings: %s doesn't exist", input_path)
         pipeline = None
         config_dict = None
         return pipeline, config_dict

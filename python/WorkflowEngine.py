@@ -38,10 +38,10 @@ def main():
         settings_list = [settings_path]
     for setts in settings_list:
         logger.info("Current xml settings: %s", setts)
+        pipeline, config_dict = XML_P.parse(setts)
         try:
-            pipeline, config_dict = XML_P.parse(setts)
             pipeline.execute(config_dict)
         except:
-            logger.error("Settings %s error.", setts)
+            logger.error("Settings %s error. Cannot execute pipeline.", setts)
 if __name__ == "__main__":
     main()
