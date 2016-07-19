@@ -23,16 +23,27 @@ def _path_check_end_slash(path):
         return True
     else:
         return False
+    
+def _path_check_start_slash(path):
+    if path.startswith("/") or path.startswith("\\"):
+        return True
+    else:
+        return False
 
 def path_unify(in_path): # Normalize the path for your system, at the moment feature is available only for Windows
     windows = True
     path = _path_split(in_path)
     end_slash = _path_check_end_slash(in_path)
+    start_slash = _path_check_start_slash(in_path)
     path = _unification_by_list(path, end_slash)
+    if start_slash == True:
+        if windows == True:
+            path = "//" + path
     logger.debug("Path unification completed. Previous path: %s, actual path: %s", in_path, path)
     return path
 
 def path_join(*paths_list):
+    windows = True
     final_path = []
     if len(paths_list) < 2:
         logger.error("Can't join less then 2 paths. Paths to join list: %s", paths_list)
@@ -43,7 +54,11 @@ def path_join(*paths_list):
     # checking out if the last partial path has got slash on its end, if so the final (joint) path will also be finished by slash
     paths_num = len(paths_list)
     end_slash = _path_check_end_slash(paths_list[(paths_num - 1)])
+    start_slash = _path_check_end_slash(paths_list[0])
     final_path = _unification_by_list(final_path, end_slash)
+    if start_slash == True:
+        if windows == True:
+            path = "//" + path
     logger.debug("Paths joining completed. List of paths to join: %s, final path: %s", paths_list, final_path)
     return final_path
 
