@@ -24,6 +24,20 @@ l <- lapply(list("DivideImage", "ImageCalculator"),
        function(f){source(paste(wd.tmp, f, ".R", sep = ""))})
 rm(l)
 
+fun_ref_image <- function(image.ref.mean,
+                          ind){
+  image.ref <- matrix(0,
+                      nrow = nrow(image.ref.mean[[ind[1]]]),
+                      ncol = ncol(image.ref.mean[[ind[1]]]))
+  
+  for(ref_i in ind){
+    image.ref <- image.ref + image.ref.mean[[ref_i]]
+  }
+  image.ref <- image.ref/length(ind) 
+  return(image.ref)
+}
+
+
 fun_camcor_analyse <- function(input_path,
                                output_path,
                                well_path_regex = "Well\\s[A-Z]\\d\\d$",
@@ -32,6 +46,7 @@ fun_camcor_analyse <- function(input_path,
                                pbs_ind = 1,
                                ...
                                ){
+  
   try({
     input_path <- normalizePath(input_path, "/")
     output_path <- normalizePath(output_path, "/")
@@ -63,17 +78,9 @@ fun_camcor_analyse <- function(input_path,
                                            pattern = ".*Alexa.*tif")
   }
   
-  image.pbs <- image.ref.mean[[pbs_ind]]
-  image.ref <- matrix(0,
-                      nrow = nrow(image.ref.mean[[pbs_ind]]),
-                      ncol = ncol(image.ref.mean[[pbs_ind]]))
-  
-  ref_ind <- 1:length(image.ref.mean)
-  ref_ind <- ref_ind[-pbs_ind]
-  for(ref_i in ref_ind){
-    image.ref <- image.ref + image.ref.mean[[ref_i]]
-  }
-  image.ref <- image.ref/length(ref_ind) 
+  image.pbs <- fun_ref_image(image.ref.mean = image.ref.mean, ind = pbs_ind)
+  ref_ind <- (1:length(image.ref.mean))[-pbs_ind]
+  image.ref <- fun_ref_image(image.ref.mean = image.ref.mean, ind = ref_ind)
   
   image.ref.rel <- image.ref - image.pbs
  
@@ -100,6 +107,18 @@ fun_camcor_analyse <- function(input_path,
     data_camcor_ref = data_camcor_ref))
 }
 
+ffc <- function(image,
+                data_camcor_pbs,
+                data_camcor_ref,
+                GLOBAL.sref.factor){
+  signal1 <- image - data_camcor_pbs
+  signal1[signal1 < 0] <- 0
+  signal2 <- signal1/data_camcor_ref 
+  signal3 <- GLOBAL.sref.factor*signal2
+  signal3[signal3 < 0] <- 0
+  return(signal3)
+}
+
 fun_camcor_apply <- function(input_path,
                              output_path,
                              data_camcor_pbs,
@@ -116,12 +135,10 @@ fun_camcor_apply <- function(input_path,
     image <- readTIFF(paste(input_path,
                             image.name,
                             sep = "/"))
-
-    signal1 <- image - data_camcor_pbs
-    signal1[signal1 < 0] <- 0
-    signal2 <- signal1/data_camcor_ref 
-    signal3 <- GLOBAL.sref.factor*signal2
-    signal3[signal3 < 0] <- 0
+    signal3 <- ffc(image,
+                   data_camcor_pbs,
+                   data_camcor_ref,
+                   GLOBAL.sref.factor)
     try({dir.create(path = output_path, recursive = TRUE, showWarnings = FALSE)
       writeTIFF(what = signal3,
               where = paste(output_path,
