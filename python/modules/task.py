@@ -42,11 +42,17 @@ class TASK():
             logger.debug("Dict_out new key, value (updated by value): %s, %s", k, v)
         for k, v in list_by_name.items(): #update by name
             logger.debug("Dict_in (by names) key, value: %s, %s", k, v)
-            value = dict_in[v]
+            try:
+                value = dict_in[v]
+            except:
+                ("Dictionary update_by_name error. Given key (%s) doesn't exist in dictionary", v)
             dict_out[k] = value
             logger.debug("Dict_out new key, value (updated by name): %s, %s", k, value)
         logger.debug("Dict_out before concatenation: %s", dict_out.keys())
-        dict_out = self.concatenation_name_nr(dict_out)
+        try:
+            dict_out = self.concatenation_name_nr(dict_out)
+        except:
+            logger.error("Dictionary concatenation error. Dictionary: %s concatenation failed.", dict_out)
         logger.debug("Dict_out after concatenation: %s", dict_out.keys())        
         return dict_out
 
