@@ -58,7 +58,7 @@ def path_join(*paths_list):
     final_path = _unification_by_list(final_path, end_slash)
     if start_slash == True:
         if windows == True:
-            path = "//" + path
+            final_path = "//" + final_path
     logger.debug("Paths joining completed. List of paths to join: %s, final path: %s", paths_list, final_path)
     return final_path
 
