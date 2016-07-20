@@ -54,7 +54,7 @@ def path_join(*paths_list):
     # checking out if the last partial path has got slash on its end, if so the final (joint) path will also be finished by slash
     paths_num = len(paths_list)
     end_slash = _path_check_end_slash(paths_list[(paths_num - 1)])
-    start_slash = _path_check_end_slash(paths_list[0])
+    start_slash = _path_check_start_slash(paths_list[0])
     final_path = _unification_by_list(final_path, end_slash)
     if start_slash == True:
         if windows == True:
