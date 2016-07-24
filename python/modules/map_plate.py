@@ -4,7 +4,7 @@ import modules.file_managment as FM
 import modules.csv_managment as CSV_M
 import csv
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("map plate")
 logger.info("Executing map_plate module.")
 
 def _preparing_output_csv(input_data, output_path, mp_data, names, mp_deltimer, csv_deltimer):

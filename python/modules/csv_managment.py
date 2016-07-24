@@ -2,7 +2,7 @@
 import os, logging, csv
 import modules.file_managment as FM
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("CSV managment")
 logger.info("Executing csv (merge) module.")
 
 def merge_subdir_csv(csv_name, subdir_list, deltimer = ",", column_name = "well.name"): 

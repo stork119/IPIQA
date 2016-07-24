@@ -1,12 +1,12 @@
 #! /usr/bin/python
 import xml.etree.ElementTree as ET
 from collections import OrderedDict
-import logging
+import logging, sys
 import modules.task as TK
 import modules.file_managment as FM
 #from importlib import import_module
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("XML parser")
 
 def _create_task(name, task_list = [], config_dict = {}):
     task_name = name.get('class')
@@ -93,9 +93,7 @@ def parse(input_path):
             logger.error("Input_settings parsing error. Cannot parse %s as XML.", input_path)
         else:
             logger.error("Given input_settings: %s doesn't exist", input_path)
-        pipeline = None
-        config_dict = None
-        return pipeline, config_dict
+        sys.exit(1) # wrong/non existing input settings -> shutting down program 
     root = tree.getroot()
     Config = root[0]
     config_dict = _make_config_dict(Config, Config.tag) # passing the 'name' of dictionary (config), which might be usefull for logs/debugging 

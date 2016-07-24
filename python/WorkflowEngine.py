@@ -1,5 +1,5 @@
 #! /usr/bin/python
-import logging, os.path
+import logging, os.path, sys
 import argparse
 import modules.file_managment as FM
 import modules.logs_configuration as LC
@@ -39,9 +39,10 @@ def main():
     for setts in settings_list:
         logger.info("Current xml settings: %s", setts)
         pipeline, config_dict = XML_P.parse(setts)
-        try:
+        pipeline.execute(config_dict)
+        """"try:
             pipeline.execute(config_dict)
         except:
-            logger.error("Settings %s error. Cannot execute pipeline.", setts)
+            logger.error("Settings %s error. Cannot execute pipeline.", setts)"""
 if __name__ == "__main__":
     main()

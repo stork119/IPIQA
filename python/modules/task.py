@@ -11,7 +11,7 @@ import multiprocessing
 import logging
 import os
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("Task module")
 
 class TASK():
 
@@ -20,40 +20,39 @@ class TASK():
         self.parameters_by_name = parameters_by_name
         self.updates_by_value = updates_by_value
         self.updates_by_name = updates_by_name
+        self.logger = logging.getLogger(self.__class__.__name__)
 
     def execute(self, dict_global):
-        task_name = self.__class__.__name__
-        logger.debug("TASK (class) name: %s", task_name)
         dict_local = dict_global.copy()
-       # temp_dict = dict_global.copy()
-        logger.debug("dict_local before update: %s", (dict_local.keys()))
+        self.logger.debug("dict_local before update: %s", (dict_local.keys()))
         dict_local = self.update_dict(dict_local, dict_local, self.parameters_by_value, self.parameters_by_name) #check out if its working 
-        logger.debug("dict_local after update: %s", dict_local.keys())
+        self.logger.debug("dict_local after update: %s", dict_local.keys())
+        self.logger.info("Executing: %s", self.__class__.__name__) #information what task is being executed
         self.execute_specify(dict_local)
-        logger.debug("dict_local after execute_specify: %s", dict_local.keys()) #dunno if its needed
-        logger.debug("dict_global before update: %s", dict_global.keys())
+        self.logger.debug("dict_local after execute_specify: %s", dict_local.keys()) #dunno if its needed
+        self.logger.debug("dict_global before update: %s", dict_global.keys())
         dict_global = self.update_dict(dict_global, dict_local, self.updates_by_value, self.updates_by_name)
-        logger.debug("dict_global after update: %s", dict_global.keys())
+        self.logger.debug("dict_global after update: %s", dict_global.keys())
         return dict_global
 
     def update_dict(self, dict_out, dict_in, list_by_value, list_by_name):
         for k, v in list_by_value.items(): #update by value
             dict_out[k] = v
-            logger.debug("Dict_out new key, value (updated by value): %s, %s", k, v)
+            self.logger.debug("Dict_out new key, value (updated by value): %s, %s", k, v)
         for k, v in list_by_name.items(): #update by name
-            logger.debug("Dict_in (by names) key, value: %s, %s", k, v)
+            self.logger.debug("Dict_in (by names) key, value: %s, %s", k, v)
             try:
                 value = dict_in[v]
             except:
-                logger.error("Dictionary update_by_name error. Given key (%s) doesn't exist in dictionary", v)
+                self.logger.error("Dictionary update_by_name error. Given key (%s) doesn't exist in dictionary", v)
             dict_out[k] = value
-            logger.debug("Dict_out new key, value (updated by name): %s, %s", k, value)
-        logger.debug("Dict_out before concatenation: %s", dict_out.keys())
+            self.logger.debug("Dict_out new key, value (updated by name): %s, %s", k, value)
+        self.logger.debug("Dict_out before concatenation: %s", dict_out.keys())
         try:
             dict_out = self.concatenation_name_nr(dict_out)
         except:
-            logger.error("Dictionary concatenation error. Dictionary: %s concatenation failed.", dict_out)
-        logger.debug("Dict_out after concatenation: %s", dict_out.keys())        
+            self.logger.error("Dictionary concatenation error. Dictionary: %s concatenation failed.", dict_out)
+        self.logger.debug("Dict_out after concatenation: %s", dict_out.keys())        
         return dict_out
 
     def concatenation_name_nr(self, dict_out):      
@@ -63,7 +62,7 @@ class TASK():
             if "." in k:
                 key = k.split(".")
                 key_list.append(key[0])
-        logger.debug("List of names to concatenate: %s", key_list)
+        self.logger.debug("List of names to concatenate: %s", key_list)
         if len(key_list) > 1:
             temp_dict = dict_out.copy()
             temp_dict2 = OrderedDict(sorted(dict_out.items()))
