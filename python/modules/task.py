@@ -237,9 +237,16 @@ class TASK_PARALLELIZE_PATH(TASK_PARALLELIZE): #all objects (folders) in given d
         self.config_dict = args['config_dict']
 
     def parsing_elements_list(self, dict_local):
-        folders_number = int(dict_local["folders_number"])
+        try:
+            finished = str(dict_local["experiment_finished"])
+        except:
+            finished = "FALSE"
         input_path = str(dict_local["input_path"])
         dir_list = FM.dir_get_names(input_path)
+        if finished == "TRUE":
+            folders_number = len(dir_list)
+        else:
+            folders_number = int(dict_local["folders_number"])
         return dir_list, folders_number
 
 
