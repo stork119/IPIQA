@@ -1,6 +1,6 @@
 #! /usr/bin/python
 import logging
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("R connection")
 try:
     import rpy2.robjects as robjects
     from rpy2.robjects.vectors import DataFrame

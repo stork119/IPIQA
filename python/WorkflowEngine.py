@@ -9,7 +9,7 @@ def main():
     PP_path = os.path.abspath('..')
     """Setting up logs."""
     LC.configure(PP_path)
-    logger = logging.getLogger(__name__)
+    logger = logging.getLogger("XML parser")
     logger.info("Starting program...")
     """Arg parse section."""
     parser = argparse.ArgumentParser(description = '\n PathwayPackage [PP] is an integration platform for instantaneous processing and analysis of confocal/fluorescent microscopy images software. \n[...]')
@@ -39,9 +39,7 @@ def main():
     for setts in settings_list:
         logger.info("Current xml settings: %s", setts)
         pipeline, config_dict = XML_P.parse(setts)
-        try:
-            pipeline.execute(config_dict)
-        except:
-            logger.error("Settings %s error. Cannot execute pipeline.", setts)
+        pipeline.execute(config_dict)
+
 if __name__ == "__main__":
     main()

@@ -4,8 +4,8 @@ from time import sleep
 import logging
 import shutil # for function copy_data
 
-logger = logging.getLogger(__name__)
-logger.info("Executing file_managment module.")
+logger = logging.getLogger("file managment")
+
 """
 Checking out if the director and file exist ["C:/path/to/file"].
 """

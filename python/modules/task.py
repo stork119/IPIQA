@@ -11,7 +11,7 @@ import multiprocessing
 import logging
 import os
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("Task module")
 
 class TASK():
 
@@ -22,8 +22,7 @@ class TASK():
         self.updates_by_name = updates_by_name
 
     def execute(self, dict_global):
-        task_name = self.__class__.__name__
-        logger.debug("TASK (class) name: %s", task_name)
+        logger.info("Executing: %s", self.__class__.__name__) # iformation what task is being executed
         dict_local = dict_global.copy()
        # temp_dict = dict_global.copy()
         logger.debug("dict_local before update: %s", (dict_local.keys()))
