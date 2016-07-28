@@ -15,7 +15,7 @@ def execute_r_script(param_dict, r_script_path, function_name):
     do_call = robjects.r['do.call']
     out = do_call(r_runfunction, r_param_list)
     try:
-        output_dict = {key : out.rx2(key)[0] for key in out.names}
+        output_dict = {key : out.rx2(key) if len(out.rx2(key)) > 1 else out.rx2(key)[0] for key in out.names }
     except:
         output_dict = {}
     return output_dict
