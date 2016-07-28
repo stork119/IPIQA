@@ -373,6 +373,23 @@ class TASK_READ_DATAFRAME_FROM_CSV(TASK):
         data = R_connection.read_dataframe_from_csv(input_path, delimiter)
         dict_local[dict_key_name] = data
 
+class TASK_WRITE_DATAFRAME_TO_CSV(TASK):
+  
+    def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name,  args = {}):
+        TASK.__init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args)
+
+    def execute_specify(self, dict_local):
+        path = dict_local["output_path"]
+        filename = dict_local["filename"]
+        output_path = FM.path_join(path, filename)
+        dict_key_name = dict_local["dict_key_name"]
+        data = dict_local[dict_key_name]
+        try:
+            delimiter = dict_local["delimiter"]
+        except:
+            delimiter = ","
+        R_connection.write_dataframe_to_csv(output_path, data, delimiter)
+
 class TASK_MERGE_CSV(TASK):
   
     def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args = {}):
