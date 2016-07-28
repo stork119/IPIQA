@@ -19,13 +19,14 @@ try({package.list <- list()
 })
 
 ### sources ###
-# wd.tmp <- "X:/EG/CellProfiller/Analysis/2016-06-16-pstat1-summary/"
-# source(paste(wd.tmp, "theme_jetka.R", sep = ""))
+# wd.tmp <- "" ### Rstudio 
+wd.tmp <- dirname(sys.frame(1)$ofile) ### script
+#source(paste(wd.tmp, "theme_jetka.R", sep = ""))
 
 normalize_data <- function(data,
-                   normalize_factor = 65535){
+                           normalize_factor = 65535){
   
   data.intensity_colnames <- grepl("Intensity", colnames(data)) & !grepl("Location", colnames(data))
   data[,data.intensity_colnames] <- data[,data.intensity_colnames]*normalize_factor
-  return(data)
+  return(list(data = data))
 }

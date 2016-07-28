@@ -19,7 +19,8 @@ try({package.list <- list("ggplot2", "ggthemes", "grid")
 })
 
 ### sources ###
-
+# wd.tmp <- "" ### Rstudio 
+wd.tmp <- dirname(sys.frame(1)$ofile) ### script
 
 #### MAIN  ####
 theme_jetka <-  function (base_size = 12,

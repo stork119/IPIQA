@@ -19,8 +19,9 @@ try({package.list <- list("ggplot2")
 })
 
 ### sources ###
-wd.tmp <- "C:/Users/Pathway/Documents/IPIQA/PathwayPackage/R/"
-source(paste(wd.tmp, "theme_jetka.R", sep = ""))
+# wd.tmp <- "" ### Rstudio 
+wd.tmp <- dirname(sys.frame(1)$ofile) ### script
+source(paste(wd.tmp, "theme_jetka.R", sep = "/"))
 
 #### plot_histogram ####
 plot_histogram <- function(data,
@@ -148,6 +149,7 @@ plot_histogram_list <- function(data,
 #### plot_histogram_grid ####
 plot_histogram_grid <- function(data,
                                 output_path,
+                                ...,
                                 filename,
                                 x = "Intensity_IntegratedIntensity_DAPI",
                                 grid_x,

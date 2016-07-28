@@ -19,8 +19,9 @@ try({package.list <- list("ggplot2")
 })
 
 ### sources ###
-wd.tmp <- "X:/EG/CellProfiller/Analysis/2016-06-16-pstat1-summary/"
-source(paste(wd.tmp, "plot_boxplot_compare.R", sep = ""))
+# wd.tmp <- "" ### Rstudio 
+wd.tmp <- dirname(sys.frame(1)$ofile) ### script
+source(paste(wd.tmp, "plot_boxplot_compare.R", sep = "/"))
 
 plot_boxplot_compare_grid <- function(data,
                                       path,
