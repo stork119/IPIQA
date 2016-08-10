@@ -368,6 +368,17 @@ class TASK_FFC_APPLY(TASK):
         # Check if user set input an output paths
         output_dict = ffc.apply_camcor(dict_local, self.parameters_by_value, self.parameters_by_name)
         dict_local.update(output_dict)
+   
+   
+class TASK_FFC_READ_APPLY(TASK):
+  
+    def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name,  args = {}):
+        TASK.__init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args)
+
+    def execute_specify(self, dict_local):
+        # Check if user set input an output paths
+        output_dict = ffc.read_apply_camcor(dict_local, self.parameters_by_value, self.parameters_by_name)
+        dict_local.update(output_dict)
         
 class TASK_READ_DATAFRAME_FROM_CSV(TASK):
   
