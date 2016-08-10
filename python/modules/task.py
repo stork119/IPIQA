@@ -24,35 +24,34 @@ class TASK():
     def execute(self, dict_global):
         logger.info("Executing: %s", self.__class__.__name__) # iformation what task is being executed
         dict_local = dict_global.copy()
-       # temp_dict = dict_global.copy()
-        logger.debug("dict_local before update: %s", (dict_local.keys()))
+        #temp_dict = dict_global.copy()
+        #logger.debug("dict_local before update: %s", (dict_local.keys()))
         dict_local = self.update_dict(dict_local, dict_local, self.parameters_by_value, self.parameters_by_name) #check out if its working 
-        logger.debug("dict_local after update: %s", dict_local.keys())
+        logger.debug("dict_local before execute_specify: %s", dict_local.keys())
         self.execute_specify(dict_local)
-        logger.debug("dict_local after execute_specify: %s", dict_local.keys()) #dunno if its needed
-        logger.debug("dict_global before update: %s", dict_global.keys())
+        #logger.debug("dict_local after execute_specify: %s", dict_local.keys()) #dunno if its needed
+        #logger.debug("dict_global before update: %s", dict_global.keys())
         dict_global = self.update_dict(dict_global, dict_local, self.updates_by_value, self.updates_by_name)
-        logger.debug("dict_global after update: %s", dict_global.keys())
+        logger.debug("dict_global after executing %s : %s",  self.__class__.__name__, dict_global.keys())
         return dict_global
 
     def update_dict(self, dict_out, dict_in, list_by_value, list_by_name):
         for k, v in list_by_value.items(): #update by value
             dict_out[k] = v
-            logger.debug("Dict_out new key, value (updated by value): %s, %s", k, v)
+            logger.debug("Dict_out new key (updated by value): %s", k)
         for k, v in list_by_name.items(): #update by name
-            logger.debug("Dict_in (by names) key, value: %s, %s", k, v)
             try:
                 value = dict_in[v]
             except:
                 logger.error("Dictionary update_by_name error. Given key (%s) doesn't exist in dictionary", v)
             dict_out[k] = value
-            logger.debug("Dict_out new key, value (updated by name): %s, %s", k, value)
+            logger.debug("Dict_out new key (updated by name): %s, %s", k, v)
         logger.debug("Dict_out before concatenation: %s", dict_out.keys())
         try:
             dict_out = self.concatenation_name_nr(dict_out)
         except:
-            logger.error("Dictionary concatenation error. Dictionary: %s concatenation failed.", dict_out)
-        logger.debug("Dict_out after concatenation: %s", dict_out.keys())        
+            logger.error("Dictionary concatenation error. Dictionary: %s concatenation failed.", dict_out.keys())
+        #logger.debug("Dict_out after concatenation: %s", dict_out.keys())        
         return dict_out
 
     def concatenation_name_nr(self, dict_out):      
@@ -330,7 +329,8 @@ class TASK_R(TASK):
     def execute_specify(self, dict_local):
         r_function_name = dict_local["r_function_name"]
         r_script_path = dict_local["r_script_path"]
-        external_params = ["r_function_name", "r_script_path"] 
+        external_params = ["r_function_name", "r_script_path"]
+        logger.info("Executing R function %s from %s", r_function_name, r_script_path) 
         # PLACEHOLDER for adding more external params
         param_dict = R_connection.prepare_param_dict(dict_local, self.parameters_by_value, self.parameters_by_name, external_params)
         output_dict = R_connection.execute_r_script(param_dict, r_script_path, r_function_name)
