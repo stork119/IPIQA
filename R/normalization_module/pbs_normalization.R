@@ -17,34 +17,7 @@ package.load <- sapply(package.list, function(package.name){
   return(package.exist)
 })
 })
-
-pbs_normalization <- function(camcor_path,
-                              input_path,
-                              output_path,
-                              filename,
-                              delimeter = ",",
-                              pbs_ref = 0.0003,
-                              ...
-                              ){
-  
-  pbs_ref <- as.integer(pbs_ref)
-  camcor_path <- normalizePath(camcor_path, "/")
-  input_path <-  normalizePath(paste(input_path, filename, sep = "/"), "/")
-
-  camcor <- read.table(file = camcor_path, header = TRUE, sep = delimeter)
-  
-  data <- read.table(file = input_path, header = TRUE, sep = delimeter)
-  data.intensity_colnames <- grepl("Intensity", colnames(data)) & !grepl("Location", colnames(data))
-  
-  data[,data.intensity_colnames] <- data[,data.intensity_colnames]*pbs_ref/camcor$pbs
-  try({
-    output_path <- normalizePath(paste(output_path, sep = "/"), "/")
-    dir.create(output_path, recursive = TRUE)
-    output_path <- normalizePath(paste(output_path, filename, sep = "/"), "/")
-    write.table(x = data, file = output_path, col.names  = TRUE, sep = delimeter)
-  })
-}
-
+#### ####
 pbs_normalization <- function(camcor_path,
                               input_path,
                               output_path,
@@ -54,14 +27,14 @@ pbs_normalization <- function(camcor_path,
                               ...
 ){
   
-  pbs_ref <- as.integer(pbs_ref)
+  pbs_ref     <- as.numeric(pbs_ref)
   camcor_path <- normalizePath(camcor_path, "/")
-  input_path <-  normalizePath(paste(input_path, filename, sep = "/"), "/")
+  input_path  <-  normalizePath(paste(input_path, filename, sep = "/"), "/")
   
   camcor <- read.table(file = camcor_path, header = TRUE, sep = delimeter)
   
   data <- read.table(file = input_path, header = TRUE, sep = delimeter)
-  data.intensity_colnames <- grepl("Intensity", colnames(data)) & !grepl("Location", colnames(data))
+  data.intensity_colnames <- grepl("^Intensity_[A-z]*", colnames(data))
   
   data[,data.intensity_colnames] <- data[,data.intensity_colnames]*pbs_ref/camcor$pbs
   try({
@@ -86,7 +59,7 @@ background_normalization <- function(background_path,
   input_path <-  normalizePath(paste(input_path, filename, sep = "/"), "/")
   
   image_data <- read.table(file = background_path, header = TRUE, sep = delimeter)
-  #background$Intensity_MeanIntensity_Background
+
   data <- read.table(file = input_path, header = TRUE, sep = delimeter)
   
   image_data.intensity_colnames <- colnames(image_data)[grepl("^Intensity_[A-z]*Intensity_Background$",
@@ -96,8 +69,6 @@ background_normalization <- function(background_path,
   data.intensity_regex <- sapply(1:length(image_data.intensity_colnames_stop),
          function(i){substr(image_data.intensity_colnames[i], 1, image_data.intensity_colnames_stop[i])})
     
-  
-# data.intensity_colnames[ sapply(gregexpr("^.*?Background",data.intensity_colnames), function(l){return(attr(l, "match.length"))}))
   
   for(image.i in 1:nrow(image_data)){
     image <- image_data[image.i,]
