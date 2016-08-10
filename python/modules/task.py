@@ -336,6 +336,16 @@ class TASK_R(TASK):
         output_dict = R_connection.execute_r_script(param_dict, r_script_path, r_function_name)
         dict_local.update(output_dict)
         
+class TASK_FFC_CREATE(TASK):
+  
+    def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name,  args = {}):
+        TASK.__init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args)
+
+    def execute_specify(self, dict_local):
+        # Check if user set input an output paths
+        output_dict = ffc.create_camcor(dict_local, self.parameters_by_value, self.parameters_by_name)
+        dict_local.update(output_dict)
+
 class TASK_FFC_READ(TASK):
   
     def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name,  args = {}):
@@ -343,7 +353,10 @@ class TASK_FFC_READ(TASK):
 
     def execute_specify(self, dict_local):
         # Check if user set input an output paths
-        output_dict = ffc.read_camcor(dict_local, self.parameters_by_value, self.parameters_by_name)
+        try:
+            output_dict = ffc.read_camcor(dict_local, self.parameters_by_value, self.parameters_by_name)
+        except:
+            output_dict = ffc.create_camcor(dict_local, self.parameters_by_value, self.parameters_by_name)
         dict_local.update(output_dict)
 
 class TASK_FFC_APPLY(TASK):

@@ -19,9 +19,9 @@ try({package.list <- list("tiff")
 })
 
 ### sources ###
-wd.tmp <- "C:/Users/Pathway/Documents/IPIQA/PathwayPackage/R/ffc_module/"
-l <- lapply(list("DivideImage", "ImageCalculator"), 
-       function(f){source(paste(wd.tmp, f, ".R", sep = ""))})
+wd.tmp <- dirname(sys.frame(1)$ofile)
+l <- lapply(list("DivideImage.R", "ImageCalculator.R"), 
+            function(f){source(normalizePath(paste(wd.tmp, f, sep = "/"), "/"))})
 rm(l)
 
 fun_ref_image <- function(image.ref.mean,
@@ -38,15 +38,16 @@ fun_ref_image <- function(image.ref.mean,
 }
 
 
-fun_camcor_analyse <- function(input_path,
+fun_camcor_create <- function(input_path,
                                output_path,
                                well_path_regex = "Well\\s[A-Z]\\d\\d$",
                                well_file_regex = ".tif$",
                                logical_divide_images = TRUE,
                                pbs_ind = 1,
+                               save_files = FALSE,
+                               delimeter = ",",
                                ...
                                ){
-  
   try({
     input_path <- normalizePath(input_path, "/")
     output_path <- normalizePath(output_path, "/")
@@ -54,6 +55,7 @@ fun_camcor_analyse <- function(input_path,
   wells.list <- list.files(path = input_path)
   wells.list <- wells.list[grep(well_path_regex, wells.list)]
   
+  df.camcor <- matrix( nrow= 0, ncol = 16)
   image.ref.mean <- list()
   camcor.df <- data.frame(x = numeric(), y = numeric(), val = numeric(), ref = numeric())
   for(well in wells.list){
@@ -64,27 +66,47 @@ fun_camcor_analyse <- function(input_path,
     well.name <- well.list[grep(well_file_regex, well.list)]
     well.input.path <- paste(well.input.path, well.name, sep = "/")
     if(logical_divide_images){
-      DivideImage(input.dir = well.input.path,
+      df.camcor<- rbind(df.camcor,
+                        DivideImage(input.dir = well.input.path,
                   output.dir = well.output.path,
                   output.name = well.name,
                   ncol = 1392,
-                  nrow = 1024,
-                  output = FALSE)
+                  nrow = 1024))
     }
     image.ref.mean[[well]] <- getMeanImage(input.dir = well.output.path,
                                            output.dir = paste(output_path,
                                                               well, ".tif",
                                                               sep = ""),
                                            pattern = ".*Alexa.*tif")
+    if(!save_files){
+      file.remove(list.files(normalizePath(well.output.path, "/"), full.names = TRUE), recursive = TRUE)
+    }
   }
+  
   
   image.pbs <- fun_ref_image(image.ref.mean = image.ref.mean, ind = pbs_ind)
   ref_ind <- (1:length(image.ref.mean))[-pbs_ind]
   image.ref <- fun_ref_image(image.ref.mean = image.ref.mean, ind = ref_ind)
   
+  write.table(row.names = FALSE, col.names = TRUE,
+              file = paste(output_path,
+                           "camcor.csv",
+                           sep = ""),
+              x = data.frame(pbs = mean(image.pbs), ref = mean(image.ref)), 
+              sep = delimeter)
+
+  write.table(row.names = FALSE, col.names = TRUE,
+              file = paste(output_path,
+                           "camcor-images.csv",
+                           sep = ""),
+              x = df.camcor,
+              sep = delimeter)
+  
+  
   image.ref.rel <- image.ref - image.pbs
  
   data_camcor_pbs <- merge(img = image.pbs)
+
   writeTIFF(what = data_camcor_pbs,
             where = paste(output_path,
                           "PBS.tif",
@@ -93,7 +115,9 @@ fun_camcor_analyse <- function(input_path,
             compression = "none",
             reduce = FALSE
   )
-  data_camcor_ref  <- merge(img = image.ref.rel)
+
+  
+    data_camcor_ref  <- merge(img = image.ref.rel)
   writeTIFF(what = data_camcor_ref,
             where = paste(output_path,
                           "REF.tif",
@@ -107,6 +131,27 @@ fun_camcor_analyse <- function(input_path,
     data_camcor_ref = data_camcor_ref))
 }
 
+fun_camcor_read <- function(output_path,
+                            ...
+){
+  
+  try({
+    output_path <- normalizePath(output_path, "/")
+    dir.create(path = output_path, recursive = TRUE, showWarnings = FALSE)})
+  
+   
+  data_camcor_pbs = readTIFF(paste(output_path,
+                          "PBS.tif",
+                          sep = ""))
+  data_camcor_ref = readTIFF(paste(output_path,
+                          "REF.tif",
+                          sep = ""))
+  return(list(
+    data_camcor_pbs = data_camcor_pbs,
+    data_camcor_ref = data_camcor_ref))
+}
+
+
 ffc <- function(image,
                 data_camcor_pbs,
                 data_camcor_ref,
@@ -114,7 +159,9 @@ ffc <- function(image,
   signal1 <- image - data_camcor_pbs
   signal1[signal1 < 0] <- 0
   signal2 <- signal1/data_camcor_ref 
-  signal3 <- GLOBAL.sref.factor*signal2
+  #signal3 <- GLOBAL.sref.factor*signal2
+  signal3 <- mean(data_camcor_ref)*signal2 
+  ### we don't assume that reference signal is constant between experiments
   signal3[signal3 < 0] <- 0
   return(signal3)
 }
@@ -151,5 +198,22 @@ fun_camcor_apply <- function(input_path,
     })
   }
   
+}
+
+fun_camcor_read_apply <- function(camcor_path,
+                                  input_path,
+                                  output_path,
+                                  image_regex = list("^Alexa.*\\.tif$", "^DAPI.*\\.tif$"),
+                                  GLOBAL.sref.factor = 0.01,
+                                  ...
+){
+  camcor <- fun_camcor_read(output_path = camcor_path)
+  return(fun_camcor_apply(input_path = input_path,
+                   output_path = output_path,
+                   data_camcor_pbs = camcor[["data_camcor_pbs"]],
+                   data_camcor_ref = camcor[["data_camcor_ref"]],
+                   image_regex = image_regex,
+                   GLOBAL.sref.factor = GLOBAL.sref.factor,
+                   ...))
 }
   

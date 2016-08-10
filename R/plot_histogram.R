@@ -41,7 +41,7 @@ plot_histogram <- function(data,
                            theme_text_size = 12,
                            line_size = 1.5,
                            save_plot = TRUE,
-                          ...){
+                           ...){
   if(nrow(data) > data_nrow_min){
     gplot <- ggplot(data = data) +
       geom_histogram(aes_string(x = x, "..density.."), binwidth = bin_width) +

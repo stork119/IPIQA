@@ -8,9 +8,16 @@ def prepare_script_path():
     path = FM.path_join(path, "R/ffc_module/ffc_module.R")
     return path
 
+def create_camcor(dict_local, parameters_by_value, parameters_by_name):
+    r_script_path = prepare_script_path()
+    function_name = "fun_camcor_create"
+    param_dict = R_connection.prepare_param_dict(dict_local, parameters_by_value, parameters_by_name, [])
+    output_dict = R_connection.execute_r_script(dict_local, r_script_path, function_name)
+    return output_dict
+
 def read_camcor(dict_local, parameters_by_value, parameters_by_name):
     r_script_path = prepare_script_path()
-    function_name = "fun_camcor_analyse"
+    function_name = "fun_camcor_read"
     param_dict = R_connection.prepare_param_dict(dict_local, parameters_by_value, parameters_by_name, [])
     output_dict = R_connection.execute_r_script(dict_local, r_script_path, function_name)
     return output_dict

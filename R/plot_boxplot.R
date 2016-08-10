@@ -19,7 +19,7 @@ try({package.list <- list("ggplot2")
 })
 
 ### sources ###
-# wd.tmp <- "" ### Rstudio 
+#wd.tmp <- "Y:/IPIQA/PP-21/R/" ### Rstudio 
 wd.tmp <- dirname(sys.frame(1)$ofile) ### script
 source(paste(wd.tmp, "theme_jetka.R", sep = "/"))
 
@@ -48,7 +48,8 @@ plot_boxplot_group <- function(data,
                                theme_text_size = 12,
                                normalize_data   = TRUE, 
                                normalize_factor = 65535,
-                               ylim_max_const = TRUE){
+                               ylim_max_const = TRUE,
+                               x_factor = TRUE){
 
   ylim_min <- as.integer(ylim_min)
   ylim_max  <- as.integer(ylim_max)
@@ -60,13 +61,16 @@ plot_boxplot_group <- function(data,
   normalize_data <- as.integer(normalize_data)
   normalize_factor <- as.integer(normalize_factor)
   ylim_max_const <- as.integer(ylim_max_const)
-  
+  x_factor  <- as.integer(x_factor)
   
   if(normalize_data){
     data[,y] <- normalize_factor*data[,y]
   }
   if(!ylim_max_const){
     ylim_max <- 1.2*max(data[,y])
+  }
+  if(x_factor){
+    data[,x] <- factor(data[,x])
   }
   gplot <- ggplot(data = data, 
                   aes_string(x = x,
