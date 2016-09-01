@@ -106,11 +106,16 @@ def _getting_column_titles(abs_path, paths):
 def combine(path_csv, path_map_plate, path_output, csv_names, exp_id, exp_part, exp_parts_all, mp_deltimer = "\t", csv_deltimer = ","):
     f_paths_map_plate = _getting_paths_mp(path_map_plate)
     f_paths_map_plate = sorted(f_paths_map_plate, key = str)
+    logger.debug("f_paths_map_plate %s.", f_paths_map_plate)
     f_paths_output = _making_path_list(path_output, csv_names)
+    logger.debug("f_paths_output %s.", f_paths_output)
     if isinstance(path_csv,str):
         f_paths_csv = _making_path_list(path_csv, csv_names)
+        logger.debug("f_paths_csv %s.", f_paths_csv)
     mp_output = _parsing_map_plate(path_map_plate, f_paths_map_plate, mp_deltimer, exp_part, exp_id, exp_parts_all)
+    logger.debug("mp_output %s.", mp_output)
     names = _getting_column_titles(path_map_plate, f_paths_map_plate)
+    logger.debug("names %s.", names)
     for i in range(len(f_paths_output)):
         if isinstance(path_csv,dict):
             in_data = paths_csv[csv_names[i]]  # return dictrionary

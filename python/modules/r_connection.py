@@ -18,6 +18,9 @@ def execute_r_script(param_dict, r_script_path, function_name):
         output_dict = {key : out.rx2(key) if len(out.rx2(key)) > 1 else out.rx2(key)[0] for key in out.names }
     except:
         output_dict = {}
+    gc = robjects.r['gc']
+    out = gc()
+    print(out)
     return output_dict
 
 def example_execute(param_dict, r_script_path, function_name):
