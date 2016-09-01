@@ -74,9 +74,9 @@ getMeanImage <- function(input.dir,
 
 #### getMeanImageMatrix ####
 getMeanImageMatrix <- function(
-                         images.list,
-                         nrow = 1024,
-                         ncol = 1392){
+  images.list,
+  nrow = 1024,
+  ncol = 1392){
   
   images.mean <- matrix(data = rep(x = 0, times = nrow*ncol), 
                         nrow = nrow, 

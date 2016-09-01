@@ -19,9 +19,9 @@ try({package.list <- list("tiff")
 })
 
 ### sources ###
-wd.tmp <- dirname(sys.frame(1)$ofile)
+wd.tmp <- "C://Users//Pathway//Documents//IPIQA//PathwayPackage//R//ffc_module//"#dirname(sys.frame(1)$ofile)
 l <- lapply(list("DivideImage.R", "ImageCalculator.R"), 
-            function(f){source(normalizePath(paste(wd.tmp, f, sep = "/"), "/"))})
+            function(f){source(normalizePath(paste(wd.tmp, f, sep = "//"), "/"))})
 rm(l)
 
 fun_ref_image <- function(image.ref.mean,
@@ -81,6 +81,7 @@ fun_camcor_create <- function(input_path,
     if(!save_files){
       file.remove(list.files(normalizePath(well.output.path, "/"), full.names = TRUE), recursive = TRUE)
     }
+    gc()
   }
   
   
@@ -135,20 +136,14 @@ fun_camcor_read <- function(output_path,
                             ...
 ){
   
-  try({
-    output_path <- normalizePath(output_path, "/")
-    dir.create(path = output_path, recursive = TRUE, showWarnings = FALSE)})
-  
-   
-  data_camcor_pbs = readTIFF(paste(output_path,
+    data_camcor <- list()
+    data_camcor[["data_camcor_pbs"]] <-  readTIFF(paste(output_path,
                           "PBS.tif",
                           sep = ""))
-  data_camcor_ref = readTIFF(paste(output_path,
+    data_camcor[["data_camcor_ref"]] <- readTIFF(paste(output_path,
                           "REF.tif",
                           sep = ""))
-  return(list(
-    data_camcor_pbs = data_camcor_pbs,
-    data_camcor_ref = data_camcor_ref))
+  return(data_camcor)
 }
 
 
@@ -156,38 +151,44 @@ ffc <- function(image,
                 data_camcor_pbs,
                 data_camcor_ref,
                 GLOBAL.sref.factor){
-  signal1 <- image - data_camcor_pbs
-  signal1[signal1 < 0] <- 0
-  signal2 <- signal1/data_camcor_ref 
+  print(memory.size(max = FALSE))
+  print(memory.size(max = TRUE))
+  
+  image <- image - data_camcor_pbs
+  image[image < 0] <- 0
+  image <- image/data_camcor_ref 
   #signal3 <- GLOBAL.sref.factor*signal2
-  signal3 <- mean(data_camcor_ref)*signal2 
+  image <- mean(data_camcor_ref)*image 
   ### we don't assume that reference signal is constant between experiments
-  signal3[signal3 < 0] <- 0
-  return(signal3)
+  image[image < 0] <- 0
+  return(image)
 }
 
 fun_camcor_apply <- function(input_path,
                              output_path,
                              data_camcor_pbs,
                              data_camcor_ref,
-                             image_regex = list("^Alexa.*\\.tif$", "^DAPI.*\\.tif$"),
+                             regex,
+                             #image_regex = list("^Alexa.*\\.tif$", "^DAPI.*\\.tif$"),
                              GLOBAL.sref.factor = 0.01,
                              ...
 ){
   input_path <- normalizePath(input_path, "/")
   output_path <- normalizePath(output_path, "/")
   images.list <- list.files(path = input_path)
-  for(regex in image_regex){
+ # for(regex in image_regex){
     image.name <- images.list[grep(regex, images.list)]
+    print(image.name)
+    gc()
     image <- readTIFF(paste(input_path,
                             image.name,
                             sep = "/"))
-    signal3 <- ffc(image,
+    image <- ffc(image,
                    data_camcor_pbs,
                    data_camcor_ref,
                    GLOBAL.sref.factor)
     try({dir.create(path = output_path, recursive = TRUE, showWarnings = FALSE)
-      writeTIFF(what = signal3,
+      writeTIFF(what = image,
               where = paste(output_path,
                             image.name,
                             sep = "/"),  
@@ -196,7 +197,7 @@ fun_camcor_apply <- function(input_path,
               reduce = FALSE
       )
     })
-  }
+  #}
   
 }
 
@@ -207,13 +208,24 @@ fun_camcor_read_apply <- function(camcor_path,
                                   GLOBAL.sref.factor = 0.01,
                                   ...
 ){
+  memory.limit(size=1800)
+  print(memory.size(max = TRUE))
+  print(memory.limit())
+
+  gc()
   camcor <- fun_camcor_read(output_path = camcor_path)
-  return(fun_camcor_apply(input_path = input_path,
+    gc()
+  for(regex in image_regex){
+    gc()
+    print(regex)
+  fun_camcor_apply(input_path = input_path,
                    output_path = output_path,
                    data_camcor_pbs = camcor[["data_camcor_pbs"]],
                    data_camcor_ref = camcor[["data_camcor_ref"]],
-                   image_regex = image_regex,
+                   regex = regex,
                    GLOBAL.sref.factor = GLOBAL.sref.factor,
-                   ...))
+                   ...)
+          }
+  return()
 }
   
