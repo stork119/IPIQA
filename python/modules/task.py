@@ -124,6 +124,7 @@ class TASK_DOWNLOAD(TASK):
     def execute_specify(self, dict_local):
         in_path = dict_local["input_path"]
         out_path = dict_local["output_path"]
+        logger.info("TASK_DOWNLOAD from input: %s to output :%s", in_path, out_path) 
         FM.dir_copy(in_path, out_path)
 
 
@@ -423,6 +424,30 @@ class TASK_MERGE_CSV(TASK):
         in_path_list = []
         in_path_list.append(dict_local["input_path_1"])
         in_path_list.append(dict_local["input_path_2"])
+        csv_names = (dict_local["csv_names_list"]).split(",")
+        output_path = dict_local["output_path"]
+        try:
+            delimiter = dict_local["delimiter"]
+        except:
+            delimiter = "," #choose separator
+        for csv_name in csv_names:
+            data = CSV_M.simple_merge(csv_name, in_path_list, delimiter)
+            #Saving data
+            out_path = FM.path_join(output_path, csv_name)
+            if FM.path_check_existence(out_path):
+                logger.warning("File %s already exists. Removing old data.", out_path)
+                FM.dir_remove(out_path)
+            CSV_M.write_csv(out_path, delimiter, data) #if we would like to write_csv somewhere...
+            # PLACEHOLDER adding data to dictionary 
+
+class TASK_COPY_CSV(TASK):
+  
+    def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args = {}):
+        TASK.__init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args)
+
+    def execute_specify(self, dict_local):
+        in_path_list = []
+        in_path_list.append(dict_local["input_path"])
         csv_names = (dict_local["csv_names_list"]).split(",")
         output_path = dict_local["output_path"]
         try:
