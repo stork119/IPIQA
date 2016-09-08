@@ -177,7 +177,7 @@ def dir_copy(in_path, out_path):
     elif os.path.isdir(in_path):
         folder_copy(in_path, out_path)
     else:
-        logging.info("Unable to copy %s. Object not found.", path)   
+        logging.info("Unable to copy %s. Object not found.", in_path)   
 
 def folder_copy(in_path, out_path):
     copied_dir_path = out_path

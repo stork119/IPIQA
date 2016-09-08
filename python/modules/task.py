@@ -315,12 +315,20 @@ class TASK_MAP_PLATE(TASK):
         csv_names = (dict_local["csv_names_list"]).split(",")
         exp_id = dict_local["exp_id"]
         try:
+            delimiter_csv = dict_local["delimiter_csv"]
+        except:
+            delimiter_csv = ","
+        try:
+            delimiter_mp = dict_local["delimiter_mp"]
+        except:
+            delimiter_mp = ","
+        try:
             exp_part_id = dict_local["exp_part"]
             exp_parts = dict_local["exp_parts"]
         except:
             exp_part_id = "1" 
             exp_parts = "1"
-        map_plate.combine(input_path_csv, input_path_metadata, output_path, csv_names, exp_id, exp_part_id, exp_parts)
+        map_plate.combine(input_path_csv, input_path_metadata, output_path, csv_names, exp_id, exp_part_id, exp_parts, delimiter_mp, delimiter_csv)
 
 class TASK_R(TASK):
   

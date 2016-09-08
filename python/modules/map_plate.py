@@ -103,7 +103,7 @@ def _getting_column_titles(abs_path, paths):
     #names = ",".join(names)
     return names
 
-def combine(path_csv, path_map_plate, path_output, csv_names, exp_id, exp_part, exp_parts_all, mp_deltimer = "\t", csv_deltimer = ","):
+def combine(path_csv, path_map_plate, path_output, csv_names, exp_id, exp_part, exp_parts_all, mp_deltimer = ",", csv_deltimer = ","):
     f_paths_map_plate = _getting_paths_mp(path_map_plate)
     f_paths_map_plate = sorted(f_paths_map_plate, key = str)
     logger.debug("f_paths_map_plate %s.", f_paths_map_plate)
