@@ -19,6 +19,9 @@ try({package.list <- list("tiff")
 })
 
 ### sources ###
+ffc.width <- 1344#1392
+ffc.height <- 1024
+
 wd.tmp <- "C://Users//Pathway//Documents//IPIQA//PathwayPackage//R//ffc_module//"#dirname(sys.frame(1)$ofile)
 l <- lapply(list("DivideImage.R", "ImageCalculator.R"), 
             function(f){source(normalizePath(paste(wd.tmp, f, sep = "//"), "/"))})
@@ -54,7 +57,6 @@ fun_camcor_create <- function(input_path,
     dir.create(path = output_path, recursive = TRUE, showWarnings = FALSE)})
   wells.list <- list.files(path = input_path)
   wells.list <- wells.list[grep(well_path_regex, wells.list)]
-  
   df.camcor <- matrix( nrow= 0, ncol = 16)
   image.ref.mean <- list()
   camcor.df <- data.frame(x = numeric(), y = numeric(), val = numeric(), ref = numeric())
@@ -70,9 +72,10 @@ fun_camcor_create <- function(input_path,
                         DivideImage(input.dir = well.input.path,
                   output.dir = well.output.path,
                   output.name = well.name,
-                  ncol = 1392,
-                  nrow = 1024))
+                  ncol = 1392,#1344,#1392,
+                  nrow = ffc.height))
     }
+    print(well.output.path)
     image.ref.mean[[well]] <- getMeanImage(input.dir = well.output.path,
                                            output.dir = paste(output_path,
                                                               well, ".tif",
@@ -83,7 +86,6 @@ fun_camcor_create <- function(input_path,
     }
     gc()
   }
-  
   
   image.pbs <- fun_ref_image(image.ref.mean = image.ref.mean, ind = pbs_ind)
   ref_ind <- (1:length(image.ref.mean))[-pbs_ind]

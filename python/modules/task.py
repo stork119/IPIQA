@@ -313,7 +313,10 @@ class TASK_MAP_PLATE(TASK):
         input_path_metadata = dict_local["input_path_metadata"]
         output_path = dict_local["output_path"]
         csv_names = (dict_local["csv_names_list"]).split(",")
-        exp_id = dict_local["exp_id"]
+        try:
+            exp_id = dict_local["exp_id"]
+        except:
+            exp_id = 1
         try:
             delimiter_csv = dict_local["delimiter_csv"]
         except:
@@ -321,7 +324,7 @@ class TASK_MAP_PLATE(TASK):
         try:
             delimiter_mp = dict_local["delimiter_mp"]
         except:
-            delimiter_mp = ","
+            delimiter_mp = "\t"
         try:
             exp_part_id = dict_local["exp_part"]
             exp_parts = dict_local["exp_parts"]

@@ -12,8 +12,8 @@ writeTIFFDefault <- function(what, where){
 
 #### merge ####
 merge <- function(img, 
-                  nrow              = 1024,
-                  ncol              = 1392,
+                  nrow              = ffc.height,
+                  ncol              =  ffc.width,#ffc.width,#ffc.width,
                   resize            = 4,
                   nrow.resize       = resize*nrow,
                   ncol.resize       = resize*ncol,
@@ -34,8 +34,8 @@ merge <- function(img,
 #### getMeanImage ####
 getMeanImage <- function(input.dir, 
                          output.dir,
-                         nrow = 1024,
-                         ncol = 1392,
+                         nrow = ffc.height,
+                         ncol =  ffc.width,#ffc.width,
                          pattern = ".*Alexa.*tif"){
   
   images.list <- lapply(list.files(input.dir,
@@ -75,8 +75,9 @@ getMeanImage <- function(input.dir,
 #### getMeanImageMatrix ####
 getMeanImageMatrix <- function(
   images.list,
-  nrow = 1024,
-  ncol = 1392){
+  nrow = ffc.height,
+  ncol = ffc.width#ffc.width#ffc.width
+  ){
   
   images.mean <- matrix(data = rep(x = 0, times = nrow*ncol), 
                         nrow = nrow, 

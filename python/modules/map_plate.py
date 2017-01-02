@@ -86,6 +86,9 @@ def _parsing_map_plate(mp_path, paths_mp, deltimer, exp_part, exp_name, exp_part
 def _collecting_exp_settings(mp_file, well, deltimer):
     row_nr, col_nr = well
     data = CSV_M.read_csv(mp_file, deltimer)
+    print(mp_file)
+    print(row_nr)
+    print(col_nr)
     return (data[row_nr][col_nr])
     
 def _getting_column_titles(abs_path, paths):
@@ -104,6 +107,7 @@ def _getting_column_titles(abs_path, paths):
     return names
 
 def combine(path_csv, path_map_plate, path_output, csv_names, exp_id, exp_part, exp_parts_all, mp_deltimer = ",", csv_deltimer = ","):
+    print(mp_deltimer)
     f_paths_map_plate = _getting_paths_mp(path_map_plate)
     f_paths_map_plate = sorted(f_paths_map_plate, key = str)
     logger.debug("f_paths_map_plate %s.", f_paths_map_plate)

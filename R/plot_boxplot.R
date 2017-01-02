@@ -72,6 +72,9 @@ plot_boxplot_group <- function(data,
   if(x_factor){
     data[,x] <- factor(data[,x])
   }
+  
+#  data$bg <- factor(sapply(1:nrow(data),function(i){paste(as.character(data[i,boxplot_group]), sep = " ", collapse = " ")}))
+  
   gplot <- ggplot(data = data, 
                   aes_string(x = x,
                              y = y,
@@ -87,7 +90,7 @@ plot_boxplot_group <- function(data,
   try({
     output_path <- normalizePath(output_path, "/")
     dir.create(path = output_path, recursive = TRUE, showWarnings = FALSE)
-  ggsave(filename =paste(output_path, "/", filename, ".pdf", sep = ""),
+  ggsave(filename = paste(output_path, "/", filename, ".pdf", sep = ""),
          plot = gplot,
          width = plot_width,
          height = plot_height,

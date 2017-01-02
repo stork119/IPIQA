@@ -254,7 +254,7 @@ def file_verify_extension(filename, extension): #checking out if the given file 
     if filename.endswith(extension):
         return True
     else:
-        logger.debug("File %s doesn't have got extension %s..", path, extension)
+        logger.debug("File %s doesn't have got extension %s..", filename, extension)
         return False
 
 def file_get_extension(filename): #extracting extension from file i.e. ".py" from "foo.py"

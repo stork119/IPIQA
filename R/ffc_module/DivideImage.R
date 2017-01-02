@@ -3,7 +3,9 @@
 ### ### ### ### ###
 
 ##### divide #####
-divide <- function(image, ncol = 1392, nrow = 1024){
+divide <- function(image,
+                   ncol = ffc.width, #1344,
+                   nrow = ffc.height){
   ncol.def <- ncol(image)
   nrow.def <- nrow(image)
   
@@ -22,8 +24,8 @@ divide <- function(image, ncol = 1392, nrow = 1024){
 DivideImageList <- function(input.dir,
                             output.dir,
                             output.name,
-                            ncol = 1392,
-                            nrow = 1024,
+                            ncol = ffc.width,#1344,#ffc.width,
+                            nrow = ffc.height,
                             output = FALSE){
   image <- readTIFF(input.dir)
   ncol.def <- ncol(image)
@@ -54,8 +56,8 @@ DivideImageList <- function(input.dir,
 DivideImage <- function(input.dir,
                         output.dir,
                         output.name,
-                        ncol = 1392,
-                        nrow = 1024){
+                        ncol = ffc.width, #1344,#ffc.width,
+                        nrow = ffc.height){
   image <- readTIFF(input.dir)
   ncol.def <- ncol(image)
   nrow.def <- nrow(image)
