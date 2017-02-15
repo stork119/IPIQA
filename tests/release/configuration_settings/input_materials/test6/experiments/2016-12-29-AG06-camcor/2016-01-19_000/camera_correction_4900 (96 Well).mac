@@ -1,0 +1,36 @@
+[General]
+Type=Macro
+Version=7.00
+Lines=13
+Compound=1
+[DataClass]
+Active=0
+[Montage]
+Mode=2
+Setting=Montage 4x4
+[Macro]
+1=MoveWell(53,96)
+2=MoveXYZ("Z Offset 4900")
+3=ProbeCycle("alexa 488 maciek",1.000,6)
+4=MoveWell(54,96)
+5=MoveXYZ("Z Offset 4900")
+6=ProbeCycle("alexa 488 maciek",1.000,6)
+7=MoveWell(55,96)
+8=MoveXYZ("Z Offset 4900")
+9=ProbeCycle("alexa 488 maciek",1.000,6)
+10=MoveWell(56,96)
+11=MoveXYZ("Z Offset 4900")
+12=ProbeCycle("alexa 488 maciek",1.000,6)
+13=Stop()
+14=MoveXYZ("Z Offset 4900")
+15=ProbeCycle("alexa 488 maciek",1.000,6)
+16=MoveWell(36,96)
+17=MoveXYZ("Z Offset 4900")
+18=ProbeCycle("alexa 488 maciek",1.000,6)
+19=MoveWell(47,96)
+20=MoveXYZ("Z Offset 4900")
+21=ProbeCycle("alexa 488 maciek",1.000,6)
+22=MoveWell(48,96)
+23=MoveXYZ("Z Offset 4900")
+24=ProbeCycle("alexa 488 maciek",1.000,6)
+25=Stop()

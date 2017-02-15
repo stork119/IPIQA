@@ -1,0 +1,113 @@
+[General]
+Type=Experiment
+Version=7.00
+Dyes=1
+ThumbNailDisplay=IMAGE
+[Dyes]
+1=Alexa 488 - Confocal
+[Alexa 488 - Confocal]
+DynRng_Auto=0
+DynRng_Min=50
+DynRng_Max=3000
+[ADC]
+Active=0
+Original=camera_correction_4900 (96 Well).adc
+Latest=camera_correction_4900 (96 Well).adc
+[AAAS_ExA]
+1=377/50ND
+2=482/35
+3=543/22
+4=628/40
+5=377/50
+6=OPEN
+7=OPEN
+8=OPEN
+[AAAS_DiEpi]
+1=FF409
+2=FF506
+3=FF562
+4=FF660
+5=OPEN
+[AAAS_EmA]
+1=435LP
+2=536/40
+3=593/40
+4=692/40
+5=OPEN
+6=Red
+7=Green
+8=Blue
+[Geometry]
+Name=20X NA 075 Olympus
+[Camera]
+ChipOriginX=0
+ChipOriginY=0
+ChipWidthUsed=1392
+ChipHeightUsed=1024
+BinX=1
+BinY=1
+Bitdepth=16
+BitdepthUsed=12
+[Image]
+Montaged=1
+TilesX=4
+TilesY=4
+TilePixelsX=1392
+TilePixelsY=1024
+BitdepthStored=16
+[Version]
+ATTOIMAGE.EXE=1, 6, 2, 02
+ATTOCAMERASERVER.EXE= 1, 6, 0, 39 (RC4)
+ATTO3DSURFACE.OCX= 1, 6, 0, 39
+ATTO3DVOLUME.OCX=1,6,0,39
+ATTOCOLORSLIDER.OCX= 1, 6, 0, 39
+ATTOGRAPH.OCX= 1, 6, 0, 39
+ATTOHISTOGRAM.OCX= 1, 6, 0, 39
+ATTOHISTOGRAM2.OCX= 1, 6, 0, 39
+ATTOMULTISLIDER.OCX=1,6,0,39
+ATTOMULTIWELL.OCX=1,6,0,39 (1,6,0,39)
+ATTOPSEUDOCOLORLIST.OCX=1,6,0,39
+ATTOSTACKBUTTON.OCX=1,6,0,39
+ATTOWASHSETUP.OCX=1,6,0,39
+ATTOAUTOMATION.DLL=1, 6, 0, 0 (RC4)
+ATTOCOMUTILS.DLL=1, 6, 0, 39
+ATTODATACLASSES.DLL=1, 6, 0, 39 (SP1)
+ATTODATAUTILITES.DLL=1, 6, 0, 39 (1, 6, 0, 39)
+ATTOWORKFLOW.DLL= 1, 6, 0, 39 (RC4)
+ATTODIO.DLL= 1, 6, 0, 39
+ATTOBMPBUTTON.OCX= 1, 6, 0, 39 (RC4)
+ATTODAQ.DLL= 1, 6, 0, 39 (SP2a)
+ATTODAQDEMO.DLL= 1, 6, 0, 39 (SP2a)
+NEURITEANALYSISSVR.DLL= 1, 6, 0, 39 (RC4)
+PLC=EP 5.04.17
+PLC Fluidics=,-1
+[Automation]
+SystemName=Pathway
+[MeanCameraBias]
+Set=1
+Enabled=1
+Q11=1.633180
+Q12=11.890756
+Q21=2.350728
+Q22=18.936387
+x1=0.000132
+x2=2.000000
+y1=0.000000
+y2=100.000000
+[Lamps]
+Number=4
+[Lamps_1]
+Name=
+Time=01:00 Jan. 01, 1970
+[Lamps_2]
+Name=A
+Time=01:00 Jan. 01, 1970
+[Lamps_3]
+Name=B
+Time=01:00 Jan. 01, 1970
+[Lamps_4]
+Name=Trans
+Time=01:00 Jan. 01, 1970
+[TimeOut]
+Enabled=1
+Segment=60.000000

@@ -9,6 +9,10 @@ __pycache__/
 # C extensions
 *.so
 
+#Images
+*.tiff
+*.bmp
+
 # Distribution / packaging
 .Python
 env/
@@ -26,6 +30,7 @@ var/
 *.egg-info/
 .installed.cfg
 *.egg
+tests/release/configuration_settings/input_materials/*
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
