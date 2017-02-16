@@ -1,5 +1,5 @@
 # PYTHON
-
+tests/release/configuration_settings/input_materials/*
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -8,6 +8,10 @@ __pycache__/
 
 # C extensions
 *.so
+
+#Images
+*.tiff
+*.bmp
 
 # Distribution / packaging
 .Python
