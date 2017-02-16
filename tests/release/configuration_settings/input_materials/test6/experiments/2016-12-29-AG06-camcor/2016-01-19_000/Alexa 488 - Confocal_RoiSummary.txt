@@ -1,0 +1,64 @@
+
+------------------------------------
+Date:	Tuesday, January 19, 2016
+Time:	09:35:18 AM
+------------------------------------
+
+ADF:	"C:\AttoVision\Users\User1\Data\2016-01-19-EG12-camcor\2016-01-19_000\Well E05\Alexa 488 - Confocal.adf"
+ROI:	"No ROI"
+Experiment Type:	"Endpoint"
+
+ROI	Type	X	Y	W	H	Pixels	Intensity
+---	----	-	-	-	-	------	---------
+1	1	10	10	10	10	100	21.14
+AvgTrace							21.14
+AvgData							21.14
+
+
+------------------------------------
+Date:	Tuesday, January 19, 2016
+Time:	09:41:25 AM
+------------------------------------
+
+ADF:	"C:\AttoVision\Users\User1\Data\2016-01-19-EG12-camcor\2016-01-19_000\Well E06\Alexa 488 - Confocal.adf"
+ROI:	"No ROI"
+Experiment Type:	"Endpoint"
+
+ROI	Type	X	Y	W	H	Pixels	Intensity
+---	----	-	-	-	-	------	---------
+1	1	10	10	10	10	100	242.86
+AvgTrace							242.86
+AvgData							242.86
+
+
+------------------------------------
+Date:	Tuesday, January 19, 2016
+Time:	09:47:31 AM
+------------------------------------
+
+ADF:	"C:\AttoVision\Users\User1\Data\2016-01-19-EG12-camcor\2016-01-19_000\Well E07\Alexa 488 - Confocal.adf"
+ROI:	"No ROI"
+Experiment Type:	"Endpoint"
+
+ROI	Type	X	Y	W	H	Pixels	Intensity
+---	----	-	-	-	-	------	---------
+1	1	10	10	10	10	100	391.9
+AvgTrace							391.9
+AvgData							391.9
+
+
+------------------------------------
+Date:	Tuesday, January 19, 2016
+Time:	09:53:38 AM
+------------------------------------
+
+ADF:	"C:\AttoVision\Users\User1\Data\2016-01-19-EG12-camcor\2016-01-19_000\Well E08\Alexa 488 - Confocal.adf"
+ROI:	"No ROI"
+Experiment Type:	"Endpoint"
+
+ROI	Type	X	Y	W	H	Pixels	Intensity
+---	----	-	-	-	-	------	---------
+1	1	10	10	10	10	100	597.41
+AvgTrace							597.41
+AvgData							597.41
+
