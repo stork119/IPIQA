@@ -1,5 +1,6 @@
 # PYTHON
 tests/release/configuration_settings/input_materials/*
+tests/release/configuration_settings/results/*
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
