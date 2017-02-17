@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# This script enables to test IPIQA functions with standard input configuration_settings provided in tests/configuration_settings/ directory.
+
 v="release"
 printf "\n"
 while getopts ":v:" opt; do
