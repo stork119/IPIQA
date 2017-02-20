@@ -19,7 +19,7 @@ try({package.list <- list("tiff")
 })
 
 ### sources ###
-ffc.width <- 1344#1392
+ffc.width <- 1392#1344
 ffc.height <- 1024
 
 wd.tmp <- "C://Users//Pathway//Documents//IPIQA//PathwayPackage//R//ffc_module//"#dirname(sys.frame(1)$ofile)
@@ -72,7 +72,7 @@ fun_camcor_create <- function(input_path,
                         DivideImage(input.dir = well.input.path,
                   output.dir = well.output.path,
                   output.name = well.name,
-                  ncol = 1392,#1344,#1392,
+                  ncol = ffc.width,#1392,#1344,#1392,
                   nrow = ffc.height))
     }
     print(well.output.path)
