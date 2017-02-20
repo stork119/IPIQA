@@ -32,9 +32,8 @@ for filename in $path
 do
         printf "\nExecuting test pipeline:\n"$filename
         printf "\n\n"
-        py -3 WorkflowEngine.py -s $filename
+        py -3 WorkflowEngine.py -s $filename || python WorkflowEngine.py -s $filename
 done
 else
 printf "\nSystem was unable to locate tests configuration settings in given location: "$path
 fi 
-

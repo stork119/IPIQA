@@ -25,7 +25,7 @@
     <parameter key="raw_path_rel" value="raw//"/>
     
     <!-- Experiment configuration -->
-    <parameter key="exp_wells_number" value="1"/>
+    <parameter key="exp_wells_number" value="2"/>
     <parameter key="delimiter_mp" value = ","/>
     
     <parameter key="exp_id"  value="2016-12-29-AG01"/>
@@ -201,7 +201,6 @@
                         <parameter key="output_path.2"  value="folder_name"/>
                     </parameters_by_name>
                 </TASK>
-
                 <TASK class="TASK_FOR">
                     <VARIABLES>
                         <VARIABLE>
