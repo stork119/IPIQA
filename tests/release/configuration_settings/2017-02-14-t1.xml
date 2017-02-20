@@ -25,7 +25,7 @@
     <parameter key="raw_path_rel" value="raw//"/>
     
     <!-- Experiment configuration -->
-    <parameter key="exp_wells_number" value="1"/>
+    <parameter key="exp_wells_number" value="2"/>
     <parameter key="delimiter_mp" value = ","/>
     
     <parameter key="exp_id"  value="2016-12-29-AG01"/>
@@ -33,12 +33,12 @@
     <parameter key="camcor_in_path"  value="2016-12-29-AG01-camcor//2016-09-14_001//"/>
 
     <parameter key="csv_names_list" value = "Nuclei.csv,ShrinkedNuclei.csv,Cells.csv,Cytoplasm.csv,Image.csv"/>
-    <parameter key="pipeline" value = "F://AG//IPIQA//tests//input_materials//test1//cp_pipeline//pipeline_A549.cppipe"/>
+    <parameter key="pipeline" value = "F://AG//IPIQA//tests//release//configuration_settings//input_materials//test1//cp_pipeline//pipeline_A549.cppipe"/>
 
-    <parameter key="input_folder_path" value = "F://AG//IPIQA//tests//input_materials//test1//experiments//A//"/>
-    <parameter key="output_folder_path" value = "F://AG//IPIQA//tests//results//test1//"/>
+    <parameter key="input_folder_path" value = "F://AG//IPIQA//tests//release//configuration_settings//input_materials//test1//experiments//A//"/>
+    <parameter key="output_folder_path" value = "F://AG//IPIQA//tests//release//configuration_settings//results//test1//"/>
     <parameter key="output_server_folder_path" value = ""/> <!-- ADDITIONAL-->
-    <parameter key="metadata_in_path"  value = "F://AG//IPIQA//tests//input_materials//test1//mapplates//metadata//"/>
+    <parameter key="metadata_in_path"  value = "F://AG//IPIQA//tests//release//configuration_settings//input_materials//test1//mapplates//metadata//"/>
 
 </CONFIG>
 
@@ -201,7 +201,6 @@
                         <parameter key="output_path.2"  value="folder_name"/>
                     </parameters_by_name>
                 </TASK>
-
                 <TASK class="TASK_FOR">
                     <VARIABLES>
                         <VARIABLE>

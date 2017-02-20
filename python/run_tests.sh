@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# This script enables to test IPIQA functions with standard input configuration_settings provided in tests/configuration_settings/ directory.
+
 v="release"
 printf "\n"
 while getopts ":v:" opt; do
@@ -30,9 +32,8 @@ for filename in $path
 do
         printf "\nExecuting test pipeline:\n"$filename
         printf "\n\n"
-        py -3 WorkflowEngine.py -s $filename
+        py -3 WorkflowEngine.py -s $filename || python WorkflowEngine.py -s $filename
 done
 else
 printf "\nSystem was unable to locate tests configuration settings in given location: "$path
 fi 
-
