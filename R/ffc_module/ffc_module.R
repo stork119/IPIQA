@@ -22,7 +22,7 @@ try({package.list <- list("tiff")
 ffc.width <- 1392#1344
 ffc.height <- 1024
 
-wd.tmp <- "C://Users//Pathway//Documents//IPIQA//PathwayPackage//R//ffc_module//"#dirname(sys.frame(1)$ofile)
+wd.tmp <- dirname(sys.frame(1)$ofile)
 l <- lapply(list("DivideImage.R", "ImageCalculator.R"), 
             function(f){source(normalizePath(paste(wd.tmp, f, sep = "//"), "/"))})
 rm(l)
