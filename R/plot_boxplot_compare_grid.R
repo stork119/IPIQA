@@ -22,6 +22,7 @@ try({package.list <- list("ggplot2")
 # wd.tmp <- "" ### Rstudio 
 wd.tmp <- dirname(sys.frame(1)$ofile) ### script
 source(paste(wd.tmp, "plot_boxplot_compare.R", sep = "/"))
+source(paste(wd.tmp, "data_library.R", sep = "/"))
 
 plot_boxplot_compare_grid <- function(data,
                                       path,
