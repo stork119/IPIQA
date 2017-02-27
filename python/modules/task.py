@@ -304,6 +304,19 @@ class TASK_SYNCHRONOUSLY_PATH(TASK_SYNCHRONOUSLY): #all objects (folders) in giv
         dir_list = FM.dir_get_names(input_path)
         return dir_list, folders_number
 
+class READ_MAP_PLATE(TASK):
+  
+    def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name,  args = {}):
+        TASK.__init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args)
+
+    def execute_specify(self, dict_local):
+        input_path = dict_local["input_path"]
+        try:
+            delimiter_csv = dict_local["delimiter_csv"]
+        except:
+            delimiter_csv = ","
+        dict_local["map_plate"] = map_plate.parse_mp(input_path, delimiter)
+
 class TASK_MAP_PLATE(TASK):
   
     def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name,  args = {}):
