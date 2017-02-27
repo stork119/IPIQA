@@ -43,11 +43,12 @@ def _parse_base_params(input_path, delimiter, mp_dict):
     mp_id = CSV_M.read_csv(id_path, delimiter)
     for row in range(len(active)):
         for col in range(len(active[row])):
-            if int(active[row][col]) != 0:
+            exp_part = active[row][col]
+            if expt_part != "0":
                 position = [row, col]
                 key = name[row][col] #name_value
                 id_value = mp_id[row][col]
-                mp_dict[key] = {"position" : position, "name" : key, "id" : id_value}
+                mp_dict[key] = {"position" : position, "name" : key, "id" : id_value, "exp_part" : exp_part}
     return dimensions
 
 def _get_param_paths(input_path):
