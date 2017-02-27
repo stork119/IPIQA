@@ -22,6 +22,7 @@ try({package.list <- list("ggplot2")
 # wd.tmp <- "" ### Rstudio 
 wd.tmp <- dirname(sys.frame(1)$ofile) ### script
 source(paste(wd.tmp, "theme_jetka.R", sep = "/"))
+source(paste(wd.tmp, "data_library.R", sep = "/"))
 
 
 #### plot_boxplot_compare ####
@@ -58,6 +59,10 @@ plot_boxplot_compare <- function(data,
   normalize_data <- as.integer(normalize_data)
   normalize_factor <- as.integer(normalize_factor)
   ylim_max_const <- as.integer(ylim_max_const)
+  
+  if(!CheckColumnExistence(data = data, list(x,y,boxplot_group))){
+    return()
+  }
   
   if(normalize_data){
     data[,y] <- normalize_factor*data[,y]
@@ -103,6 +108,9 @@ plot_boxplot_compare_grid <- function(data,
                                       theme.text_size = 12,
                                       ...
 ){
+  if(!CheckColumnExistence(data = data, list(x,y))){
+    return()
+  }
   
   plot_width <- as.integer(plot_width)
   plot_height <- as.integer(plot_height)

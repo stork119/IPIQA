@@ -22,6 +22,7 @@ try({package.list <- list("ggplot2")
 # wd.tmp <- "" ### Rstudio 
 wd.tmp <- dirname(sys.frame(1)$ofile) ### script
 source(paste(wd.tmp, "theme_jetka.R", sep = "/"))
+source(paste(wd.tmp, "data_library.R", sep = "/"))
 
 #### plot_histogram ####
 plot_histogram <- function(data,
@@ -42,6 +43,11 @@ plot_histogram <- function(data,
                            line_size = 1.5,
                            save_plot = TRUE,
                            ...){
+  
+  if(!CheckColumnExistence(data = data, list(x))){
+    return()
+  }
+  
   if(nrow(data) > data_nrow_min){
     gplot <- ggplot(data = data) +
       geom_histogram(aes_string(x = x, "..density.."), binwidth = bin_width) +
