@@ -24,7 +24,7 @@ class TASK():
 
     def execute(self, dict_global):
         dict_local = dict_global.copy()
-        logger.debug("dict_local before update: %s", (dict_local.keys()))
+        logger.debug("dict_local before update: %s", dict_local.keys())
         dict_local = self.update_dict(dict_local, dict_local, self.parameters_by_value, self.parameters_by_name) #check out if its working 
         logger.debug("dict_local after update: %s", dict_local.keys())
         logger.info("Executing: %s", self.__class__.__name__) #information what task is being executed
@@ -38,7 +38,7 @@ class TASK():
     def update_dict(self, dict_out, dict_in, list_by_value, list_by_name):
         for k, v in list_by_value.items(): #update by value
             dict_out[k] = v
-            logger.debug("Dict_out new key, value (updated by value): %s, %s", k, v)
+            logger.debug("Dict_out new key (updated by value): %s", k)
         for k, v in list_by_name.items(): #update by name
             logger.debug("Dict_in (by names) key, value: %s, %s", k, v)
             try:
@@ -46,12 +46,12 @@ class TASK():
             except:
                 logger.error("Dictionary update_by_name error. Given key (%s) doesn't exist in dictionary", v)
             dict_out[k] = value
-            logger.debug("Dict_out new key, value (updated by name): %s, %s", k, value)
+            logger.debug("Dict_out new key, value (updated by name): %s, %s", k, v)
         logger.debug("Dict_out before concatenation: %s", dict_out.keys())
         try:
             dict_out = self.concatenation_name_nr(dict_out)
         except:
-            logger.error("Dictionary concatenation error. Dictionary: %s concatenation failed.", dict_out)
+            logger.error("Dictionary concatenation error. Dictionary: %s concatenation failed.", dict_out.keys())
         logger.debug("Dict_out after concatenation: %s", dict_out.keys())        
         return dict_out
 
