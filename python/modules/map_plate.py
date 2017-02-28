@@ -18,7 +18,7 @@ def _parse_params(input_path, delimiter, dimensions, mp_dict):
     param_paths = sorted(param_paths, key = str)
     logger.debug("Map_plate params input paths: %s.", param_paths)
     for mp_file in param_paths:
-        correctness = CSV_M.verify_input_files(mp_file, delimiter, dimensions)
+        correctness = CSV_M.verify_input_file(mp_file, delimiter, dimensions)
         if correctness == False:
             logger.error("Fatal error occured while trying to read mapplate.")
             exit()
@@ -44,13 +44,13 @@ def _parse_base_params(input_path, delimiter, mp_dict):
         logger.info("Map_plate names would be used also as ids due to original id file doesn't exist: %s", id_path)
         id_path = name_path
     else:
-        if not CSV_M.verify_input_files(id_path, delimiter, dimensions):
+        if not CSV_M.verify_input_file(id_path, delimiter, dimensions):
             logger.error("Fatal error occured while trying to read mapplate.")
             exit()
     if not FM.path_check_existence(name_path):
         logger.error("Fatal error occured while trying to read mapplate. Cannot parse map_plate names, file doesn't exist: %s", name_path)
         exit()
-    if not CSV_M.verify_input_files(name_path, delimiter, dimensions):
+    if not CSV_M.verify_input_file(name_path, delimiter, dimensions):
         logger.error("Fatal error occured while trying to read mapplate.")
         exit()
     name = CSV_M.read_csv(name_path, delimiter)

@@ -5,7 +5,7 @@ import modules.file_managment as FM
 logger = logging.getLogger("CSV managment")
 logger.info("Executing csv (merge) module.")
 
-def verify_input_files(input_file, delimiter, dimensions = 0):
+def verify_input_file(input_file, delimiter, dimensions = 0):
     if not FM.file_verify_extension(input_file, ".csv"):
         logger.error("Wrong input format: %s", input_file)
         return False
