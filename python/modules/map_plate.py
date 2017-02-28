@@ -18,8 +18,9 @@ def _parse_params(input_path, delimiter, dimensions, mp_dict):
     param_paths = sorted(param_paths, key = str)
     logger.debug("Map_plate params input paths: %s.", param_paths)
     for mp_file in param_paths:
-        correctness = _verify_input_files(mp_file, delimiter, dimensions)
+        correctness = CSV_M.verify_input_files(mp_file, delimiter, dimensions)
         if correctness == False:
+            logger.error("Fatal error occured while trying to read mapplate.")
             exit()
         else:
             _collect_exp_settings(input_path, mp_file, delimiter, mp_dict)
@@ -32,23 +33,32 @@ def _parse_base_params(input_path, delimiter, mp_dict):
     name_path = FM.path_join(input_path, "args_ind.csv")
     id_path = FM.path_join(input_path, "args_names.csv")
     # >>temporary change<<
+    if not FM.path_check_existence(active_path):
+        logger.error("Fatal error occured while trying to read mapplate. Cannot parse map_plate active, file doesn't exist: %s", active_path)
+        exit()
     active = CSV_M.read_csv(active_path, delimiter)
     x = len(active)
     y = len(active[0])
     dimensions = [x,y]
     if not FM.path_check_existence(id_path):
+        logger.info("Map_plate names would be used also as ids due to original id file doesn't exist: %s", id_path)
         id_path = name_path
     else:
-        if not _verify_input_files(id_path, delimiter, dimensions):
+        if not CSV_M.verify_input_files(id_path, delimiter, dimensions):
+            logger.error("Fatal error occured while trying to read mapplate.")
             exit()
-    if not _verify_input_files(name_path, delimiter, dimensions):
+    if not FM.path_check_existence(name_path):
+        logger.error("Fatal error occured while trying to read mapplate. Cannot parse map_plate names, file doesn't exist: %s", name_path)
+        exit()
+    if not CSV_M.verify_input_files(name_path, delimiter, dimensions):
+        logger.error("Fatal error occured while trying to read mapplate.")
         exit()
     name = CSV_M.read_csv(name_path, delimiter)
     mp_id = CSV_M.read_csv(id_path, delimiter)
     for row in range(len(active)):
         for col in range(len(active[row])):
             exp_part = active[row][col]
-            if expt_part != "0":
+            if exp_part != "0":
                 position = [row, col]
                 key = mp_id[row][col] #id_value
                 name_value = name[row][col]
@@ -66,19 +76,6 @@ def _get_param_paths(input_path):
         if path not in subfile_list and path[-4:] == ".csv":
             param_paths.append(path)
     return param_paths
-
-def _verify_input_files(input_file, delimiter, dimensions = 0):
-    if not FM.file_verify_extension(input_file, ".csv"):
-        logger.error("Wrong input format: %s", input_file)
-        return False
-    if dimensions != 0:
-        data = CSV_M.read_csv(input_file, delimiter)
-        x = len(data)
-        y = len(data[0])
-        if dimensions != [x,y]:
-            logger.error("Wrong input file: %s.", input_file)
-            return False
-    return True
 
 def _collect_exp_settings(abs_path, mp_file, delimiter, mp_dict):
     rel_path = FM.path_get_relative(abs_path, mp_file)
