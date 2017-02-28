@@ -19,6 +19,12 @@ def main():
                 required = True, 
                 nargs = 1, 
                 help = 'Path to input_settings (in XML format).')
+    parser.add_argument('-a',
+                metavar = '<argument>', 
+                type = str, 
+                default=False,
+                nargs = 2, 
+                help = 'Parameter <key> <value> that would be add to config dictionary. I.e. -a number_of_cores 4')
     parser.add_argument('-m',
                 metavar = '<multiplesettings>', 
                 type = str, 
@@ -32,13 +38,17 @@ def main():
         settings_path = FM.path_unify(args.s[0])
     else:
         settings_path = FM.path_join(PP_path, "configuration_settings" , args.s[0])
+    if args.a != False: #optional argument
+        additional_arg = {(args.a[0]) : (args.a[1])}
+    else:
+        additional_arg = {}
     if args.m != False: #single or multiple settings
         settings_list = FM.file_get_paths(settings_path)
     else:
         settings_list = [settings_path]
     for setts in settings_list:
         logger.info("Current xml settings: %s", setts)
-        pipeline, config_dict = XML_P.parse(setts)
+        pipeline, config_dict = XML_P.parse(setts, additional_arg)
         pipeline.execute(config_dict)
 
 if __name__ == "__main__":
