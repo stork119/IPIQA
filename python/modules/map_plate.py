@@ -26,18 +26,22 @@ def _parse_params(input_path, delimiter, dimensions, mp_dict):
 
 def _parse_base_params(input_path, delimiter, mp_dict):
     active_path = FM.path_join(input_path, "args_active.csv")
-    id_path = FM.path_join(input_path, "args_ind.csv")
-    name_path = FM.path_join(input_path, "args_names.csv")
+    # >>temporary change<<
+    #id_path = FM.path_join(input_path, "args_ind.csv") 
+    #name_path = FM.path_join(input_path, "args_names.csv")
+    name_path = FM.path_join(input_path, "args_ind.csv")
+    id_path = FM.path_join(input_path, "args_names.csv")
+    # >>temporary change<<
     active = CSV_M.read_csv(active_path, delimiter)
     x = len(active)
     y = len(active[0])
     dimensions = [x,y]
-    if not FM.path_check_existence(name_path):
-        name_path = id_path
+    if not FM.path_check_existence(id_path):
+        id_path = name_path
     else:
-        if not _verify_input_files(name_path, delimiter, dimensions):
+        if not _verify_input_files(id_path, delimiter, dimensions):
             exit()
-    if not _verify_input_files(id_path, delimiter, dimensions):
+    if not _verify_input_files(name_path, delimiter, dimensions):
         exit()
     name = CSV_M.read_csv(name_path, delimiter)
     mp_id = CSV_M.read_csv(id_path, delimiter)
@@ -46,9 +50,9 @@ def _parse_base_params(input_path, delimiter, mp_dict):
             exp_part = active[row][col]
             if expt_part != "0":
                 position = [row, col]
-                key = name[row][col] #name_value
-                id_value = mp_id[row][col]
-                mp_dict[key] = {"position" : position, "name" : key, "id" : id_value, "exp_part" : exp_part}
+                key = mp_id[row][col] #id_value
+                name_value = name[row][col]
+                mp_dict[key] = {"position" : position, "name" : name_value, "id" : key, "exp_part" : exp_part}
     return dimensions
 
 def _get_param_paths(input_path):
