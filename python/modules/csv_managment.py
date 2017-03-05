@@ -5,19 +5,6 @@ import modules.file_managment as FM
 logger = logging.getLogger("CSV managment")
 logger.info("Executing csv (merge) module.")
 
-def verify_input_file(input_file, delimiter, dimensions = 0):
-    if not FM.file_verify_extension(input_file, ".csv"):
-        logger.error("Wrong input format: %s", input_file)
-        return False
-    if dimensions != 0:
-        data = read_csv(input_file, delimiter)
-        x = len(data)
-        y = len(data[0])
-        if dimensions != [x,y]:
-            logger.error("Wrong input file (inproper csv dimensions): %s.", input_file)
-            return False
-    return True
-
 def merge_subdir_csv(csv_name, subdir_list, deltimer = ",", column_name = "well.name"): 
     """csv_names = the list of filenames with given CP output data (for example: Nuclei.csv,Cytoplasm.csv)
     subdir_list = the list of subdir's paths, each of subdir contains data of given well"""

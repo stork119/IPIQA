@@ -8,6 +8,11 @@ logger = logging.getLogger("map plate")
 logger.info("Executing map_plate module.")
 
 def parse_mp(input_path, delimiter):
+   """
+   Main function of TASK_READ_MAP_PLATE. 
+   Parse all map_plate informations (collected in csv files) into python dictionary.
+   Each well is represented by dictionary key, which value is a dictionary of all experimental settings.
+   """
     mp_dict = {}
     dim =_parse_base_params(input_path, delimiter, mp_dict)
     _parse_params(input_path, delimiter, dim, mp_dict)
@@ -18,7 +23,7 @@ def _parse_params(input_path, delimiter, dimensions, mp_dict):
     param_paths = sorted(param_paths, key = str)
     logger.debug("Map_plate params input paths: %s.", param_paths)
     for mp_file in param_paths:
-        correctness = CSV_M.verify_input_file(mp_file, delimiter, dimensions)
+        correctness = _verify_input_mp_file(mp_file, delimiter, dimensions)
         if correctness == False:
             logger.error("Fatal error occured while trying to read mapplate.")
             exit()
@@ -26,33 +31,12 @@ def _parse_params(input_path, delimiter, dimensions, mp_dict):
             _collect_exp_settings(input_path, mp_file, delimiter, mp_dict)
 
 def _parse_base_params(input_path, delimiter, mp_dict):
-    active_path = FM.path_join(input_path, "args_active.csv")
-    # >>temporary change<<
-    #id_path = FM.path_join(input_path, "args_ind.csv") 
-    #name_path = FM.path_join(input_path, "args_names.csv")
-    name_path = FM.path_join(input_path, "args_ind.csv")
-    id_path = FM.path_join(input_path, "args_names.csv")
-    # >>temporary change<<
-    if not FM.path_check_existence(active_path):
-        logger.error("Fatal error occured while trying to read mapplate. Cannot parse map_plate active, file doesn't exist: %s", active_path)
-        exit()
-    active = CSV_M.read_csv(active_path, delimiter)
-    x = len(active)
-    y = len(active[0])
-    dimensions = [x,y]
-    if not FM.path_check_existence(id_path):
-        logger.info("Map_plate names would be used also as ids due to original id file doesn't exist: %s", id_path)
-        id_path = name_path
-    else:
-        if not CSV_M.verify_input_file(id_path, delimiter, dimensions):
-            logger.error("Fatal error occured while trying to read mapplate.")
-            exit()
-    if not FM.path_check_existence(name_path):
-        logger.error("Fatal error occured while trying to read mapplate. Cannot parse map_plate names, file doesn't exist: %s", name_path)
-        exit()
-    if not CSV_M.verify_input_file(name_path, delimiter, dimensions):
-        logger.error("Fatal error occured while trying to read mapplate.")
-        exit()
+    """
+    'Base' params are the params which need to be present in every map_plate: args_active, args_ind, args_name, 
+    'not base' params are other information that are facultative and not pre-defined.
+    """
+    dimensions = _parse_active(input_path, delimiter)
+    name_path, id_path = _verify_name_and_id(input_path, delimiter, dimensions)
     name = CSV_M.read_csv(name_path, delimiter)
     mp_id = CSV_M.read_csv(id_path, delimiter)
     for row in range(len(active)):
@@ -64,6 +48,39 @@ def _parse_base_params(input_path, delimiter, mp_dict):
                 name_value = name[row][col]
                 mp_dict[key] = {"position" : position, "name" : name_value, "id" : key, "exp_part" : exp_part}
     return dimensions
+
+def _parse_active(input_path, delimiter):
+    active_path = FM.path_join(input_path, "args_active.csv")
+    if not FM.path_check_existence(active_path):
+        logger.error("Fatal error occured while trying to read mapplate. Cannot parse map_plate active, file doesn't exist: %s", active_path)
+        exit()
+    active = CSV_M.read_csv(active_path, delimiter)
+    x = len(active)
+    y = len(active[0])
+    dimensions = [x,y]
+    return dimensions
+
+def _verify_name_and_id(input_path, delimiter, dimensions):
+    # >>temporary change<<
+    #id_path = FM.path_join(input_path, "args_ind.csv") 
+    #name_path = FM.path_join(input_path, "args_names.csv")
+    name_path = FM.path_join(input_path, "args_ind.csv")
+    id_path = FM.path_join(input_path, "args_names.csv")
+    # >>temporary change<<
+    if not FM.path_check_existence(id_path):
+        logger.info("Map_plate names would be used also as ids due to original id file doesn't exist: %s", id_path)
+        id_path = name_path
+    else:
+        if not _verify_input_mp_file(id_path, delimiter, dimensions):
+            logger.error("Fatal error occured while trying to read mapplate.")
+            exit()
+    if not FM.path_check_existence(name_path):
+        logger.error("Fatal error occured while trying to read mapplate. Cannot parse map_plate names, file doesn't exist: %s", name_path)
+        exit()
+    if not _verify_input_mp_file(name_path, delimiter, dimensions):
+        logger.error("Fatal error occured while trying to read mapplate.")
+        exit()
+    return name_path, id_path
 
 def _get_param_paths(input_path):
     subfile_list = FM.file_get_paths(input_path)
@@ -78,6 +95,10 @@ def _get_param_paths(input_path):
     return param_paths
 
 def _collect_exp_settings(abs_path, mp_file, delimiter, mp_dict):
+    """
+    Function for extracting information about optional experiment's parameters (i.e. stimulation.1.1), 
+    it parse both name and value of a given parameter for each map_plate well. 
+    """
     rel_path = FM.path_get_relative(abs_path, mp_file)
     fullname = ".".join(FM._path_split(rel_path))
     extension_length = len(FM.file_get_extension(fullname))  #extracting proper column name from rel_path i.e. compare.1.1 from compare/1.1.csv
@@ -88,22 +109,31 @@ def _collect_exp_settings(abs_path, mp_file, delimiter, mp_dict):
         value = (data[position[0]][position[1]])
         mp_dict[well][name] = value
 
-def get_param_value(mp_dict, well_name, param): # get values for a given well and parameter
+def get_param_value(mp_dict, well_name, param):
+    """
+    Function getting values for a given well and parameter.
+    """
     value = mp_dict[well_name][param]
     return value
 
-def get_param_all_values(mp_dict, param): # get all values for a given param from map_plate dictionary
+def get_param_values(mp_dict, param):
+    """
+    Function gettin all values for a given param from map_plate dictionary.
+    """
     values = []
     for well in mp_dict:
         values.append(mp_dict[well][param])
     return values
 
-def get_param_unique_values(mp_dict, param): # get all unique values for a given param from map_plate dictionary
-    values = get_param_all_values(mp_dict, param)
+def get_param_unique_values(mp_dict, param): 
+    """
+    Function gettin all unique values for a given param from map_plate dictionary.
+    """
+    values = get_param_values(mp_dict, param)
     unique = list(set(values))
     return unique
 
-def get_all_params_names(mp_dict): # get all key names from map_plate dictionary
+def get_params_names(mp_dict): # get all key names from map_plate dictionary
     names = []
     key_0 = list(mp_dict.keys())[0]
     names = list(mp_dict[key_0].keys()) # if we assume that number of information between wells is constant
@@ -119,8 +149,60 @@ def get_all_params_names(mp_dict): # get all key names from map_plate dictionary
                     names.append(param)"""
     return names
 
-def get_well_params(mp_dict, well): # get all parameters values for a given well
+def get_well_params(mp_dict, well):
+    """ 
+    Get all parameters values for a given well
+    """
     values = []
     for param in mp_dict[well]:
         values.append(mp_dict[well][param])
     return values
+
+def _prepare_output(input_data, mp_dict):
+    output_data = []
+    column_names = input_data[0]
+    for i in range(len(column_names)):
+        if column_names[i] == "well.name":
+            position = i
+    new_line = column_names + get_params_names(mp_dict)
+    output_data.append(new_line)
+    for i in range(1, len(input_data)):
+        key = input_data[i][position]
+        new_line = input_data[i] + get_well_params(mp_dict, key)
+        output_data.append(new_line)
+    return output_data
+
+def _make_paths_list(main_path, file_list): # [!] Stork, maybe this should be in file_managment??
+    path_list = []
+    for filepath in file_list:
+        path = main_path + filepath
+        path_list.append(path)
+    return path_list
+
+def _verify_input_mp_file(input_file, delimiter, dimensions = 0):
+    if not FM.file_verify_extension(input_file, ".csv"):
+        logger.error("Wrong input format: %s", input_file)
+        return False
+    if dimensions != 0:
+        data = read_csv(input_file, delimiter)
+        x = len(data)
+        y = len(data[0])
+        if dimensions != [x,y]:
+            logger.error("Wrong input file (improper csv dimensions): %s.", input_file)
+            return False
+    return True
+
+def apply_mp(input_path, output_path, delimiter, mp_dict, csv_names):
+    input_paths_list = _make_paths_list(input_path, csv_names)
+    logger.debug("Apply map_plate: CSV input files list: %s.", input_paths_list)
+    output_paths_list = _make_paths_list(output_path, csv_names)
+    logger.debug("Apply map_plate: CSV output files list: %s.", output_paths_list)
+    for i in range(len(input_paths_list)):
+        if FM.path_check_existence(input_paths_list[i]):
+            if FM.path_check_existence(output_paths_list[i]):
+                FM.dir_remove(output_paths_list[i])
+            input_csv = CSV_M.read_csv(input_paths_list[i], delimiter)
+            output = _prepare_output(input_csv, mp_dict)
+            CSV_M.write_csv(output_paths_list[i], delimiter, output)
+        else:
+            logger.warning("Apply map_plate: following input csv file doesn't exist: %s", input_paths_list[i])

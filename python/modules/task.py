@@ -305,6 +305,15 @@ class TASK_SYNCHRONOUSLY_PATH(TASK_SYNCHRONOUSLY): #all objects (folders) in giv
         return dir_list, folders_number
 
 class TASK_READ_MAP_PLATE(TASK):
+    """
+    Required parameters:
+    - input_path [path to map_plate csv files]
+
+    Optional parameters:
+    - delimiter [delimiter used in map_plate csv, by default ',']
+    - mp_name [name for map_plate output 
+    (variable assigned to dictionary containing all experiment settings), by default 'map_plate']
+    """
   
     def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name,  args = {}):
         TASK.__init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args)
@@ -312,7 +321,7 @@ class TASK_READ_MAP_PLATE(TASK):
     def execute_specify(self, dict_local):
         input_path = dict_local["input_path"]
         try:
-            delimiter_csv = dict_local["delimiter_csv"]
+            delimiter_csv = dict_local["delimiter"]
         except:
             delimiter_csv = ","
         try:
