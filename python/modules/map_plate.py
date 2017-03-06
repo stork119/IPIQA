@@ -1,8 +1,8 @@
 #! /usr/bin/python
-import string, os, logging
+import string, os, logging, csv
+from collections import OrderedDict
 import modules.file_managment as FM
 import modules.csv_managment as CSV_M
-import csv
 
 logger = logging.getLogger("map plate")
 logger.info("Executing map_plate module.")
@@ -51,13 +51,13 @@ def _parse_base_params(input_path, delimiter, mp_dict):
         for col in range(len(active[row])):
             exp_part = active[row][col]
             if exp_part != "0":
-                position = [row, col]
+                position = str(row) + " x " + str(col)
                 key = mp_id[row][col] #id_value
                 name_value = name[row][col]
-                mp_dict[key] = {"position" : position, 
+                mp_dict[key] = OrderedDict({"position" : position, 
                                 "name" : name_value, 
                                 "id" : key, 
-                                "exp_part" : exp_part}
+                                "exp_part" : exp_part})
     return dimensions
 
 def _parse_active(input_path, delimiter):
@@ -126,7 +126,8 @@ def _collect_exp_settings(abs_path, mp_file, delimiter, mp_dict):
     data = CSV_M.read_csv(mp_file, delimiter)
     for well in mp_dict:
         position = mp_dict[well]["position"]
-        value = (data[position[0]][position[1]])
+        position = position.split(" x ")
+        value = (data[int(position[0])][int(position[1])])
         mp_dict[well][name] = value
 
 def get_param_value(mp_dict, well_name, param):
@@ -200,3 +201,42 @@ def _verify_input_mp_file(input_file, delimiter, dimensions = 0):
                         "(improper csv dimensions): %s.", input_file)
             return False
     return True
+
+
+def _prepare_output(input_data, mp_dict):
+    output_data = []
+    column_names = input_data[0]
+    for i in range(len(column_names)):
+        if column_names[i] == "well.name":
+            position = i
+    new_line = column_names + get_params_names(mp_dict)
+    output_data.append(new_line)
+    for i in range(1, len(input_data)):
+        key = input_data[i][position]
+        new_line = input_data[i] + get_well_params(mp_dict, key)
+        output_data.append(new_line)
+    return output_data
+
+def apply_mp(input_path, output_path, delimiter, mp_dict, csv_names):
+    """
+    Main function of TASK_APPLY_MAP_PLATE. 
+    Write all map_plate information (from mp_dictionary) 
+    into given csv files.
+    """
+    input_paths_list = FM.filenames_make_paths_list(input_path, csv_names)
+    logger.debug("Apply map_plate: CSV input files list: "
+                "%s.",input_paths_list)
+    output_paths_list = FM.filenames_make_paths_list(output_path, csv_names)
+    logger.debug("Apply map_plate: CSV output files list: "
+                "%s.", output_paths_list)
+    for i in range(len(input_paths_list)):
+        if FM.path_check_existence(input_paths_list[i]):
+            if FM.path_check_existence(output_paths_list[i]):
+                FM.dir_remove(output_paths_list[i])
+            input_csv = CSV_M.read_csv(input_paths_list[i], delimiter)
+            output = _prepare_output(input_csv, mp_dict)
+            CSV_M.write_csv(output_paths_list[i], delimiter, output)
+        else:
+            logger.warning("Apply map_plate: following input csv file "
+                        "doesn't exist: %s", input_paths_list[i])
+

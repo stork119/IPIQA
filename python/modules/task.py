@@ -306,15 +306,15 @@ class TASK_SYNCHRONOUSLY_PATH(TASK_SYNCHRONOUSLY): #all objects (folders) in giv
 
 class TASK_READ_MAP_PLATE(TASK):
     """
-    Required parameters:
+    Required args:
     - input_path [path to map_plate csv files]
 
-    Optional parameters:
+    Optional args:
     - delimiter [delimiter used in map_plate csv, by default ',']
     - mp_name [name for map_plate output 
-    (variable assigned to dictionary containing all experiment settings), by default 'map_plate']
+            (variable assigned to dictionary containing all experiment settings), 
+            by default 'map_plate']
     """
-  
     def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name,  args = {}):
         TASK.__init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args)
 
@@ -329,6 +329,37 @@ class TASK_READ_MAP_PLATE(TASK):
         except:
             mp_name = "map_plate"
         dict_local[mp_name] = map_plate.parse_mp(input_path, delimiter)
+
+class TASK_APPLY_MAP_PLATE(TASK):
+    """
+    Required args:
+    - input_path [path to input csv files]
+    - output_path [path to output files]
+    - csv_names_list [list of files to apply map_plate]
+    
+    Optional args:
+    - delimiter [delimiter used in csv files, by default ',']
+    - mp_name [name of dicitonary with all collected map_plate info, 
+                by default 'map_plate']
+    """
+    def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name,  args = {}):
+        TASK.__init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args)
+
+    def execute_specify(self, dict_local):
+        input_path = dict_local["input_path"]
+        output_path = dict_local["input_path"]
+        csv_names = (dict_local["csv_names_list"]).split(",")
+        try:
+            delimiter_csv = dict_local["delimiter"]
+        except:
+            delimiter_csv = ","
+        try:
+            mp_name = dict_local["mp_name"]
+        except:
+            mp_name = "map_plate"
+        mp_dict = dict_local[mp_name]
+        map_plate.apply_mp(input_path, output_path, delimiter, mp_dict, csv_names)
+
 
 class TASK_MAP_PLATE(TASK):
   
