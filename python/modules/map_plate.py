@@ -51,10 +51,12 @@ def _parse_base_params(input_path, delimiter, mp_dict):
         for col in range(len(active[row])):
             exp_part = active[row][col]
             if exp_part != "0":
-                position = str(row) + " x " + str(col)
+                pos_x = str(row)
+                pos_y = str(col)
                 key = mp_id[row][col] #id_value
                 name_value = name[row][col]
-                mp_dict[key] = OrderedDict({"position" : position, 
+                mp_dict[key] = OrderedDict({"position_x" : pos_x, 
+                                "position_y" : pos_y, 
                                 "name" : name_value, 
                                 "id" : key, 
                                 "exp_part" : exp_part})
@@ -125,9 +127,9 @@ def _collect_exp_settings(abs_path, mp_file, delimiter, mp_dict):
     name = fullname[:-extension_length]
     data = CSV_M.read_csv(mp_file, delimiter)
     for well in mp_dict:
-        position = mp_dict[well]["position"]
-        position = position.split(" x ")
-        value = (data[int(position[0])][int(position[1])])
+        pos_x = int(mp_dict[well]["position_x"])
+        pos_y = int(mp_dict[well]["position_y"])
+        value = (data[pos_x][pos_y])
         mp_dict[well][name] = value
 
 def get_param_value(mp_dict, well_name, param):
@@ -237,4 +239,3 @@ def apply_mp(input_path, output_path, delimiter, mp_dict, csv_names, compare_col
         else:
             logger.warning("Apply map_plate: following input csv file "
                         "doesn't exist: %s", input_paths_list[i])
-
