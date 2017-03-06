@@ -321,9 +321,9 @@ class TASK_READ_MAP_PLATE(TASK):
     def execute_specify(self, dict_local):
         input_path = dict_local["input_path"]
         try:
-            delimiter_csv = dict_local["delimiter"]
+            delimiter = dict_local["delimiter"]
         except:
-            delimiter_csv = ","
+            delimiter = ","
         try:
             mp_name = dict_local["mp_name"]
         except:
@@ -350,15 +350,16 @@ class TASK_APPLY_MAP_PLATE(TASK):
         output_path = dict_local["input_path"]
         csv_names = (dict_local["csv_names_list"]).split(",")
         try:
-            delimiter_csv = dict_local["delimiter"]
+            delimiter = dict_local["delimiter"]
         except:
-            delimiter_csv = ","
+            delimiter = ","
         try:
             mp_name = dict_local["mp_name"]
         except:
             mp_name = "map_plate"
         mp_dict = dict_local[mp_name]
-        map_plate.apply_mp(input_path, output_path, delimiter, mp_dict, csv_names)
+        compare_column = "well.name" # temporary hardcoded [to discuss name and form]
+        map_plate.apply_mp(input_path, output_path, delimiter, mp_dict, csv_names, compare_column)
 
 
 class TASK_MAP_PLATE(TASK):

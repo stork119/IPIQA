@@ -203,11 +203,11 @@ def _verify_input_mp_file(input_file, delimiter, dimensions = 0):
     return True
 
 
-def _prepare_output(input_data, mp_dict):
+def _prepare_output(input_data, mp_dict, compare_column):
     output_data = []
     column_names = input_data[0]
     for i in range(len(column_names)):
-        if column_names[i] == "well.name":
+        if column_names[i] == compare_column:
             position = i
     new_line = column_names + get_params_names(mp_dict)
     output_data.append(new_line)
@@ -217,7 +217,7 @@ def _prepare_output(input_data, mp_dict):
         output_data.append(new_line)
     return output_data
 
-def apply_mp(input_path, output_path, delimiter, mp_dict, csv_names):
+def apply_mp(input_path, output_path, delimiter, mp_dict, csv_names, compare_column):
     """
     Main function of TASK_APPLY_MAP_PLATE. 
     Write all map_plate information (from mp_dictionary) 
@@ -231,10 +231,8 @@ def apply_mp(input_path, output_path, delimiter, mp_dict, csv_names):
                 "%s.", output_paths_list)
     for i in range(len(input_paths_list)):
         if FM.path_check_existence(input_paths_list[i]):
-            if FM.path_check_existence(output_paths_list[i]):
-                FM.dir_remove(output_paths_list[i])
             input_csv = CSV_M.read_csv(input_paths_list[i], delimiter)
-            output = _prepare_output(input_csv, mp_dict)
+            output = _prepare_output(input_csv, mp_dict, compare_column)
             CSV_M.write_csv(output_paths_list[i], delimiter, output)
         else:
             logger.warning("Apply map_plate: following input csv file "
