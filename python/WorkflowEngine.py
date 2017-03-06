@@ -52,4 +52,8 @@ def main():
         pipeline.execute(config_dict)
 
 if __name__ == "__main__":
+    version = sys.version_info[:2]
+    if not version >= (3,5):
+        print("Python version does not meet software requirments. Install python 3.5 or 3.6 to run IPIQA.")
+        exit()
     main()
