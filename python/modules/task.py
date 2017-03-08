@@ -95,10 +95,74 @@ class TASK_QUEUE(TASK):
     def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args):
         TASK.__init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args)
         self.task_list = args['task_list']
+
     def execute_specify(self, dict_local):
         for task in self.task_list:
             dict_local = task.execute(dict_local)
 
+class TASK_IF(TASK):
+
+    def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args):
+        TASK.__init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args)
+        self.task_list = args['task_list']
+
+def execute_specify(self, dict_local):
+    arg1 = dict_local["argument_1"]
+    comparison = dict_local["comparison"].lower() 
+    try:
+        arg2 = dict_local["argument_2"]
+    except:
+        pass
+    try:
+        mp_dict = dict_local["mp_dict"]
+    except:
+        mp_dict = "map_plate"
+    try:
+        mp_well = dict_local["mp_well"]
+        mp_param = dict_local["mp_param"]
+        arg2 = mp_dict[mp_well][mp_param]
+    except:
+        logger.error("Cannot get value from map_pate for given " 
+        "dictionary, well and parameter.")
+        return
+    if self._compare_args(arg1, arg2, comparison) == True:
+        self._execute_queue(dict_local)
+    return
+
+def _compare_args(self, arg1, arg2, comparison):
+    if comparison == "equal" or comparison == "==":
+        if arg1 == arg2:
+            return True
+    elif comparison == "different" or comparison == "!=":
+        if arg1 != arg2:
+            return True
+    elif (comparison == "greater" or comparison == ">" or 
+            comparison == "less" or comparison == "<"):
+        if self._greater_or_less(arg1, arg2, comparison):
+            return True
+    else:
+        logger.error("Unknown for TASK_IF comparison type: %s", comparison)
+    return False
+
+def _greater_or_less(self, arg1, arg2, comparison):
+    try:
+        param1 = int(arg1)
+        param2 = int(arg2)
+    except:
+        logger.error("Cannot compare if given parameter is greater/less than "
+        "another when given arguments are not integers: %s, %s", arg1, arg2)
+        return False
+    if comparison == "greater" or comparison == ">":
+        if arg1 > arg2:
+            return True
+    else:
+        if arg1 < arg2:
+            return True
+    return False
+
+    def _execute_queue(self, dict_local):
+        for task in self.task_list:
+            task.execute(dict_local)
 
 class TASK_CHECK_COMPLETNESS(TASK):
   
