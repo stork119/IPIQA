@@ -12,8 +12,26 @@ def parse_mp(input_path, delimiter):
     """
     Main function of TASK_READ_MAP_PLATE. 
     Parse all map_plate informations (from csv files) into python dictionary.
-    Each well is represented by dictionary key, 
-    which value is a dictionary of all experimental settings.
+    
+    Arguments:
+    - input_path [path to map_plate directory]
+    - delimiter [delimiter used in map_plate files to separate their values]
+    Returns:
+    - map_plate structure (dictionary of ordered dictionaries),
+        i.e.:
+        map_plate = { 'A01' : OrderedDict([('id', 'A01'),
+                                        ('exp_part', '1'),
+                                        ('name', 'A01'),
+                                        <...>]),
+                     'B01' : OrderedDict([('id', 'B01'),
+                                        ('exp_part', '2'),
+                                        ('name', 'A01'),
+                                        <...>]),
+                    <...> },
+        where:
+        map_plate.keys()- experimental wells
+        mp_plate[well_id]- dicionary of all experimental settings
+                            for given well
     """
     mp_dict = {}
     dim =_parse_base_params(input_path, delimiter, mp_dict)
@@ -22,8 +40,10 @@ def parse_mp(input_path, delimiter):
 
 def _parse_params(input_path, delimiter, dimensions, mp_dict):
     """
-    Params are information about experiment collected in csv files:
-    i.e. cells type, stimulation time.
+    Parse information about experiment collected in csv files, i.e.:
+    - cells type
+    - stimulation time
+    - <...>
     """
     param_paths =_get_param_paths(input_path)
     param_paths = sorted(param_paths, key = str)
@@ -38,23 +58,25 @@ def _parse_params(input_path, delimiter, dimensions, mp_dict):
 
 def _parse_base_params(input_path, delimiter, mp_dict):
     """
-    'Base' params are the params which need to be present in every map_plate: 
-    args_active, args_ind, args_name, 
-    'not base' params are other information that are: 
-    facultative and not pre-defined.
+    1. 'Base' params- params required in each map_plate:
+        - args_active
+        - args_ind
+        - args_name
+    2. 'Not base' params- other information (facultative and not pre-defined), 
+        i.e. cell type
     """
     dimensions, active = _parse_active(input_path, delimiter)
     name_path, id_path = _verify_name_and_id(input_path, delimiter, dimensions)
     name = CSV_M.read_csv(name_path, delimiter)
     mp_id = CSV_M.read_csv(id_path, delimiter)
-    for row in range(len(active)):
-        for col in range(len(active[row])):
-            exp_part = active[row][col]
+    for i, row in enumerate(active):
+        for j, col in enumerate(active[i]):
+            exp_part = active[i][j]
             if exp_part != "0":
-                pos_x = str(row)
-                pos_y = str(col)
-                key = mp_id[row][col] #id_value
-                name_value = name[row][col]
+                pos_x = str(i)
+                pos_y = str(j)
+                key = mp_id[i][j] #id_value
+                name_value = name[i][j]
                 mp_dict[key] = OrderedDict({"position_x" : pos_x, 
                                 "position_y" : pos_y, 
                                 "name" : name_value, 
@@ -114,10 +136,11 @@ def _get_param_paths(input_path):
 
 def _collect_exp_settings(abs_path, mp_file, delimiter, mp_dict):
     """
-    Function for extracting information about optional 
-    experiment's parameters (i.e. stimulation.1.1), 
-    it parse both name and value of a given parameter
-     for each map_plate well. 
+    Extracts information about optional experiment's parameter,
+    i.e. stimulation.1.1.
+    Returns:
+    - Additional parameter to map_plate dictionary structure, i.e:
+        mp_dict['A01']['cells.1.1'] = 'A549'
     """
     rel_path = FM.path_get_relative(abs_path, mp_file)
     fullname = ".".join(FM._path_split(rel_path))
@@ -183,7 +206,7 @@ def get_params_names(mp_dict): # get all key names from map_plate dictionary
 
 def get_well_params(mp_dict, well):
     """ 
-    Get all parameters values for a given well
+    Gives all parameters values for a given well
     """
     values = []
     for param in mp_dict[well]:
@@ -204,12 +227,17 @@ def _verify_input_mp_file(input_file, delimiter, dimensions = 0):
             return False
     return True
 
-
-def _prepare_output(input_data, mp_dict, compare_column):
+def _prepare_mp_output(input_data, mp_dict, compare_column):
+    """
+    Arguemnts:
+    - input_data - data from input csv file
+    - mp_dict- map_plate structure containing all information about experiment
+    - compare_column- name of column containing wells' names
+    """
     output_data = []
     column_names = input_data[0]
-    for i in range(len(column_names)):
-        if column_names[i] == compare_column:
+    for i, name in enumerate(column_names):
+        if name == compare_column:
             position = i
     new_line = column_names + get_params_names(mp_dict)
     output_data.append(new_line)
@@ -219,11 +247,19 @@ def _prepare_output(input_data, mp_dict, compare_column):
         output_data.append(new_line)
     return output_data
 
-def apply_mp(input_path, output_path, delimiter, mp_dict, csv_names, compare_column):
+def apply_mp(input_path, output_path, delimiter, mp_dict, 
+            csv_names, compare_column):
     """
     Main function of TASK_APPLY_MAP_PLATE. 
-    Write all map_plate information (from mp_dictionary) 
+    Writes all map_plate information (from mp_dictionary) 
     into given csv files.
+    Arguments:
+    - input_path- path to dir collecting input files
+    - output_path- path to output files
+    - delimiter- separator used in csv files
+    - mp_dict- map_plate structure containing all information about experiment
+    - csv_names- list of filenames to apply map_plate
+    - compare_column- name of column containing wells' names
     """
     input_paths_list = FM.filenames_make_paths_list(input_path, csv_names)
     logger.debug("Apply map_plate: CSV input files list: "
@@ -231,11 +267,13 @@ def apply_mp(input_path, output_path, delimiter, mp_dict, csv_names, compare_col
     output_paths_list = FM.filenames_make_paths_list(output_path, csv_names)
     logger.debug("Apply map_plate: CSV output files list: "
                 "%s.", output_paths_list)
-    for i in range(len(input_paths_list)):
-        if FM.path_check_existence(input_paths_list[i]):
-            input_csv = CSV_M.read_csv(input_paths_list[i], delimiter)
-            output = _prepare_output(input_csv, mp_dict, compare_column)
-            CSV_M.write_csv(output_paths_list[i], delimiter, output)
+    for in_path, out_path in zip(input_paths_list, output_paths_list):
+        if FM.path_check_existence(in_path):
+            input_csv = CSV_M.read_csv(in_path, delimiter)
+            output = _prepare_mp_output(input_csv, mp_dict, compare_column)
+            CSV_M.write_csv(out_path, delimiter, output)
         else:
             logger.warning("Apply map_plate: following input csv file "
                         "doesn't exist: %s", input_paths_list[i])
+
+
