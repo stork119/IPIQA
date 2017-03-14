@@ -1,6 +1,7 @@
 #! /usr/bin/python
 
 import os, logging
+import modules.file_managment as FM
 
 logger = logging.getLogger("flow control")
 logger.info("Executing flow_control module.")
@@ -36,3 +37,52 @@ def _greater_or_less(arg1, arg2, comparison):
         if arg1 < arg2:
             return True
     return False
+
+def create_ele_list(input_path, wells_params, used_value):   
+    """
+    Arguments:
+    - input_path - path to directories
+    - wells_params - list of base parameters of chosen wells set
+    - used_value - value defying if given dir name reflects well tag or id
+    Returns
+    - verified_dirst- list of dirs which parameters are present 
+                        in wells_params list
+    """
+    all_dir_list = FM.dir_get_names(input_path)
+    verified_dirs = []
+    for well in wells_params:
+        if used_value == "tag":
+            if any(dir_name == well["mp_tag"] for dir_name in all_dir_list):
+                verified_dirs.append(well)
+        elif used_value == "id":
+            if any(dir_name == well["mp_id"] for dir_name in all_dir_list):
+                verified_dirs.append(well)
+        else:
+            logger.error("Unexpected used_value: %s", used_value)
+    return verified_dirs
+
+def get_active_wells(mp_dict, exp_part):
+    """
+    Returns list of active wells from mp_dict for given experiment part.
+    """
+    wells = mp_dict.keys()
+    active_wells = []
+    for well in wells:
+        if mp_dict[well]["exp_part"] == exp_part:
+            active_wells.append(well)
+    return active_wells
+
+def get_wells_base_params(mp_dict, wells, prefix, sufix, exp_part):
+    """
+    Gets wells base params from mp_dict.
+    Base params:
+    - mp_id
+    - mp_tag
+    - exp_part
+    """
+    params = []
+    for well in wells:
+        mp_id = prefix + mp_dict[well]["id"] + sufix
+        mp_tag = prefix + mp_dict[well]["name"] + sufix
+        params.append({"mp_id" : mp_id, "mp_tag" : mp_tag, "exp_part" : exp_part, "mp_key" : mp_dict[well]["id"]})
+    return params
