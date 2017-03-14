@@ -419,6 +419,7 @@ class TASK_APPLY_MAP_PLATE(TASK):
     - input_path [path to input csv files]
     - output_path [path to output files]
     - csv_names_list [list of files to apply map_plate]
+    - mp_key [well id/key to all well parameters in map_plate structure]
     
     Optional args:
     - delimiter [delimiter used in csv files, by default ',']
@@ -432,6 +433,7 @@ class TASK_APPLY_MAP_PLATE(TASK):
         input_path = dict_local["input_path"]
         output_path = dict_local["output_path"]
         csv_names = (dict_local["csv_names_list"]).split(",")
+        mp_key = dict_local["mp_key"]
         try:
             delimiter = dict_local["delimiter"]
         except:
@@ -441,9 +443,7 @@ class TASK_APPLY_MAP_PLATE(TASK):
         except:
             mp_name = "map_plate"
         mp_dict = dict_local[mp_name]
-        compare_column = "well.name" # temporary hardcoded [to discuss name and form]
-        map_plate.apply_mp(input_path, output_path, delimiter, mp_dict, csv_names, compare_column)
-
+        map_plate.apply_mp(input_path, output_path, delimiter, mp_dict, csv_names, mp_key)
 
 class TASK_MAP_PLATE(TASK):
   
