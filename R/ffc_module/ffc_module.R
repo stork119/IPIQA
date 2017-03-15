@@ -22,7 +22,7 @@ try({package.list <- list("tiff")
 ffc.width <- 1392#1344
 ffc.height <- 1024
 
-wd.tmp <- "C://Users//Pathway//Documents//IPIQA//PathwayPackage//R//ffc_module//"#dirname(sys.frame(1)$ofile)
+wd.tmp <- dirname(sys.frame(1)$ofile)
 l <- lapply(list("DivideImage.R", "ImageCalculator.R"), 
             function(f){source(normalizePath(paste(wd.tmp, f, sep = "//"), "/"))})
 rm(l)
@@ -206,14 +206,18 @@ fun_camcor_apply <- function(input_path,
 fun_camcor_read_apply <- function(camcor_path,
                                   input_path,
                                   output_path,
+                                  regex_name = NULL,
                                   image_regex = list("^Alexa.*\\.tif$", "^DAPI.*\\.tif$"),
                                   GLOBAL.sref.factor = 0.01,
                                   ...
 ){
+  print(regex_name)
   memory.limit(size=1800)
-  print(memory.size(max = TRUE))
-  print(memory.limit())
-
+  #print(memory.size(max = TRUE))
+  #print(memory.limit())
+  if(!is.null(regex_name)){
+    image_regex <- list(paste("^", regex_name, ".*\\.tif$", sep = ""))
+  }
   gc()
   camcor <- fun_camcor_read(output_path = camcor_path)
     gc()
