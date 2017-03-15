@@ -74,7 +74,7 @@ def read_csv(path, mark, dict_local = {}, key_name = ""):
 def write_csv(path, deltimer, data = None, key = ""):
     if isinstance(data,dict):
         data = data[key]
-    os.makedirs(os.path.dirname(path), exist_ok=True)
+    os.makedirs(os.path.dirname(path), exist_ok = True)
     with open(path, 'w') as f:
         for row in data:
             f.write(deltimer.join(row) + "\n")
