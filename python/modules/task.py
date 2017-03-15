@@ -119,31 +119,32 @@ class TASK_IF(TASK):
         TASK.__init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args)
         self.task_list = args['task_list']
 
-def execute_specify(self, dict_local):
-    arg1 = dict_local["argument_1"] #[!] code need to be change to allow parsing both args from mp_dict
-    comparison = dict_local["comparison"].lower() 
-    try:
-        arg2 = dict_local["argument_2"]
+    def execute_specify(self, dict_local):
+        arg1 = dict_local["argument_1"] #[!] code need to be change to allow parsing both args from mp_dict
+        comparison = dict_local["comparison"].lower() 
+        try:
+            arg2 = dict_local["argument_2"]
+            if FC.compare_args(arg1, arg2, comparison) == True:
+                self._execute_queue(dict_local)
+            return
+        except:
+            pass
+        try:
+            mp_name = dict_local["mp_dict"]
+        except:
+            mp_name = "map_plate"
+        try:
+            mp_dict = dict_local[mp_name]
+            mp_well = dict_local["mp_well"]
+            mp_param = dict_local["mp_param"]
+            arg2 = mp_dict[mp_well][mp_param]
+        except:
+            logger.error("Cannot get value from map_plate for given " 
+            "dictionary, well and parameter: %s, %s, %s", mp_name, mp_well, mp_param)
+            return
         if FC.compare_args(arg1, arg2, comparison) == True:
             self._execute_queue(dict_local)
         return
-    except:
-        pass
-    try:
-        mp_dict = dict_local["mp_dict"]
-    except:
-        mp_dict = "map_plate"
-    try:
-        mp_well = dict_local["mp_well"]
-        mp_param = dict_local["mp_param"]
-        arg2 = mp_dict[mp_well][mp_param]
-    except:
-        logger.error("Cannot get value from map_pate for given " 
-        "dictionary, well and parameter.")
-        return
-    if FC.compare_args(arg1, arg2, comparison) == True:
-        self._execute_queue(dict_local)
-    return
 
     def _execute_queue(self, dict_local):
         for task in self.task_list:
