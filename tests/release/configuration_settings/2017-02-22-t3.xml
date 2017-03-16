@@ -122,11 +122,11 @@
         </parameters_by_name>
     </TASK>
 
-<!--    <TASK class="TASK_REMOVE">
+    <TASK class="TASK_REMOVE">
         <parameters_by_name>
         <parameter key="input_path" value="camcor_data_in_path"/>
         </parameters_by_name>
-    </TASK>-->
+    </TASK>
 
     <TASK class="TASK_DOWNLOAD"> 
         <parameters_by_name>
