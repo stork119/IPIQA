@@ -110,9 +110,9 @@ class TASK_CHECK_COMPLETNESS(TASK):
         try:
             job_done = str(dict_local["experiment_finished"])
             job_done = job_done.lower()
-            if job_done == "no" or "0" or "false":
+            if job_done == "no" or job_done ==  "0" or job_done == "false":
                 required_files = (dict_local["required_files"]).split(",")
-                sleep_time = dict_local["sleep_time"]
+                sleep_time = int(dict_local["sleep_time"])
                 FM.dir_check_completeness(in_path, required_files, sleep_time)
         except:
             pass
