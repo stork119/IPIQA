@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<main>
+<CONFIG>
+    <!-- IPIQA configurations: -->
+    <parameter key="number_of_cores" value= "6"/>
+    <parameter key="experiment_finished" value="True"/>
+
+    <!-- PC configuration -->
+    <parameter key="cp_path" value = "C://Program Files//CellProfiler//"/>
+    <parameter key="r_scripts_path" value = "F://AG//IPIQA-mapplate//R//"/>
+
+</CONFIG>
+</main>
