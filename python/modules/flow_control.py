@@ -27,8 +27,7 @@ def _greater_or_less(arg1, arg2, comparison):
         arg1 = int(arg1)
         arg2 = int(arg2)
     except:
-        logger.error("Cannot compare if given parameter is greater/less than "
-        "another when given arguments are not integers: %s, %s", arg1, arg2)
+        logger.error("Cannot compare non-numeric arguments: %s, %s", arg1, arg2)
         return False
     if comparison == "greater" or comparison == ">":
         if arg1 > arg2:
