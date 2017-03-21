@@ -51,10 +51,10 @@ def create_elements_list(input_path, wells_params, used_value):
     verified_dirs = []
     for well in wells_params:
         if used_value == "tag":
-            if any(dir_name == well["mp_tag"] for dir_name in all_dir_list):
+            if any(dir_name == well["wellname_tag"] for dir_name in all_dir_list):
                 verified_dirs.append(well)
         elif used_value == "id":
-            if any(dir_name == well["mp_id"] for dir_name in all_dir_list):
+            if any(dir_name == well["wellname_id"] for dir_name in all_dir_list):
                 verified_dirs.append(well)
         else:
             logger.error("Unexpected used_value: %s", used_value)
@@ -78,10 +78,13 @@ def get_wells_base_params(mp_dict, wells, prefix, sufix, exp_part):
     - mp_id
     - mp_tag
     - exp_part
+    Adds prefixes and sufixes to mp_id and mp_tag to get:
+    - wellname_id
+    - wellname_tag
     """
     params = []
     for well in wells:
-        mp_id = prefix + mp_dict[well]["id"] + sufix
-        mp_tag = prefix + mp_dict[well]["name"] + sufix
-        params.append({"mp_id" : mp_id, "mp_tag" : mp_tag, "exp_part" : exp_part, "mp_key" : mp_dict[well]["id"]})
+        wellname_id = prefix + mp_dict[well]["id"] + sufix
+        wellname_tag = prefix + mp_dict[well]["name"] + sufix
+        params.append({"wellname_id" : wellname_id, "wellname_tag" : wellname_tag, "exp_part" : exp_part, "mp_key" : mp_dict[well]["id"]})
     return params
