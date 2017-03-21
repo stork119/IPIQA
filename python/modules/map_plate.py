@@ -255,6 +255,7 @@ def apply_mp(input_path, output_path, delimiter, mp_dict,
     - delimiter- separator used in csv files
     - mp_dict- map_plate structure containing all information about experiment
     - csv_names- list of filenames to apply map_plate
+    - mp_key - well id/key to all well parameters in map_plate structure
     """
     input_paths_list = FM.filenames_make_paths_list(input_path, csv_names)
     logger.debug("Apply map_plate: CSV input files list: "

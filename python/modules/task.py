@@ -265,7 +265,18 @@ class TASK_PARALLELIZE(TASK):
 
 class TASK_PARALLELIZE_MP(TASK_PARALLELIZE): #all objects (folders) for given map_plate setup
     """
-    [!] TO DO - Add comments
+    Required args:
+    - input_path [path to directories on which parallelize taks would be performed]
+    [+ arguments for super class TASK_PARALLELIZE: number_of_cores, sleep_time]
+
+    Optional args:
+    - used_value [value defying if given dir name reflects well tag or id, by default 'tag']
+    - prefix [subdir name prefixes]
+                (i.e. 'Well ' for 'Well A0', where 'A01' is well tag)
+    - sufix [subdir name sufixes]
+    - exp_part [experiment part, by default '1']
+    - mp_name [name of structure with all collected map_plate info, 
+                by default 'map_plate']
     """
     def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args):
         TASK_PARALLELIZE.__init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args)
