@@ -180,7 +180,7 @@
                 <!--<TASK class="TASK_CHECK_COMPLETNESS">
                     <parameters_by_name>
                         <parameter key="input_path.1" value="input_path"/>
-                        <parameter key="input_path.2" value="mp_id"/>
+                        <parameter key="input_path.2" value="wellname_id"/>
                     </parameters_by_name>
                 </TASK>-->
                 <TASK class="TASK_DOWNLOAD">
@@ -189,9 +189,9 @@
                     </parameters_by_value>
                     <parameters_by_name>
                         <parameter key="input_path.1" value="input_path"/>
-                        <parameter key="input_path.2" value="mp_id"/>
+                        <parameter key="input_path.2" value="wellname_id"/>
                         <parameter key="output_path.1" value="pathway_data_raw_path"/>
-                        <parameter key="output_path.2" value="mp_id"/>
+                        <parameter key="output_path.2" value="wellname_id"/>
                     </parameters_by_name>
                 </TASK>
                 <TASK class="TASK_FFC_READ_APPLY">
@@ -200,9 +200,9 @@
                         <parameter key="camcor_path.2" value="camcor_data_path_rel"/>
                         <parameter key="camcor_path.3" value="camcor_in_path"/>
                         <parameter key="input_path.1"  value="pathway_data_raw_path"/>
-                        <parameter key="input_path.2"  value="mp_id"/>
+                        <parameter key="input_path.2"  value="wellname_id"/>
                         <parameter key="output_path.1" value="pathway_data_ffc_path"/> 
-                        <parameter key="output_path.2"  value="mp_id"/>
+                        <parameter key="output_path.2"  value="wellname_id"/>
                     </parameters_by_name>
                 </TASK>
                 <TASK class="TASK_FOR">
@@ -261,9 +261,9 @@
                                 <TASK class="TASK_QUANTIFY">
                                     <parameters_by_name>
                                         <parameter key="input_path.1" value="pathway_data_xxx_path"/>
-                                        <parameter key="input_path.2" value="mp_id"/>
+                                        <parameter key="input_path.2" value="wellname_id"/>
                                         <parameter key="output_path.1" value="quantify_data_xxx_path"/> 
-                                        <parameter key="output_path.2" value="mp_id"/>
+                                        <parameter key="output_path.2" value="wellname_id"/>
                                     </parameters_by_name>
                                 </TASK>
                                 <TASK class="TASK_APPLY_MAP_PLATE">
@@ -274,14 +274,14 @@
                                     <parameters_by_name>
                                         <parameter key="input_path.1" value="quantify_data_xxx_path"/>
                                         <parameter key="output_path.1" value="quantify_data_xxx_path"/> 
-                                        <parameter key="input_path.2" value="mp_id"/>
-                                        <parameter key="output_path.2" value="mp_id"/> 
+                                        <parameter key="input_path.2" value="wellname_id"/>
+                                        <parameter key="output_path.2" value="wellname_id"/> 
                                     </parameters_by_name>
                                 </TASK>
                                 <TASK class="TASK_REMOVE">
                                     <parameters_by_name>
                                         <parameter key="input_path.1" value="pathway_data_xxx_path"/>
-                                        <parameter key="input_path.2" value="mp_id"/>
+                                        <parameter key="input_path.2" value="wellname_id"/>
                                     </parameters_by_name>
                                 </TASK>
                             </TASK>  
