@@ -239,16 +239,14 @@ def dir_copy_constantly(in_path, out_path, sleep_time):
 """
 Other functionalities.
 """
-def dir_check_completeness(in_path, required_files, sleep_time): # checking out if the given list of files exist in given directory (path)
-    filelist = []
+def dir_check_completeness(in_path, required_files, sleep_time):
+    """ Verify if the given list of files exist in given directory (path)"""
     while True:
-        for f in os.listdir(in_path):
-            if f not in filelist:
-                filelist.append(f)
-            if all(element in filelist for element in required_files):
-                break
-            else:
-                sleep(sleep_time)
+        all_files = os.listdir(in_path)
+        if set(required_files).issubset(set(all_files)):
+            break
+        else:
+            sleep(sleep_time)
 
 def file_verify_extension(filename, extension): #checking out if the given file have got given extension
     if filename.endswith(extension):
