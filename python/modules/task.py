@@ -239,7 +239,7 @@ class TASK_PARALLELIZE(TASK):
         self.config_dict = args['config_dict']
 
     def execute_specify(self, dict_local):
-        elements_list, ele_number = self.parsing_elements_list(dict_local)
+        elements_list, ele_number = self.parse_elements_list(dict_local)
         processes_number = int(dict_local["number_of_cores"])
         sleep_time = int(dict_local["sleep_time"])
         new_elements = elements_list
@@ -251,7 +251,7 @@ class TASK_PARALLELIZE(TASK):
             if len(elements_list) >= ele_number:
                 break
             sleep(sleep_time)
-            new_elements_list = self.parsing_elements_list(dict_local)[0] # in MP case (ONLY) we could just call _create_ele_lis; TO DO
+            new_elements_list = self.parse_elements_list(dict_local)[0] # in MP case (ONLY) we could just call _create_ele_lis; TO DO
             new_elements = [i for i in new_elements_list if i not in elements_list]
             elements_list = new_elements_list
         pool.close()
@@ -282,7 +282,7 @@ class TASK_PARALLELIZE_MP(TASK_PARALLELIZE): #all objects (folders) for given ma
         TASK_PARALLELIZE.__init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args)
         self.config_dict = args['config_dict']
 
-    def parsing_elements_list(self, dict_local): #implementing with tag
+    def parse_elements_list(self, dict_local): #implementing with tag
         input_path = str(dict_local["input_path"])
         try:
             used_value = dict_local["used_value"]
@@ -308,7 +308,7 @@ class TASK_PARALLELIZE_MP(TASK_PARALLELIZE): #all objects (folders) for given ma
         active_wells_keys = FC.get_active_wells(mp_dict, exp_part) #get active wells keys for mp_dict 
         ele_number = len(active_wells_keys)
         params = FC.get_wells_base_params(mp_dict, active_wells_keys, prefix, sufix, exp_part)
-        elements_list = FC.create_ele_list(input_path, params, used_value)
+        elements_list = FC.create_elements_list(input_path, params, used_value)
         return elements_list, ele_number
 
 class TASK_PARALLELIZE_LIST(TASK_PARALLELIZE): # list of objects (folders) # [!] NOT SUPPORTED
@@ -316,7 +316,7 @@ class TASK_PARALLELIZE_LIST(TASK_PARALLELIZE): # list of objects (folders) # [!]
     def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args):
         TASK_PARALLELIZE.__init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args)
 
-    def parsing_elements_list(self, dict_local):
+    def parse_elements_list(self, dict_local):
         paths = []
         input_path = str(dict_local["input_path"])
         folder_list = (dict_local["folders_list"]).split(",")
@@ -333,7 +333,7 @@ class TASK_PARALLELIZE_PATH(TASK_PARALLELIZE): #all objects (folders) in given d
         TASK_PARALLELIZE.__init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args)
         self.config_dict = args['config_dict']
 
-    def parsing_elements_list(self, dict_local):
+    def parse_elements_list(self, dict_local):
         folders_number = int(dict_local["folders_number"])
         dir_names = FM.dir_get_names(input_path)
         dir_list = [{"folder_name" : i} for i in dir_names]
@@ -347,7 +347,7 @@ class TASK_SYNCHRONOUSLY(TASK):
         self.config_dict = args['config_dict']
 
     def execute_specify(self, dict_local):
-        dir_list, folders_number = self.parsing_elements_list(dict_local)
+        dir_list, folders_number = self.parse_elements_list(dict_local)
         processes_number = int(dict_local["number_of_cores"])
         sleep_time = int(dict_local["sleep_time"])
         new_dirs = dir_list
@@ -376,7 +376,7 @@ class TASK_SYNCHRONOUSLY_LIST(TASK_SYNCHRONOUSLY): # list of objects (folders)
     def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args):
         TASK_PARALLELIZE.__init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args)
 
-    def parsing_elements_list(self, dict_local):
+    def parse_elements_list(self, dict_local):
         paths = []
         input_path = str(dict_local["input_path"])
         folder_list = (dict_local["folders_list"]).split(",")
@@ -393,7 +393,7 @@ class TASK_SYNCHRONOUSLY_PATH(TASK_SYNCHRONOUSLY): #all objects (folders) in giv
         TASK_PARALLELIZE.__init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args)
         self.config_dict = args['config_dict']
 
-    def parsing_elements_list(self, dict_local):
+    def parse_elements_list(self, dict_local):
         folders_number = int(dict_local["folders_number"])
         input_path = str(dict_local["input_path"])
         dir_list = FM.dir_get_names(input_path)

@@ -37,7 +37,7 @@ def _greater_or_less(arg1, arg2, comparison):
             return True
     return False
 
-def create_ele_list(input_path, wells_params, used_value):   
+def create_elements_list(input_path, wells_params, used_value):   
     """
     Arguments:
     - input_path - path to directories
