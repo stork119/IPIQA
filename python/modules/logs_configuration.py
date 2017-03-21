@@ -10,3 +10,4 @@ def configure(PP_path):
     logging.config.fileConfig('logging.conf', defaults={'logfilename': log_filename}, disable_existing_loggers=False) #disable_existing_loggers=True, putting name of every module in logging.conf would be needed, False if we gonna make it unnecesarry
     logger = logging.getLogger("logs configuration")
     logger.info("Logs initialization...")
+    return log_filename
