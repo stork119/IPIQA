@@ -125,7 +125,7 @@ class TASK_QUEUE(TASK):
 
 class TASK_CHECK_COMPLETNESS(TASK): # [!] not supported
 
-    dict_task = {"experiment_finished" : {"required" : True, "default" : True}
+    dict_task = {"experiment_finished" : {"required" : True, "default" : True},
                  "input_path" : {"required" : True}, 
                  "required_files" : {"requred" : False},
                  "sleep_time" : {"requred" : True}}
@@ -353,9 +353,7 @@ class TASK_R(TASK):
         dict_local.update(output_dict)
         
 class TASK_FFC_CREATE(TASK):
-    
-    dict_task = {} # [!] placeholder
-    
+
     def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name,  args = {}):
         TASK.__init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args)
 
@@ -365,9 +363,7 @@ class TASK_FFC_CREATE(TASK):
         dict_local.update(output_dict)
 
 class TASK_FFC_READ(TASK):
-  
-    dict_task = {} # [!] placeholder
-  
+
     def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name,  args = {}):
         TASK.__init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args)
 
@@ -380,9 +376,7 @@ class TASK_FFC_READ(TASK):
         dict_local.update(output_dict)
 
 class TASK_FFC_APPLY(TASK):
-  
-    dict_task = {} # [!] placeholder
-  
+
     def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name,  args = {}):
         TASK.__init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args)
 
@@ -393,9 +387,7 @@ class TASK_FFC_APPLY(TASK):
    
    
 class TASK_FFC_READ_APPLY(TASK):
-  
-    dict_task = {} # [!] placeholder
-  
+ 
     def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name,  args = {}):
         TASK.__init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args)
 
