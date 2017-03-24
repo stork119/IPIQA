@@ -41,11 +41,10 @@ def create_elements_list(input_path, wells_params, used_value):
     """
     Arguments:
     - input_path - path to directories
-    - wells_params - list of base parameters of chosen wells set
+    - wells_params - list of lists of chosen wells parameters
     - used_value - value defying if given dir name reflects well tag or id
     Returns
-    - verified_dirst- list of dirs which parameters are present 
-                        in wells_params list
+    - verified_dirs- list of subdirs representing chosen active wells set
     """
     all_dir_list = FM.dir_get_names(input_path)
     verified_dirs = []

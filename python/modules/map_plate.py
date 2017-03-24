@@ -62,6 +62,8 @@ def _parse_base_params(input_path, delimiter, mp_dict):
         - args_active
         - args_ind
         - args_name
+        If args_name file doesn't exist, args_ind file will
+        be used instead (args_name = args_ind).
     2. 'Not base' params- other information (facultative and not pre-defined), 
         i.e. cell type
     """
@@ -157,14 +159,14 @@ def _collect_exp_settings(abs_path, mp_file, delimiter, mp_dict):
 
 def get_param_value(mp_dict, well_name, param):
     """
-    Function getting values for a given well and parameter.
+    Gets values for a given well and parameter.
     """
     value = mp_dict[well_name][param]
     return value
 
 def get_param_values(mp_dict, param):
     """
-    Function gettin all values for a given param 
+    Gets all values for a given param 
     from map_plate dictionary.
     """
     values = []
@@ -174,7 +176,7 @@ def get_param_values(mp_dict, param):
 
 def get_param_unique_values(mp_dict, param): 
     """
-    Function gettin all unique values for a given param 
+    Gets all unique values for a given param 
     from map_plate dictionary.
     """
     values = get_param_values(mp_dict, param)
@@ -232,7 +234,7 @@ def _prepare_mp_output(input_data, mp_dict, mp_key):
     Arguemnts:
     - input_data - data from input csv file
     - mp_dict- map_plate structure containing all information about experiment
-    - mp_key - well id/key to all well parameters in map_plate structure
+    - mp_key - id/key of well in map_plate structure
     """
     output_data = []
     column_names = input_data[0]
@@ -255,7 +257,7 @@ def apply_mp(input_path, output_path, delimiter, mp_dict,
     - delimiter- separator used in csv files
     - mp_dict- map_plate structure containing all information about experiment
     - csv_names- list of filenames to apply map_plate
-    - mp_key - well id/key to all well parameters in map_plate structure
+    - mp_key - id/key of well in map_plate structure
     """
     input_paths_list = FM.filenames_make_paths_list(input_path, csv_names)
     logger.debug("Apply map_plate: CSV input files list: "
