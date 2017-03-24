@@ -4,13 +4,14 @@ import argparse
 import modules.file_managment as FM
 import modules.logs_configuration as LC
 import modules.xml_parser as XML_P
+from time import sleep
 
 def main():
     PP_path = os.path.abspath('..')
     """Setting up logs."""
-    LC.configure(PP_path)
-    logger = logging.getLogger('XML parser')
-    logger.info('Starting program...')
+    logs_path = LC.configure(PP_path)
+    logger = logging.getLogger("XML parser")
+    logger.info("Starting program...")
     """Arg parse section."""
     parser = argparse.ArgumentParser(description = '\n PathwayPackage [PP] is '
     'an integration platform for instantaneous processing and analysis of '
@@ -73,6 +74,7 @@ def main():
         # config_dict overwrite config_dict2 settings
         config_dict2.update(config_dict) 
         config_dict = config_dict2
+        FM.parse_exec_info(PP_path, logs_path, setts, config_dict)
         pipeline.execute(config_dict)
 
 if __name__ == '__main__':
