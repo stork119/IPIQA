@@ -84,8 +84,11 @@ def _make_config_dict(root, tag, setup = ""):
         logger.debug("[%s]:[%s] added to %s %s dictionary.", key, value, tag, setup)
     return temp_dict
 
-def parse(input_path, additional_arg):
-    logger.info("Parsing XML input_settings.")
+def parse(input_path, additional_arg, main_setts = True):
+    if main_setts == True:
+        logger.info("Parsing XML input_settings.")
+    else:
+        logger.info("Parsing additional config input_settings.")
     try:
         tree = ET.parse(input_path)
     except:
@@ -98,7 +101,9 @@ def parse(input_path, additional_arg):
     Config = root[0]
     config_dict = _make_config_dict(Config, Config.tag) # passing the 'name' of dictionary (config), which might be usefull for logs/debugging 
     config_dict.update(additional_arg)
-    main_queue = root[1]
-    pipeline = _create_queue_task(main_queue)
-    return pipeline, config_dict
+    if main_setts == True:
+        main_queue = root[1]
+        pipeline = _create_queue_task(main_queue)
+        return pipeline, config_dict
+    return config_dict
     

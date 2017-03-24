@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<main>
+<CONFIG>
+    <!-- PC configuration -->
+    <parameter key="cp_path" value = "C://Program Files//CellProfiler//"/>
+    <parameter key="r_scripts_path" value = "F://AG//IPIQA-mapplate//R//"/>
+
+</CONFIG>
+</main>
