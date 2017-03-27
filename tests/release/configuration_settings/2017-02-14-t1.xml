@@ -220,7 +220,7 @@
                     </VARIABLES>
             
                     <TASK class="TASK_QUEUE"> 
-                        <!--<TASK class="TASK_QUANTIFY">
+                        <TASK class="TASK_QUANTIFY">
                             <parameters_by_name>
                                 <parameter key="input_path.1" value="pathway_data_xxx_path"/>
                                 <parameter key="input_path.2" value="wellname_id"/>
@@ -239,7 +239,7 @@
                                 <parameter key="input_path.2" value="wellname_id"/>
                                 <parameter key="output_path.2" value="wellname_id"/> 
                             </parameters_by_name>
-                        </TASK>-->
+                        </TASK>
                         <TASK class="TASK_REMOVE">
                             <parameters_by_name>
                                 <parameter key="input_path.1" value="pathway_data_xxx_path"/>
