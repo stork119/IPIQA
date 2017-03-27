@@ -1,6 +1,8 @@
 # PYTHON
 tests/release/configuration_settings/input_materials/*
 tests/release/configuration_settings/results/*
+tests/IPIQA.2.1/configuration_settings/input_materials/*
+tests/IPIQA.2.1/configuration_settings/results/*
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

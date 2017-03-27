@@ -240,6 +240,19 @@ def dir_copy_constantly(in_path, out_path, sleep_time):
 """
 Other functionalities.
 """
+
+def filenames_make_paths_list(main_path, file_list):
+    """
+    Function for creating set of paths, containing
+    each file from given location (main path) which name 
+    is present in filenames list.
+    """
+    path_list = []
+    for filepath in file_list:
+        path = main_path + filepath
+        path_list.append(path)
+    return path_list
+
 def dir_check_completeness(in_path, required_files, sleep_time):
     """ Verify if the given list of files exist in given directory (path)"""
     while True:
