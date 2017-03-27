@@ -84,6 +84,6 @@ def get_wells_base_params(mp_dict, wells, prefix, sufix, exp_part):
     params = []
     for well in wells:
         wellname_id = prefix + mp_dict[well]["id"] + sufix
-        wellname_tag = prefix + mp_dict[well]["name"] + sufix
+        wellname_tag = prefix + mp_dict[well]["tag"] + sufix
         params.append({"wellname_id" : wellname_id, "wellname_tag" : wellname_tag, "exp_part" : exp_part, "mp_key" : mp_dict[well]["id"]})
     return params

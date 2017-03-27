@@ -60,16 +60,16 @@ def _parse_base_params(input_path, delimiter, mp_dict):
     """
     1. 'Base' params- params required in each map_plate:
         - args_active
-        - args_ind
-        - args_name
-        If args_name file doesn't exist, args_ind file will
-        be used instead (args_name = args_ind).
+        - args_id
+        - args_tag
+        If args_tag file doesn't exist, args_id file will
+        be used instead (args_tag = args_id).
     2. 'Not base' params- other information (facultative and not pre-defined), 
         i.e. cell type
     """
     dimensions, active = _parse_active(input_path, delimiter)
-    name_path, id_path = _verify_name_and_id(input_path, delimiter, dimensions)
-    name = CSV_M.read_csv(name_path, delimiter)
+    tag_path, id_path = _verify_tag_and_id(input_path, delimiter, dimensions)
+    tag = CSV_M.read_csv(tag_path, delimiter)
     mp_id = CSV_M.read_csv(id_path, delimiter)
     for i, row in enumerate(active):
         for j, col in enumerate(active[i]):
@@ -78,10 +78,10 @@ def _parse_base_params(input_path, delimiter, mp_dict):
                 pos_x = str(i)
                 pos_y = str(j)
                 key = mp_id[i][j] #id_value
-                name_value = name[i][j]
+                tag_value = tag[i][j]
                 mp_dict[key] = OrderedDict({"position_x" : pos_x, 
                                 "position_y" : pos_y, 
-                                "name" : name_value, 
+                                "tag" : tag_value, 
                                 "id" : key, 
                                 "exp_part" : exp_part})
     return dimensions
@@ -99,30 +99,30 @@ def _parse_active(input_path, delimiter):
     dimensions = [x,y]
     return dimensions, active
 
-def _verify_name_and_id(input_path, delimiter, dimensions):
+def _verify_tag_and_id(input_path, delimiter, dimensions):
     # >>temporary change<<
-    #id_path = FM.path_join(input_path, "args_ind.csv") 
-    #name_path = FM.path_join(input_path, "args_names.csv")
-    name_path = FM.path_join(input_path, "args_ind.csv")
-    id_path = FM.path_join(input_path, "args_names.csv")
+    id_path = FM.path_join(input_path, "args_id.csv") 
+    tag_path = FM.path_join(input_path, "args_tag.csv")
+    #name_path = FM.path_join(input_path, "args_ind.csv")
+    #id_path = FM.path_join(input_path, "args_names.csv")
     # >>temporary change<<
     if not FM.path_check_existence(id_path):
-        logger.info("Map_plate names would be used also as ids "
+        logger.info("Map_plate tags would be used also as ids "
                     "due to original id file doesn't exist: %s", id_path)
-        id_path = name_path
+        id_path = tag_path
     else:
         if not _verify_input_mp_file(id_path, delimiter, dimensions):
             logger.error(fatal_error_msg)
             exit()
-    if not FM.path_check_existence(name_path):
+    if not FM.path_check_existence(tag_path):
         logger.error(fatal_error_msg + 
-                    " Cannot parse map_plate names, "
-                    "file doesn't exist: %s", name_path)
+                    " Cannot parse map_plate tags, "
+                    "file doesn't exist: %s", tag_path)
         exit()
-    if not _verify_input_mp_file(name_path, delimiter, dimensions):
+    if not _verify_input_mp_file(tag_path, delimiter, dimensions):
         logger.error(fatal_error_msg)
         exit()
-    return name_path, id_path
+    return tag_path, id_path
 
 def _get_param_paths(input_path):
     subfile_list = FM.file_get_paths(input_path)
