@@ -5,7 +5,7 @@ import modules.file_managment as FM
 logger = logging.getLogger("CSV managment")
 logger.info("Executing csv (merge) module.")
 
-def merge_subdir_csv(csv_name, subdir_list, delimiter = ",", column_name = "well.name"): 
+def merge_subdir_csv(csv_name, subdir_list, deltimer = ",", column_name = "well.name"): 
     """csv_names = the list of filenames with given CP output data (for example: Nuclei.csv,Cytoplasm.csv)
     subdir_list = the list of subdir's paths, each of subdir contains data of given well"""
     output= []
@@ -17,12 +17,12 @@ def merge_subdir_csv(csv_name, subdir_list, delimiter = ",", column_name = "well
     logger.debug("Merging data from %s.", position)
     for line in open(FM.path_join(subdir_list[0], csv_name), "r"):
         if num == 0: #adding first line from the first input file (to include the header)
-            tmp = [x for x in line.rstrip().split(delimiter)]
+            tmp = [x for x in line.rstrip().split(deltimer)]
             tmp.append(column_name)
             output.append(tmp)
             num = 1
         else:
-            tmp = [x for x in line.rstrip().split(delimiter)] #adding the rest of lines with proper position (well id)
+            tmp = [x for x in line.rstrip().split(deltimer)] #adding the rest of lines with proper position (well id)
             tmp.append(position)
             output.append(tmp)
     # rest of files:
@@ -34,7 +34,7 @@ def merge_subdir_csv(csv_name, subdir_list, delimiter = ",", column_name = "well
         # skip the header
         first_line = f.readline() # first line is header, it is called to put it out of set
         for line in f:
-            tmp = [x for x in line.rstrip().split(delimiter)] #adding the rest of lines with proper position (well id)
+            tmp = [x for x in line.rstrip().split(deltimer)] #adding the rest of lines with proper position (well id)
             tmp.append(position)
             output.append(tmp)
         f.close()
@@ -71,13 +71,12 @@ def read_csv(path, mark, dict_local = {}, key_name = ""):
         dict_local[key_name] = data
         return dict_local
 
-def write_csv(path, delimiter, data = None, key = ""):
+def write_csv(path, deltimer, data = None, key = ""):
     if isinstance(data,dict):
         data = data[key]
-    os.makedirs(os.path.dirname(path), exist_ok = True)
     with open(path, 'w') as f:
         for row in data:
-            f.write(delimiter.join(row) + "\n")
+            f.write(deltimer.join(row) + "\n")
 
 def filter_subdir_list(main_subdir_list, csv_name):
     final_list = []
