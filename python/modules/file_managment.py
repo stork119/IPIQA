@@ -1,5 +1,6 @@
 #! /usr/bin/python
 import os.path, csv
+import atexit
 from time import sleep
 import logging
 import shutil # for function copy_data
@@ -252,16 +253,14 @@ def filenames_make_paths_list(main_path, file_list):
         path_list.append(path)
     return path_list
 
-def dir_check_completeness(in_path, required_files, sleep_time): # checking out if the given list of files exist in given directory (path)
-    filelist = []
+def dir_check_completeness(in_path, required_files, sleep_time):
+    """ Verify if the given list of files exist in given directory (path)"""
     while True:
-        for f in os.listdir(in_path):
-            if f not in filelist:
-                filelist.append(f)
-            if all(element in filelist for element in required_files):
-                break
-            else:
-                sleep(sleep_time)
+        all_files = os.listdir(in_path)
+        if set(required_files).issubset(set(all_files)):
+            break
+        else:
+            sleep(sleep_time)
 
 def file_verify_extension(filename, extension): #checking out if the given file have got given extension
     if filename.endswith(extension):
@@ -279,3 +278,22 @@ def path_extract_name(path): #extract file/dir name from path i.e. "foo.txt" fro
     tmp = len(path_list)
     name = path_list[(tmp - 1)]
     return name
+
+"""
+[!]
+Following functions will be moved to flow_control module after develop and map_plate branches merge.
+"""
+def _save_exec_info(settings_path, logs_path, out_path, dirname):
+    path = path_join(out_path, dirname) + "//"
+    file_copy(settings_path, path)
+    file_copy(logs_path, path)
+    print("\nInformation about software execution (xml settings and logs) "
+            "were saved into: %s" % (path))
+    
+def parse_exec_info(PP_path, logs_path, settings_path, config_dict):
+    dir_name = path_extract_name(settings_path)[:-4]
+    try:
+        out_path = local_dict["exec_output_path"] #temporary name
+    except:
+        out_path = PP_path + "//"
+    atexit.register(_save_exec_info, settings_path, logs_path, out_path, dir_name)
