@@ -69,9 +69,7 @@ def main():
     for setts in settings_list:
         logger.info('Current xml settings: %s', setts)
         pipeline, config_dict = XML_P.parse(setts, additional_arg)
-        # config_dict2 overwrite config_dict settings
-        # config_dict.update(config_dict2) 
-        # config_dict overwrite config_dict2 settings
+        # config_dict overwrite (additional) config_dict2 settings
         config_dict2.update(config_dict) 
         config_dict = config_dict2
         FM.parse_exec_info(PP_path, logs_path, setts, config_dict)
