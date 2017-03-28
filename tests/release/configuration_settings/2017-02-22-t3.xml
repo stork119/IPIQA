@@ -110,7 +110,6 @@
             <parameter key="camcor_data_in_path" value="output_path"/>    
         </update_by_name>
     </TASK>
-    
     <TASK class="TASK_FFC_CREATE">
         <parameters_by_name>
              <parameter key="input_path.1" value="analysis_out_path"/>
@@ -121,7 +120,6 @@
             <parameter key="output_path.3" value="camcor_in_path"/>
         </parameters_by_name>
     </TASK>
-
     <TASK class="TASK_REMOVE">
         <parameters_by_name>
         <parameter key="input_path" value="camcor_data_in_path"/>
