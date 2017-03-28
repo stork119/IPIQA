@@ -25,25 +25,25 @@ class TASK():
         self.updates_by_name = updates_by_name
         #self.logger = logging.getLogger(self.__class__.__name__) - doesn't work with parallelize
 
-    def execute(self, dict_global):
-        dict_local = dict_global.copy()
-        logger.debug("dict_local before update: %s", dict_local.keys())
-        dict_local = self.update_dict(dict_local, dict_local, self.parameters_by_value, self.parameters_by_name) #check out if its working 
-        logger.debug("dict_local after update: %s", dict_local.keys())
+    def execute(self, env_global):
+        env_local = env_global.copy()
+        logger.debug("env_local before update: %s", env_local.keys())
+        env_local = self.update_dict(env_local, env_local, self.parameters_by_value, self.parameters_by_name) #check out if its working 
+        logger.debug("env_local after update: %s", env_local.keys())
         logger.info("Executing: %s", self.__class__.__name__) #information what task is being executed
-        dict_setts = self.parse_task_arguments(dict_local)
-        self.execute_specify(dict_local, dict_setts)
-        logger.debug("dict_local after execute_specify: %s", dict_local.keys()) #dunno if its needed
-        logger.debug("dict_global before update: %s", dict_global.keys())
-        dict_global = self.update_dict(dict_global, dict_local, self.updates_by_value, self.updates_by_name)
-        logger.debug("dict_global after update: %s", dict_global.keys())
-        return dict_global
+        dict_setts = self.parse_task_arguments(env_local)
+        self.execute_specify(env_local, dict_setts)
+        logger.debug("env_local after execute_specify: %s", env_local.keys()) #dunno if its needed
+        logger.debug("env_global before update: %s", env_global.keys())
+        env_global = self.update_dict(env_global, env_local, self.updates_by_value, self.updates_by_name)
+        logger.debug("env_global after update: %s", env_global.keys())
+        return env_global
 
-    def parse_task_arguments(self, dict_local):
+    def parse_task_arguments(self, env_local):
         dict_setts = {}
         for key in self.dict_task:
             try: 
-                value = dict_local[key]
+                value = env_local[key]
             except:
                 try:
                     value = self.dict_task[key]["default"]
@@ -106,10 +106,10 @@ class TASK_FOR(TASK):
         self.variables_list = args['variables_list']
         self.task_do = args['task_do']
         
-    def execute_specify(self, dict_local, dict_setts):
+    def execute_specify(self, env_local, dict_setts):
         for variable in self.variables_list:
-            dict_local_for = self.update_dict(dict_local, dict_local, variable['parameters_by_value'], variable['parameters_by_name'])
-            self.task_do.execute(dict_local_for)
+            env_local_for = self.update_dict(env_local, env_local, variable['parameters_by_value'], variable['parameters_by_name'])
+            self.task_do.execute(env_local_for)
 
 class TASK_QUEUE(TASK):
  
@@ -119,9 +119,9 @@ class TASK_QUEUE(TASK):
         TASK.__init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args)
         self.task_list = args['task_list']
 
-    def execute_specify(self, dict_local, dict_setts):
+    def execute_specify(self, env_local, dict_setts):
         for task in self.task_list:
-            dict_local = task.execute(dict_local)
+            env_local = task.execute(env_local)
 
 class TASK_IF(TASK):
     """
@@ -143,36 +143,36 @@ class TASK_IF(TASK):
         TASK.__init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args)
         self.task_list = args['task_list']
 
-    def execute_specify(self, dict_local, dict_setts):
-        arg1 = dict_local["argument_1"] #[!] code need to be change to allow parsing both args from mp_dict
-        comparison = dict_local["comparison"].lower() 
+    def execute_specify(self, env_local, dict_setts):
+        arg1 = env_local["argument_1"] #[!] code need to be change to allow parsing both args from mp_dict
+        comparison = env_local["comparison"].lower() 
         try:
-            arg2 = dict_local["argument_2"]
+            arg2 = env_local["argument_2"]
             if FC.compare_args(arg1, arg2, comparison) == True:
-                self._execute_queue(dict_local)
+                self._execute_queue(env_local)
             return
         except:
             pass
         try:
-            mp_name = dict_local["mp_dict"]
+            mp_name = env_local["mp_dict"]
         except:
             mp_name = "map_plate"
         try:
-            mp_dict = dict_local[mp_name]
-            mp_well = dict_local["mp_well"]
-            mp_param = dict_local["mp_param"]
+            mp_dict = env_local[mp_name]
+            mp_well = env_local["mp_well"]
+            mp_param = env_local["mp_param"]
             arg2 = mp_dict[mp_well][mp_param]
         except:
             logger.error("Cannot get value from map_plate for given " 
             "dictionary, well and parameter: %s, %s, %s", mp_name, mp_well, mp_param)
             return
         if FC.compare_args(arg1, arg2, comparison) == True:
-            self._execute_queue(dict_local)
+            self._execute_queue(env_local)
         return
 
-    def _execute_queue(self, dict_local):
+    def _execute_queue(self, env_local):
         for task in self.task_list:
-            task.execute(dict_local)
+            task.execute(env_local)
 
 class TASK_CHECK_COMPLETNESS(TASK): # [!] not supported
 
@@ -185,7 +185,7 @@ class TASK_CHECK_COMPLETNESS(TASK): # [!] not supported
     def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name,  args = {}):
         TASK.__init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args)
 
-    def execute_specify(self, dict_local, dict_setts):
+    def execute_specify(self, env_local, dict_setts):
         in_path = dict_setts["input_path"]
         try:
             job_done = str(dict_setts["experiment_finished"])
@@ -205,7 +205,7 @@ class TASK_DOWNLOAD(TASK):
     def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name,  args = {}):
         TASK.__init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args)
 
-    def execute_specify(self, dict_local, dict_setts):
+    def execute_specify(self, env_local, dict_setts):
         logger.info("TASK_DOWNLOAD from input: %s to output :%s", dict_setts["input_path"], dict_setts["output_path"]) 
         FM.dir_copy(dict_setts["input_path"], dict_setts["output_path"])
 
@@ -217,7 +217,7 @@ class TASK_REMOVE(TASK):
     def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name,  args = {}):
         TASK.__init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args)
 
-    def execute_specify(self, dict_local, dict_setts):
+    def execute_specify(self, env_local, dict_setts):
         FM.dir_remove(dict_setts["input_path"])
 
    
@@ -231,7 +231,7 @@ class TASK_QUANTIFY(TASK):
     def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name,  args = {}):
         TASK.__init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args)
 
-    def execute_specify(self, dict_local, dict_setts):
+    def execute_specify(self, env_local, dict_setts):
         cpm.run_cp_by_cmd(dict_setts["cp_path"], dict_setts["input_path"], 
                           dict_setts["output_path"], dict_setts["pipeline"])
    
@@ -246,7 +246,7 @@ class TASK_MERGE_SUBDIR_CSV(TASK):
     def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args = {}):
         TASK.__init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args)
 
-    def execute_specify(self, dict_local, dict_setts):
+    def execute_specify(self, env_local, dict_setts):
         csv_names = (dict_setts["csv_names_list"]).split(",")
         main_subdir_list = FM.dir_get_paths(dict_setts["input_path"])
         for csv_name in csv_names:
@@ -255,7 +255,7 @@ class TASK_MERGE_SUBDIR_CSV(TASK):
             extension = FM.file_get_extension(csv_name)
             len_ext = len(extension)
             name = csv_name[:-(len_ext)]
-            dict_local[name] = data
+            env_local[name] = data
             #Saving data
             out_path = FM.path_join(dict_setts["output_path"], csv_name)
             if FM.path_check_existence(out_path):
@@ -277,30 +277,30 @@ class TASK_PARALLELIZE(TASK):
         self.task_list = args['task_list']
         self.config_dict = args['config_dict']
 
-    def execute_specify(self, dict_local, dict_setts):
-        elements_list, ele_number = self.parse_elements_list(dict_local, dict_setts)
+    def execute_specify(self, env_local, dict_setts):
+        elements_list, ele_number = self.parse_elements_list(env_local, dict_setts)
         processes_number = int(dict_setts["number_of_cores"])
         sleep_time = int(dict_setts["sleep_time"])
         new_elements = elements_list
         pool = multiprocessing.Pool(processes_number)
         while True:
             if len(new_elements) > 0:
-                args = ((dict_local, element) for element in new_elements) #or just pass task, because we're able to get task_list and settings_dict from init if both functions will stay here
+                args = ((env_local, element) for element in new_elements) #or just pass task, because we're able to get task_list and settings_dict from init if both functions will stay here
                 pool.map_async(self._execute_queue, args)
             if len(elements_list) >= ele_number:
                 break
             sleep(sleep_time)
-            new_elements_list = self.parse_elements_list(dict_local, dict_setts)[0] # in MP case (ONLY) we could just call _create_ele_lis; TO DO
+            new_elements_list = self.parse_elements_list(env_local, dict_setts)[0] # in MP case (ONLY) we could just call _create_ele_lis; TO DO
             new_elements = [i for i in new_elements_list if i not in elements_list]
             elements_list = new_elements_list
         pool.close()
         pool.join()
 
     def _execute_queue(self, args):
-        dict_local, elements = args
-        dict_local.update(elements)
+        env_local, elements = args
+        env_local.update(elements)
         for task in self.task_list:
-            task.execute(dict_local)
+            task.execute(env_local)
 
 class TASK_PARALLELIZE_MP(TASK_PARALLELIZE): #all objects (folders) for given map_plate setup
     """
@@ -332,8 +332,8 @@ class TASK_PARALLELIZE_MP(TASK_PARALLELIZE): #all objects (folders) for given ma
         TASK_PARALLELIZE.__init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args)
         self.config_dict = args['config_dict']
 
-    def parse_elements_list(self, dict_local, dict_setts): #implementing with tag
-        mp_dict = dict_local[dict_setts["mp_name"]]
+    def parse_elements_list(self, env_local, dict_setts): #implementing with tag
+        mp_dict = env_local[dict_setts["mp_name"]]
         active_wells_keys = FC.get_active_wells(mp_dict, dict_setts["exp_part"]) #get active wells keys for mp_dict 
         ele_number = len(active_wells_keys)
         params = FC.get_wells_base_params(mp_dict, active_wells_keys, dict_setts["prefix"], dict_setts["sufix"], dict_setts["exp_part"])
@@ -351,7 +351,7 @@ class TASK_PARALLELIZE_LIST(TASK_PARALLELIZE): # list of objects (folders) # [!]
     def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args):
         TASK_PARALLELIZE.__init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args)
 
-    def parse_elements_list(self, dict_local, dict_setts):
+    def parse_elements_list(self, env_local, dict_setts):
         paths = []
         input_path = str(dict_setts["input_path"])
         folder_list = (dict_setts["folders_list"]).split(",")
@@ -374,7 +374,7 @@ class TASK_PARALLELIZE_PATH(TASK_PARALLELIZE): #all objects (folders) in given d
         TASK_PARALLELIZE.__init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args)
         self.config_dict = args['config_dict']
 
-    def parse_elements_list(self, dict_local, dict_setts):
+    def parse_elements_list(self, env_local, dict_setts):
         folders_number = int(dict_setts["folders_number"])
         dir_list = FM.dir_get_names(dict_setts["input_path"])
         return dir_list, folders_number
@@ -397,8 +397,8 @@ class TASK_READ_MAP_PLATE(TASK):
     def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name,  args = {}):
         TASK.__init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args)
 
-    def execute_specify(self, dict_local, dict_setts):
-        dict_local[dict_setts["mp_name"]] = map_plate.parse_mp(dict_setts["input_path"], dict_setts["delimiter"])
+    def execute_specify(self, env_local, dict_setts):
+        env_local[dict_setts["mp_name"]] = map_plate.parse_mp(dict_setts["input_path"], dict_setts["delimiter"])
 
 class TASK_APPLY_MAP_PLATE(TASK):
     """
@@ -423,9 +423,9 @@ class TASK_APPLY_MAP_PLATE(TASK):
     def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name,  args = {}):
         TASK.__init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args)
 
-    def execute_specify(self, dict_local, dict_setts):
+    def execute_specify(self, env_local, dict_setts):
         csv_names = (dict_setts["csv_names_list"]).split(",")
-        mp_dict = dict_local[dict_setts["mp_name"]]
+        mp_dict = env_local[dict_setts["mp_name"]]
         map_plate.apply_mp(dict_setts["input_path"], dict_setts["output_path"], dict_setts["delimiter"], mp_dict, csv_names, dict_setts["mp_key"])
 
 class TASK_MAP_PLATE(TASK):
@@ -444,26 +444,26 @@ class TASK_MAP_PLATE(TASK):
     def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name,  args = {}):
         TASK.__init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args)
 
-    def execute_specify(self, dict_local, dict_setts):
-        input_path_csv = dict_local["input_path_csv"]
-        input_path_metadata = dict_local["input_path_metadata"]
-        output_path = dict_local["output_path"]
-        csv_names = (dict_local["csv_names_list"]).split(",")
+    def execute_specify(self, env_local, dict_setts):
+        input_path_csv = env_local["input_path_csv"]
+        input_path_metadata = env_local["input_path_metadata"]
+        output_path = env_local["output_path"]
+        csv_names = (env_local["csv_names_list"]).split(",")
         try:
-            exp_id = dict_local["exp_id"]
+            exp_id = env_local["exp_id"]
         except:
             exp_id = 1
         try:
-            delimiter_csv = dict_local["delimiter_csv"]
+            delimiter_csv = env_local["delimiter_csv"]
         except:
             delimiter_csv = ","
         try:
-            delimiter_mp = dict_local["delimiter_mp"]
+            delimiter_mp = env_local["delimiter_mp"]
         except:
             delimiter_mp = "\t"
         try:
-            exp_part_id = dict_local["exp_part"]
-            exp_parts = dict_local["exp_parts"]
+            exp_part_id = env_local["exp_part"]
+            exp_parts = env_local["exp_parts"]
         except:
             exp_part_id = "1" 
             exp_parts = "1"
@@ -477,46 +477,46 @@ class TASK_R(TASK):
     def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name,  args = {}):
         TASK.__init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args)
 
-    def execute_specify(self, dict_local, dict_setts):
+    def execute_specify(self, env_local, dict_setts):
         external_params = ["r_function_name", "r_script_path"]
         logger.info("Executing R function %s from %s", dict_setts["r_function_name"], dict_setts["r_script_path"]) 
         # PLACEHOLDER for adding more external params
-        param_dict = R_connection.prepare_param_dict(dict_local, self.parameters_by_value, self.parameters_by_name, external_params)
+        param_dict = R_connection.prepare_param_dict(env_local, self.parameters_by_value, self.parameters_by_name, external_params)
         output_dict = R_connection.execute_r_script(param_dict, dict_setts["r_script_path"], dict_setts["r_function_name"])
-        dict_local.update(output_dict)
+        env_local.update(output_dict)
         
 class TASK_FFC_CREATE(TASK):
 
     def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name,  args = {}):
         TASK.__init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args)
 
-    def execute_specify(self, dict_local, dict_setts):
+    def execute_specify(self, env_local, dict_setts):
         # Check if user set input an output paths
-        output_dict = ffc.create_camcor(dict_local, self.parameters_by_value, self.parameters_by_name)
-        dict_local.update(output_dict)
+        output_dict = ffc.create_camcor(env_local, self.parameters_by_value, self.parameters_by_name)
+        env_local.update(output_dict)
 
 class TASK_FFC_READ(TASK):
 
     def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name,  args = {}):
         TASK.__init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args)
 
-    def execute_specify(self, dict_local, dict_setts):
+    def execute_specify(self, env_local, dict_setts):
         # Check if user set input an output paths
         try:
-            output_dict = ffc.read_camcor(dict_local, self.parameters_by_value, self.parameters_by_name)
+            output_dict = ffc.read_camcor(env_local, self.parameters_by_value, self.parameters_by_name)
         except:
-            output_dict = ffc.create_camcor(dict_local, self.parameters_by_value, self.parameters_by_name)
-        dict_local.update(output_dict)
+            output_dict = ffc.create_camcor(env_local, self.parameters_by_value, self.parameters_by_name)
+        env_local.update(output_dict)
 
 class TASK_FFC_APPLY(TASK):
 
     def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name,  args = {}):
         TASK.__init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args)
 
-    def execute_specify(self, dict_local, dict_setts):
+    def execute_specify(self, env_local, dict_setts):
         # Check if user set input an output paths
-        output_dict = ffc.apply_camcor(dict_local, self.parameters_by_value, self.parameters_by_name)
-        dict_local.update(output_dict)
+        output_dict = ffc.apply_camcor(env_local, self.parameters_by_value, self.parameters_by_name)
+        env_local.update(output_dict)
    
    
 class TASK_FFC_READ_APPLY(TASK):
@@ -524,10 +524,10 @@ class TASK_FFC_READ_APPLY(TASK):
     def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name,  args = {}):
         TASK.__init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args)
 
-    def execute_specify(self, dict_local, dict_setts):
+    def execute_specify(self, env_local, dict_setts):
         # Check if user set input an output paths
-        output_dict = ffc.read_apply_camcor(dict_local, self.parameters_by_value, self.parameters_by_name)
-        dict_local.update(output_dict)
+        output_dict = ffc.read_apply_camcor(env_local, self.parameters_by_value, self.parameters_by_name)
+        env_local.update(output_dict)
         
 class TASK_READ_DATAFRAME_FROM_CSV(TASK):
 
@@ -539,10 +539,10 @@ class TASK_READ_DATAFRAME_FROM_CSV(TASK):
     def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name,  args = {}):
         TASK.__init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args)
 
-    def execute_specify(self, dict_local, dict_setts):
+    def execute_specify(self, env_local, dict_setts):
         input_path = FM.path_join(dict_setts["input_path"], dict_setts["filename"])
         data = R_connection.read_dataframe_from_csv(input_path, dict_setts["delimiter"])
-        dict_local[dict_setts["dict_key_name"]] = data
+        env_local[dict_setts["dict_key_name"]] = data
 
 class TASK_WRITE_DATAFRAME_TO_CSV(TASK):
 
@@ -554,9 +554,9 @@ class TASK_WRITE_DATAFRAME_TO_CSV(TASK):
     def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name,  args = {}):
         TASK.__init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args)
 
-    def execute_specify(self, dict_local, dict_setts):
+    def execute_specify(self, env_local, dict_setts):
         output_path = FM.path_join(dict_setts["output_path"], dict_setts["filename"])
-        data = dict_local[dict_setts["dict_key_name"]]
+        data = env_local[dict_setts["dict_key_name"]]
         R_connection.write_dataframe_to_csv(output_path, data, dict_setts["delimiter"])
 
 class TASK_MERGE_CSV(TASK):
@@ -570,7 +570,7 @@ class TASK_MERGE_CSV(TASK):
     def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args = {}):
         TASK.__init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args)
 
-    def execute_specify(self, dict_local, dict_setts):
+    def execute_specify(self, env_local, dict_setts):
         in_path_list = []
         in_path_list.append(dict_setts["input_path_1"])
         in_path_list.append(dict_setts["input_path_2"])
