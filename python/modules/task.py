@@ -137,11 +137,13 @@ class TASK_IF(TASK):
             - mp_well [well id, i.e. 'A01']
             - mp_param [param name i.e. 'exp_part']
     """
+    dict_task = {}
+
     def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args):
         TASK.__init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args)
         self.task_list = args['task_list']
 
-    def execute_specify(self, dict_local):
+    def execute_specify(self, dict_local, dict_setts):
         arg1 = dict_local["argument_1"] #[!] code need to be change to allow parsing both args from mp_dict
         comparison = dict_local["comparison"].lower() 
         try:
@@ -315,37 +317,27 @@ class TASK_PARALLELIZE_MP(TASK_PARALLELIZE): #all objects (folders) for given ma
     - mp_name [name of structure with all collected map_plate info, 
                 by default 'map_plate']
     """
+    
+    dict_task = {"input_path" : {"required" : True},
+                 "number_of_cores" : {"required" : True, "default" : "1"}, 
+                 "sleep_time" : {"required" : True},
+                 "used_value" : {"required" : True, "default" : "tag"},
+                 "prefix" : {"required" : True, "default" : ""},
+                 "sufix" : {"required" : True, "default" : ""},
+                 "exp_part" : {"required" : True, "default" : "1"},
+                 "mp_name" : {"required" : True, "default" : "map_plate"}}
+    # [!] number_of_cores is temporary coded as string
+
     def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args):
         TASK_PARALLELIZE.__init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args)
         self.config_dict = args['config_dict']
 
-    def parse_elements_list(self, dict_local): #implementing with tag
-        input_path = str(dict_local["input_path"])
-        try:
-            used_value = dict_local["used_value"]
-        except:
-            used_value = "tag" 
-        try:
-            prefix = dict_local["prefix"]
-        except:
-            prefix = ""
-        try:
-            sufix = dict_local["sufix"]
-        except:
-            sufix = ""
-        try:
-            exp_part = dict_local["exp_part"]
-        except:
-            exp_part = "1"
-        try:
-            mp_name = dict_local["mp_name"]
-        except:
-            mp_name = "map_plate"
-        mp_dict = dict_local[mp_name]
-        active_wells_keys = FC.get_active_wells(mp_dict, exp_part) #get active wells keys for mp_dict 
+    def parse_elements_list(self, dict_local, dict_setts): #implementing with tag
+        mp_dict = dict_local[dict_setts["mp_name"]]
+        active_wells_keys = FC.get_active_wells(mp_dict, dict_setts["exp_part"]) #get active wells keys for mp_dict 
         ele_number = len(active_wells_keys)
-        params = FC.get_wells_base_params(mp_dict, active_wells_keys, prefix, sufix, exp_part)
-        elements_list = FC.create_elements_list(input_path, params, used_value)
+        params = FC.get_wells_base_params(mp_dict, active_wells_keys, dict_setts["prefix"], dict_setts["sufix"], dict_setts["exp_part"])
+        elements_list = FC.create_elements_list(dict_setts["input_path"], params, dict_setts["used_value"])
         return elements_list, ele_number
 
 class TASK_PARALLELIZE_LIST(TASK_PARALLELIZE): # list of objects (folders) # [!] NOT SUPPORTED
@@ -355,7 +347,6 @@ class TASK_PARALLELIZE_LIST(TASK_PARALLELIZE): # list of objects (folders) # [!]
                  "sleep_time" : {"required" : True},
                  "folders_list" : {"required" : True}}
     # [!] number_of_cores is temporary coded as string
-    # [!] class requires changes after merge with branch map_plate
 
     def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args):
         TASK_PARALLELIZE.__init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args)
@@ -378,7 +369,6 @@ class TASK_PARALLELIZE_PATH(TASK_PARALLELIZE): #all objects (folders) in given d
                  "sleep_time" : {"required" : True},
                  "folders_number" : {"required" : True}}
     # [!] number_of_cores is temporary coded as string
-    # [!] class requires changes after merge with branch map_plate
     
     def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args):
         TASK_PARALLELIZE.__init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args)
@@ -386,8 +376,7 @@ class TASK_PARALLELIZE_PATH(TASK_PARALLELIZE): #all objects (folders) in given d
 
     def parse_elements_list(self, dict_local, dict_setts):
         folders_number = int(dict_setts["folders_number"])
-        input_path = str(dict_setts["input_path"])
-        dir_list = FM.dir_get_names(input_path)
+        dir_list = FM.dir_get_names(dict_setts["input_path"])
         return dir_list, folders_number
 
 class TASK_READ_MAP_PLATE(TASK):
@@ -401,20 +390,15 @@ class TASK_READ_MAP_PLATE(TASK):
             (variable assigned to dictionary containing all experiment settings), 
             by default 'map_plate']
     """
+    dict_task = {"input_path" : {"required" : True},
+                 "delimiter" : {"required" : True, "default" : ","}, 
+                 "mp_name" : {"required" : True, "default" : "map_plate"}}
+
     def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name,  args = {}):
         TASK.__init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args)
 
-    def execute_specify(self, dict_local):
-        input_path = dict_local["input_path"]
-        try:
-            delimiter = dict_local["delimiter"]
-        except:
-            delimiter = ","
-        try:
-            mp_name = dict_local["mp_name"]
-        except:
-            mp_name = "map_plate"
-        dict_local[mp_name] = map_plate.parse_mp(input_path, delimiter)
+    def execute_specify(self, dict_local, dict_setts):
+        dict_local[dict_setts["mp_name"]] = map_plate.parse_mp(dict_setts["input_path"], dict_setts["delimiter"])
 
 class TASK_APPLY_MAP_PLATE(TASK):
     """
@@ -429,24 +413,20 @@ class TASK_APPLY_MAP_PLATE(TASK):
     - mp_name [name of dicitonary with all collected map_plate info, 
                 by default 'map_plate']
     """
+    dict_task = {"input_path" : {"required" : True},
+                 "output_path" : {"required" : True}, 
+                 "csv_names_list" : {"required" : True}, 
+                 "mp_key" : {"required" : True}, 
+                 "delimiter" : {"required" : True, "default" : ","}, 
+                 "mp_name" : {"required" : True, "default" : "map_plate"}}
+
     def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name,  args = {}):
         TASK.__init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args)
 
-    def execute_specify(self, dict_local):
-        input_path = dict_local["input_path"]
-        output_path = dict_local["output_path"]
-        csv_names = (dict_local["csv_names_list"]).split(",")
-        mp_key = dict_local["mp_key"]
-        try:
-            delimiter = dict_local["delimiter"]
-        except:
-            delimiter = ","
-        try:
-            mp_name = dict_local["mp_name"]
-        except:
-            mp_name = "map_plate"
-        mp_dict = dict_local[mp_name]
-        map_plate.apply_mp(input_path, output_path, delimiter, mp_dict, csv_names, mp_key)
+    def execute_specify(self, dict_local, dict_setts):
+        csv_names = (dict_setts["csv_names_list"]).split(",")
+        mp_dict = dict_local[dict_setts["mp_name"]]
+        map_plate.apply_mp(dict_setts["input_path"], dict_setts["output_path"], dict_setts["delimiter"], mp_dict, csv_names, dict_setts["mp_key"])
 
 class TASK_MAP_PLATE(TASK):
 
