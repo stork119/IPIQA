@@ -69,31 +69,24 @@ def _create_queue_task(queue):
     pipeline = _create_task(queue, task_list)
     return pipeline
 
-def _create_for_task(queue):
-    # [!] temporary not supported
-    return
-
-"""def _create_for_task(queue): [from old xml_parser]
+def _create_for_task(queue): #[from old xml_parser]
     variables = queue.find('VARIABLES')
     variables_list = []
     for request in variables.findall('VARIABLE'):
-        parameters_by_value = _get_settings_dict(request, "parameters_by_value") # getting dicts of settings and updates
-        parameters_by_name = _get_settings_dict(request, "parameters_by_name")
-        variables_list.append({'parameters_by_value' : parameters_by_value, 'parameters_by_name' : parameters_by_name})
+        parameters = _get_settings_dict(request, "parameters")
+        variables_list.append(parameters)
     task_request = queue.find('TASK')
     task_name = task_request.get('class')
     if task_name == "TASK_QUEUE" or task_name.startswith("TASK_PARALLELIZE") or task_name.startswith("TASK_SYNCHRONOUSLY"):
-        task_do = _create_queue_task(task_request)
+        task_do = _creaste_queue_task(task_request)
     elif  task_name == "TASK_FOR":
         task_do = _create_for_task(task_request)
     else:
         task_do = _create_task(task_request)  
-    task = TK.TASK_FOR(OrderedDict(),
-                       OrderedDict(),
-                       OrderedDict(),
-                       OrderedDict(),
-                       {'variables_list' : variables_list, 'task_do' : task_do}) #creating task class objects
-    return task"""
+    task = TK.TASK_FOR({},
+                       {},
+                       {'variables_list' : variables_list, 'task_to_do' : task_do}) #creating task class objects
+    return task
 
 def _get_settings_dict(task, set_type):
     settings = {}
@@ -140,4 +133,7 @@ def parse_xml(input_path, additional_arg, main_setts = True):
         pipeline = _create_queue_task(main_queue)
         return pipeline, config_dict
     return config_dict
+
+
+
 
