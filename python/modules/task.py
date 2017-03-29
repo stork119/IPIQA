@@ -18,24 +18,22 @@ class TASK():
 
     dict_task = {}
 
-    def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args = {}):
-        self.parameters_by_value = parameters_by_value
-        self.parameters_by_name = parameters_by_name
-        self.updates_by_value = updates_by_value
-        self.updates_by_name = updates_by_name
+    def __init__(self, parameters, updates, args = {}):
+        self.parameters = parameters
+        self.updates = updates
         #self.logger = logging.getLogger(self.__class__.__name__) - doesn't work with parallelize
 
     def execute(self, env_global):
         env_local = env_global.copy()
         logger.debug("env_local before update: %s", env_local.keys())
-        env_local = self.update_dict(env_local, env_local, self.parameters_by_value, self.parameters_by_name) #check out if its working 
+        env_local = self.update_env(env_local, env_local, self.parameters)
         logger.debug("env_local after update: %s", env_local.keys())
         logger.info("Executing: %s", self.__class__.__name__) #information what task is being executed
         dict_setts = self.parse_task_arguments(env_local)
         self.execute_specify(env_local, dict_setts)
         logger.debug("env_local after execute_specify: %s", env_local.keys()) #dunno if its needed
         logger.debug("env_global before update: %s", env_global.keys())
-        env_global = self.update_dict(env_global, env_local, self.updates_by_value, self.updates_by_name)
+        env_global = self.update_env(env_global, env_local, self.updates)
         logger.debug("env_global after update: %s", env_global.keys())
         return env_global
 
@@ -43,7 +41,8 @@ class TASK():
         dict_setts = {}
         for key in self.dict_task:
             try: 
-                value = env_local[key]
+                var = env_local[key]
+                value = var.get_value(env_local)
             except:
                 try:
                     value = self.dict_task[key]["default"]
@@ -54,29 +53,31 @@ class TASK():
             dict_setts[key] = value
         return dict_setts
 
-    def update_dict(self, dict_out, dict_in, list_by_value, list_by_name):
-        for k, v in list_by_value.items(): #update by value
-            dict_out[k] = v
-            logger.debug("Dict_out new key (updated by value): %s", k)
-        for k, v in list_by_name.items(): #update by name
-            logger.debug("Dict_in (by names) key, value: %s, %s", k, v)
-            try:
-                value = dict_in[v]
-            except:
-                logger.error("Dictionary update_by_name error. Given key (%s) doesn't exist in dictionary", v)
-            dict_out[k] = value
-            logger.debug("Dict_out new key, value (updated by name): %s, %s", k, v)
-        logger.debug("Dict_out before concatenation: %s", dict_out.keys())
+    def update_env(self, dict_out, dict_in, variables): #[!] not supported atm
+        for key, var in variables.items():
+            var_class = str(var.__class__.__name__)
+            if var_class != "VariableReference":
+                dict_out[key] = var
+            else:
+                try:
+                    new_var = var.get_reference(dict_in)
+                except:
+                    # [!] placeholder for log
+                    pass
+                    # logger.error("Environment update error. Given key (%s) doesn't exist in dictionary", var) # [!] actually we can't get its key"""
+                dict_out[key] = new_var
+        """
+        [!] CONCATENATION PLACEHOLDER
         try:
             dict_out = self.concatenation_name_nr(dict_out)
         except:
             logger.error("Dictionary concatenation error. Dictionary: %s concatenation failed.", dict_out.keys())
-        logger.debug("Dict_out after concatenation: %s", dict_out.keys())        
+        logger.debug("Dict_out after concatenation: %s", dict_out.keys()) """       
         return dict_out
 
-    def concatenation_name_nr(self, dict_out):      
+    def concatenation_name_nr(self, dict_out): #[!] not supported atm
         #concatenation name.number
-        key_list = []
+        """key_list = []
         for k, v in dict_out.items():
             if "." in k:
                 key = k.split(".")
@@ -94,7 +95,7 @@ class TASK():
                         del temp_dict[k] # deleting name.number from temporary dictionary
                 value = "".join(value)
                 temp_dict[key_list[i]] = value
-            dict_out = temp_dict.copy()
+            dict_out = temp_dict.copy()"""
         return dict_out
 
 class TASK_FOR(TASK):
@@ -115,8 +116,8 @@ class TASK_QUEUE(TASK):
  
     dict_task = {}
  
-    def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args):
-        TASK.__init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args)
+    def __init__(self, parameters, updates, args):
+        TASK.__init__(self, parameters, updates, args)
         self.task_list = args['task_list']
 
     def execute_specify(self, env_local, dict_setts):
@@ -202,8 +203,8 @@ class TASK_DOWNLOAD(TASK):
     dict_task = {"input_path" : {"required" : True}, 
                  "output_path" : {"requred" : True}}
 
-    def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name,  args = {}):
-        TASK.__init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args)
+    def __init__(self, parameters, updates,  args = {}):
+        TASK.__init__(self, parameters, updates, args)
 
     def execute_specify(self, env_local, dict_setts):
         logger.info("TASK_DOWNLOAD from input: %s to output :%s", dict_setts["input_path"], dict_setts["output_path"]) 
