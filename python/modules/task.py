@@ -101,8 +101,8 @@ class TASK_FOR(TASK):
 
     dict_task = {}
 
-    def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args):
-        TASK.__init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args)
+    def __init__(self, parameters, updates, args):
+        TASK.__init__(self, parameters, updates, args)
         self.variables_list = args['variables_list']
         self.task_do = args['task_do']
         
@@ -139,8 +139,8 @@ class TASK_IF(TASK):
     """
     dict_task = {}
 
-    def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args):
-        TASK.__init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args)
+    def __init__(self, parameters, updates, args):
+        TASK.__init__(self, parameters, updates, args)
         self.task_list = args['task_list']
 
     def execute_specify(self, env_local, dict_setts):
@@ -182,8 +182,8 @@ class TASK_CHECK_COMPLETNESS(TASK): # [!] not supported
                  "sleep_time" : {"requred" : True}}
     # [!] class requires changes after merge with branch map_plate
 
-    def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name,  args = {}):
-        TASK.__init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args)
+    def __init__(self, parameters, updates,  args = {}):
+        TASK.__init__(self, parameters, updates, args)
 
     def execute_specify(self, env_local, dict_setts):
         in_path = dict_setts["input_path"]
@@ -214,8 +214,8 @@ class TASK_REMOVE(TASK):
 
     dict_task = {"input_path" : {"required" : True}}
 
-    def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name,  args = {}):
-        TASK.__init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args)
+    def __init__(self, parameters, updates,  args = {}):
+        TASK.__init__(self, parameters, updates, args)
 
     def execute_specify(self, env_local, dict_setts):
         FM.dir_remove(dict_setts["input_path"])
@@ -228,8 +228,8 @@ class TASK_QUANTIFY(TASK):
                  "output_path" : {"required" : True},
                  "pipeline" : {"required" : True}}
 
-    def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name,  args = {}):
-        TASK.__init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args)
+    def __init__(self, parameters, updates,  args = {}):
+        TASK.__init__(self, parameters, updates, args)
 
     def execute_specify(self, env_local, dict_setts):
         cpm.run_cp_by_cmd(dict_setts["cp_path"], dict_setts["input_path"], 
@@ -243,8 +243,8 @@ class TASK_MERGE_SUBDIR_CSV(TASK):
                  "delimiter" : {"required" : True, "default" : ","},
                  "column_name" : {"required" : True, "default" : "well.name"}}
  
-    def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args = {}):
-        TASK.__init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args)
+    def __init__(self, parameters, updates, args = {}):
+        TASK.__init__(self, parameters, updates, args)
 
     def execute_specify(self, env_local, dict_setts):
         csv_names = (dict_setts["csv_names_list"]).split(",")
@@ -272,8 +272,8 @@ class TASK_PARALLELIZE(TASK):
     # [!] number_of_cores is temporary coded as string
     # [!] class requires changes after merge with branch map_plate
 
-    def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args):
-        TASK.__init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args)
+    def __init__(self, parameters, updates, args):
+        TASK.__init__(self, parameters, updates, args)
         self.task_list = args['task_list']
         self.config_dict = args['config_dict']
 
@@ -328,8 +328,8 @@ class TASK_PARALLELIZE_MP(TASK_PARALLELIZE): #all objects (folders) for given ma
                  "mp_name" : {"required" : True, "default" : "map_plate"}}
     # [!] number_of_cores is temporary coded as string
 
-    def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args):
-        TASK_PARALLELIZE.__init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args)
+    def __init__(self, parameters, updates, args):
+        TASK_PARALLELIZE.__init__(self, parameters, updates, args)
         self.config_dict = args['config_dict']
 
     def parse_elements_list(self, env_local, dict_setts): #implementing with tag
@@ -348,8 +348,8 @@ class TASK_PARALLELIZE_LIST(TASK_PARALLELIZE): # list of objects (folders) # [!]
                  "folders_list" : {"required" : True}}
     # [!] number_of_cores is temporary coded as string
 
-    def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args):
-        TASK_PARALLELIZE.__init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args)
+    def __init__(self, parameters, updates, args):
+        TASK_PARALLELIZE.__init__(self, parameters, updates, args)
 
     def parse_elements_list(self, env_local, dict_setts):
         paths = []
@@ -370,8 +370,8 @@ class TASK_PARALLELIZE_PATH(TASK_PARALLELIZE): #all objects (folders) in given d
                  "folders_number" : {"required" : True}}
     # [!] number_of_cores is temporary coded as string
     
-    def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args):
-        TASK_PARALLELIZE.__init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args)
+    def __init__(self, parameters, updates, args):
+        TASK_PARALLELIZE.__init__(self, parameters, updates, args)
         self.config_dict = args['config_dict']
 
     def parse_elements_list(self, env_local, dict_setts):
@@ -394,8 +394,8 @@ class TASK_READ_MAP_PLATE(TASK):
                  "delimiter" : {"required" : True, "default" : ","}, 
                  "mp_name" : {"required" : True, "default" : "map_plate"}}
 
-    def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name,  args = {}):
-        TASK.__init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args)
+    def __init__(self, parameters, updates,  args = {}):
+        TASK.__init__(self, parameters, updates, args)
 
     def execute_specify(self, env_local, dict_setts):
         env_local[dict_setts["mp_name"]] = map_plate.parse_mp(dict_setts["input_path"], dict_setts["delimiter"])
@@ -420,8 +420,8 @@ class TASK_APPLY_MAP_PLATE(TASK):
                  "delimiter" : {"required" : True, "default" : ","}, 
                  "mp_name" : {"required" : True, "default" : "map_plate"}}
 
-    def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name,  args = {}):
-        TASK.__init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args)
+    def __init__(self, parameters, updates,  args = {}):
+        TASK.__init__(self, parameters, updates, args)
 
     def execute_specify(self, env_local, dict_setts):
         csv_names = (dict_setts["csv_names_list"]).split(",")
@@ -441,8 +441,8 @@ class TASK_MAP_PLATE(TASK):
                  "exp_parts" : {"required" : True, "default" : "1"}}
     # [!] class will be removed after merge with branch map_plate
 
-    def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name,  args = {}):
-        TASK.__init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args)
+    def __init__(self, parameters, updates,  args = {}):
+        TASK.__init__(self, parameters, updates, args)
 
     def execute_specify(self, env_local, dict_setts):
         input_path_csv = env_local["input_path_csv"]
@@ -474,8 +474,8 @@ class TASK_R(TASK):
     dict_task = {"r_function_name" : {"required" : True},
                  "r_script_path" : {"required" : True}}
 
-    def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name,  args = {}):
-        TASK.__init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args)
+    def __init__(self, parameters, updates,  args = {}):
+        TASK.__init__(self, parameters, updates, args)
 
     def execute_specify(self, env_local, dict_setts):
         external_params = ["r_function_name", "r_script_path"]
@@ -487,8 +487,8 @@ class TASK_R(TASK):
         
 class TASK_FFC_CREATE(TASK):
 
-    def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name,  args = {}):
-        TASK.__init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args)
+    def __init__(self, parameters, updates,  args = {}):
+        TASK.__init__(self, parameters, updates, args)
 
     def execute_specify(self, env_local, dict_setts):
         # Check if user set input an output paths
@@ -497,8 +497,8 @@ class TASK_FFC_CREATE(TASK):
 
 class TASK_FFC_READ(TASK):
 
-    def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name,  args = {}):
-        TASK.__init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args)
+    def __init__(self, parameters, updates,  args = {}):
+        TASK.__init__(self, parameters, updates, args)
 
     def execute_specify(self, env_local, dict_setts):
         # Check if user set input an output paths
@@ -510,8 +510,8 @@ class TASK_FFC_READ(TASK):
 
 class TASK_FFC_APPLY(TASK):
 
-    def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name,  args = {}):
-        TASK.__init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args)
+    def __init__(self, parameters, updates,  args = {}):
+        TASK.__init__(self, parameters, updates, args)
 
     def execute_specify(self, env_local, dict_setts):
         # Check if user set input an output paths
@@ -521,8 +521,8 @@ class TASK_FFC_APPLY(TASK):
    
 class TASK_FFC_READ_APPLY(TASK):
  
-    def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name,  args = {}):
-        TASK.__init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args)
+    def __init__(self, parameters, updates,  args = {}):
+        TASK.__init__(self, parameters, updates, args)
 
     def execute_specify(self, env_local, dict_setts):
         # Check if user set input an output paths
@@ -536,8 +536,8 @@ class TASK_READ_DATAFRAME_FROM_CSV(TASK):
                  "dict_key_name" : {"required" : True},
                  "delimiter" : {"required" : True, "default" : ","}}
 
-    def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name,  args = {}):
-        TASK.__init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args)
+    def __init__(self, parameters, updates,  args = {}):
+        TASK.__init__(self, parameters, updates, args)
 
     def execute_specify(self, env_local, dict_setts):
         input_path = FM.path_join(dict_setts["input_path"], dict_setts["filename"])
@@ -551,8 +551,8 @@ class TASK_WRITE_DATAFRAME_TO_CSV(TASK):
                  "dict_key_name" : {"required" : True},
                  "delimiter" : {"required" : True, "default" : ","}}
     
-    def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name,  args = {}):
-        TASK.__init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args)
+    def __init__(self, parameters, updates,  args = {}):
+        TASK.__init__(self, parameters, updates, args)
 
     def execute_specify(self, env_local, dict_setts):
         output_path = FM.path_join(dict_setts["output_path"], dict_setts["filename"])
@@ -567,7 +567,7 @@ class TASK_MERGE_CSV(TASK):
                  "output_path" : {"required" : True},
                  "delimiter" : {"required" : True, "default" : ","}}
 
-    def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args = {}):
+    def __init__(self, parameters, updates, args = {}):
         TASK.__init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args)
 
     def execute_specify(self, env_local, dict_setts):
