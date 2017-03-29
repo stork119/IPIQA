@@ -53,7 +53,7 @@ class TASK():
             dict_setts[key] = value
         return dict_setts
 
-    def update_env(self, dict_out, dict_in, variables): #[!] not supported atm
+    def update_env(self, dict_out, dict_in, variables):
         for key, var in variables.items():
             var_class = str(var.__class__.__name__)
             if var_class != "VariableReference":
@@ -62,9 +62,8 @@ class TASK():
                 try:
                     new_var = var.get_reference(dict_in)
                 except:
-                    # [!] placeholder for log
-                    pass
-                    # logger.error("Environment update error. Given key (%s) doesn't exist in dictionary", var) # [!] actually we can't get its key"""
+                    ref_key = var.get_ref_key()
+                    logger.error("Environment update error. Given key (%s) doesn't exist in dictionary", ref_key)
                 dict_out[key] = new_var
         """
         [!] CONCATENATION PLACEHOLDER
