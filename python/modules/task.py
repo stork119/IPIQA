@@ -174,13 +174,12 @@ class TASK_IF(TASK):
         for task in self.task_list:
             task.execute(env_local)
 
-class TASK_CHECK_COMPLETNESS(TASK): # [!] not supported
+class TASK_CHECK_COMPLETNESS(TASK):
 
     dict_task = {"experiment_finished" : {"required" : True, "default" : True},
                  "input_path" : {"required" : True}, 
-                 "required_files" : {"requred" : False},
-                 "sleep_time" : {"requred" : True}}
-    # [!] class requires changes after merge with branch map_plate
+                 "required_files" : {"required" : True,},
+                 "sleep_time" : {"required" : True}}
 
     def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name,  args = {}):
         TASK.__init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args)
