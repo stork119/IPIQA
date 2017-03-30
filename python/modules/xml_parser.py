@@ -69,17 +69,17 @@ def _create_queue_task(queue):
     pipeline = _create_task(queue, task_list)
     return pipeline
 
-def _create_for_task(queue): #[from old xml_parser]
+def _create_for_task(queue):
     variables = queue.find('VARIABLES')
     variables_list = []
-    for request in variables.findall('VARIABLE'):
-        parameters = _get_settings_dict(request, "parameters")
+    for variable_set in variables.findall('VARIABLE'):
+        parameters = _get_settings_dict(variable_set, "parameters")
         variables_list.append(parameters)
     task_request = queue.find('TASK')
     task_name = task_request.get('class')
     if task_name == "TASK_QUEUE" or task_name.startswith("TASK_PARALLELIZE") or task_name.startswith("TASK_SYNCHRONOUSLY"):
         task_do = _creaste_queue_task(task_request)
-    elif  task_name == "TASK_FOR":
+    elif task_name == "TASK_FOR":
         task_do = _create_for_task(task_request)
     else:
         task_do = _create_task(task_request)  
@@ -133,7 +133,4 @@ def parse_xml(input_path, additional_arg, main_setts = True):
         pipeline = _create_queue_task(main_queue)
         return pipeline, config_dict
     return config_dict
-
-
-
 
