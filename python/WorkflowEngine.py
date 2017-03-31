@@ -4,6 +4,7 @@ import argparse
 import modules.file_managment as FM
 import modules.logs_configuration as LC
 import modules.xml_parser as XML_P
+import modules.variable as VAR
 from time import sleep
 
 def main():
@@ -53,8 +54,7 @@ def main():
                                      'configuration_settings' ,
                                      args.s[0])
     if args.a != False: # optional argument
-        #additional_arg = XML_P.parse_additional_arg((args.a[0]), (args.a[1]))
-        add_variable = XML_P.Variable((args.a[0]), (args.a[1])) # [!]
+        add_variable = VAR.Variable((args.a[0]), (args.a[1])) # [!]
         additional_arg = {(args.a[0]) : add_variable}
     else:
         additional_arg = {}
