@@ -14,7 +14,7 @@ def _create_task(name, task_list = [], config_dict = {}):
         task_initialization = getattr(TK, task_name)
     except:
         logger.error("Error. %s is unknown.", task_name)
-        return
+        sys.exit(1) # wrong/non existing task -> shutting down program 
     parameters_by_value = _get_settings_dict(name, "parameters_by_value") # getting dicts of settings and updates
     parameters_by_name = _get_settings_dict(name, "parameters_by_name")
     updates_by_value = _get_settings_dict(name, "update_by_value")
