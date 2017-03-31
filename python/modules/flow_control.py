@@ -54,15 +54,6 @@ def create_elements_list(input_path, wells_params, used_value):
                 verified_dirs.append(well)
         except: 
             logger.error("Unexpected used_value: %s", used_value)
-    """for well in wells_params:
-        if used_value == "tag":
-            if any(dir_name == well["wellname_tag"] for dir_name in all_dir_list):
-                verified_dirs.append(well)
-        elif used_value == "id":
-            if any(dir_name == well["wellname_id"] for dir_name in all_dir_list):
-                verified_dirs.append(well)
-        else:
-            logger.error("Unexpected used_value: %s", used_value)"""
     return verified_dirs
 
 def get_active_wells(mp_dict, exp_part):
