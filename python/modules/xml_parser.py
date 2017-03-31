@@ -19,10 +19,10 @@ class Variable():
     def set_value(self, value, args = {}):
         self.value = value
         return
-    
+     
     def get_variable(self, env):
         return self
-       
+
 class VariableReference(Variable):
     def __init__(self, key, value, args = {}):
         Variable.__init__(self, key, value, args = {})
@@ -39,18 +39,49 @@ class VariableReference(Variable):
     def get_value(self, env, args = {}):
         return env[self.value].get_value(env, args)
 
-def parse_param(param_dict, param):
+class VariableList():
+    def __init__(self, key, value, args = {}):
+        Variable.__init__(self, key, value, args = {})
+        # not sure if this should be subclass
+
+    def get_value(self, env, args = {}):
+        order = sorted(self.value.keys())
+        values_list = []
+        for key in order:
+            v_part = self.value[key].get_value(env)
+            #print(v_part)
+            values_list.append(v_part)
+        return "".join(values_list)
+
+def _parse_parted_param(param_dict, param, parted_dict, p_part):
+    key = param.get('key')
+    if key not in parted_dict:
+        parted_dict[key] = {}
+    variable = _create_variable(param)[0]
+    parted_dict[key][p_part] = variable
+
+def _add_variable_list(settings, parted_params):
+    for key, params_set in parted_params.items():
+        variable = VariableList(key, parted_params[key])
+        settings[key] = variable
+
+def _create_variable(param):
     key = param.get('key')
     value = param.get('value')
-    try:
-        p_type = param.get('type')
-    except:
-        p_type = "string"
+    p_type = param.get('type')
     if p_type == "ref" or p_type == "reference":
         var = VariableReference(key, value)
     else:
         var = Variable(key, value)
-    param_dict[key] = var
+    return var, key
+
+def parse_param(param_dict, param, parted_dict = {}):
+    p_part = param.get('part')
+    if p_part != None:
+        _parse_parted_param(param_dict, param, parted_dict, p_part)
+    else:
+        variable, key = _create_variable(param)
+        param_dict[key] = variable
 
 def _create_config_dict(root, tag):
     #config = OrderedDict()
@@ -94,9 +125,11 @@ def _create_for_task(queue):
 
 def _get_settings_dict(task, set_type):
     settings = {}
+    parted_params = {}
     for parameters_set in task.findall(set_type):
         for param in parameters_set:
-            parse_param(settings, param)
+            parse_param(settings, param, parted_params)
+    _add_variable_list(settings, parted_params)
     return settings
 
 def _create_task(name, task_list = [], config_dict = {}):
