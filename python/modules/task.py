@@ -55,16 +55,8 @@ class TASK():
 
     def update_env(self, dict_out, dict_in, variables):
         for key, var in variables.items():
-            var_class = str(var.__class__.__name__)
-            if var_class != "VariableReference":
-                dict_out[key] = var
-            else:
-                try:
-                    new_var = var.get_reference(dict_in)
-                except:
-                    ref_key = var.get_ref_key()
-                    logger.error("Environment update error. Given key (%s) doesn't exist in dictionary", ref_key)
-                dict_out[key] = new_var
+            var_out = var.get_variable(dict_in)
+            dict_out[key] = var_out
         """
         [!] CONCATENATION PLACEHOLDER
         try:
@@ -103,13 +95,13 @@ class TASK_FOR(TASK):
 
     def __init__(self, parameters, updates, args):
         TASK.__init__(self, parameters, updates, args)
-        self.variables_list = args['variables_list']
-        self.task_do = args['task_do']
+        self.variables_sets_list = args['variables_list']
+        self.task_to_do = args['task_to_do']
         
     def execute_specify(self, env_local, dict_setts):
-        for variable in self.variables_list:
-            env_local_for = self.update_dict(env_local, env_local, variable['parameters_by_value'], variable['parameters_by_name'])
-            self.task_do.execute(env_local_for)
+        for variables_set in self.variables_sets_list:
+            env_local_for = self.update_env(env_local, env_local, variables_set)
+            self.task_to_do.execute(env_local_for)
 
 class TASK_QUEUE(TASK):
  
