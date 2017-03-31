@@ -36,12 +36,12 @@
     <parameter key="exp_part_2_id"  value="2"/>
 
     <parameter key="csv_names_list" value = "Nuclei.csv,ShrinkedNuclei.csv,Cells.csv,Cytoplasm.csv,Image.csv"/>
-    <parameter key="pipeline_in_path" value = "F://AG//IPIQA//tests//release//configuration_settings//input_materials//test6//cp_pipeline//pipeline.cppipe"/>
+    <parameter key="pipeline_in_path" value = "F://AG//IPIQA//tests//release//configuration_settings//input_materials//test2//cp_pipeline//pipeline.cppipe"/>
 
-    <parameter key="analysis_in_path" value="F://AG//IPIQA//tests//release//configuration_settings//input_materials//test6//experiments//"/>    
-    <parameter key="analysis_out_path" value="F://AG//IPIQA//tests//release//configuration_settings//results//test6/"/>
+    <parameter key="analysis_in_path" value="F://AG//IPIQA//tests//release//configuration_settings//input_materials//test2//experiments//"/>    
+    <parameter key="analysis_out_path" value="F://AG//IPIQA//tests//release//configuration_settings//results//test2/"/>
     <parameter key="output_server_folder_path" value = ""/> <!-- ADDITIONAL-->
-    <parameter key="metadata_in_path" value = "F://AG//IPIQA//tests//release//configuration_settings//input_materials//test6//mapplates//metadata//"/>
+    <parameter key="metadata_in_path" value = "F://AG//IPIQA//tests//release//configuration_settings//input_materials//test2//mapplates//metadata//"/>
 
     <parameter key="exp_part_1_path"  value="2016-12-29-AG06-01//2016-12-29_000//"/>
     <parameter key="exp_part_2_path"  value="2016-12-29-AG06-02//2016-12-29_000//"/>
@@ -227,7 +227,8 @@
                                 </parameters_by_name>
                             </VARIABLE>
                         </VARIABLES>
-                        <!--<TASK class="TASK_QUANTIFY">
+                        <TASK class="TASK_QUEUE">
+                        <TASK class="TASK_QUANTIFY">
                             <parameters_by_name>
                                 <parameter key="input_path.1"    value="pathway_data_xxx_path"/>
                                 <parameter key="input_path.2"  value="wellname_id"/>
@@ -246,12 +247,13 @@
                                 <parameter key="input_path.2" value="wellname_id"/>
                                 <parameter key="output_path.2" value="wellname_id"/> 
                             </parameters_by_name>
-                        </TASK>-->
+                        </TASK>
                         <TASK class="TASK_REMOVE">
                             <parameters_by_name>
                                 <parameter key="input_path.1" value="pathway_data_xxx_path"/>
                                 <parameter key="input_path.2" value="wellname_id"/>
                             </parameters_by_name>
+                        </TASK>
                         </TASK>
                     </TASK>                    
                 </TASK>
@@ -474,7 +476,7 @@
                             <TASK class="TASK_R">
                                 <parameters_by_value>
                                     <parameter key="r_function_name" value = "plot_histogram_list"/>
-                                    <parameter key="grid_col" value = "position.name"/>
+                                    <parameter key="grid_col" value = "well.name"/>
                                     <parameter key="r_script_path.2" value = "plot_histogram.R"/>
                                     <parameter key="filename.3" value = "_histogram_list"/>
                                 </parameters_by_value>
@@ -513,7 +515,7 @@
                             <TASK class="TASK_R">
                                 <parameters_by_value>
                                     <parameter key="r_function_name" value = "plot_boxplot_compare"/>
-                                    <parameter key="x" value = "position.name"/>
+                                    <parameter key="x" value = "well.name"/>
                                     <parameter key="r_script_path.2" value = "plot_boxplot_compare.R"/>
                                     <parameter key="filename.3" value = "_boxplot"/>
                                 </parameters_by_value>
