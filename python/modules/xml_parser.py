@@ -31,7 +31,7 @@ class VariableReference(Variable):
         return self.value
 
     def get_variable(self, env):
-        # get reference value with VariableReference key
+        # creates variable with reference value
         ref_value = self.get_value(env)
         var = Variable(self.key, ref_value)
         return var
@@ -39,17 +39,21 @@ class VariableReference(Variable):
     def get_value(self, env, args = {}):
         return env[self.value].get_value(env, args)
 
-class VariableList():
+class VariableList(Variable):
     def __init__(self, key, value, args = {}):
         Variable.__init__(self, key, value, args = {})
-        # not sure if this should be subclass
+
+    def get_variable(self, env):
+        # creates variable with merged value
+        merged_value = self.get_value(env)
+        var = Variable(self.key, merged_value)
+        return var
 
     def get_value(self, env, args = {}):
         order = sorted(self.value.keys())
         values_list = []
         for key in order:
             v_part = self.value[key].get_value(env)
-            #print(v_part)
             values_list.append(v_part)
         return "".join(values_list)
 

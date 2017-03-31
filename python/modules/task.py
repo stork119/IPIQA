@@ -26,7 +26,7 @@ class TASK():
     def execute(self, env_global):
         env_local = env_global.copy()
         logger.debug("env_local before update: %s", env_local.keys())
-        env_local = self.update_env(env_local, env_local, self.parameters)
+        env_local = self.update_env(env_local, env_global, self.parameters)
         logger.debug("env_local after update: %s", env_local.keys())
         logger.info("Executing: %s", self.__class__.__name__) #information what task is being executed
         dict_setts = self.parse_task_arguments(env_local)
@@ -56,37 +56,7 @@ class TASK():
     def update_env(self, dict_out, dict_in, variables):
         for key, var in variables.items():
             var_out = var.get_variable(dict_in)
-            dict_out[key] = var_out
-        """
-        [!] CONCATENATION PLACEHOLDER
-        try:
-            dict_out = self.concatenation_name_nr(dict_out)
-        except:
-            logger.error("Dictionary concatenation error. Dictionary: %s concatenation failed.", dict_out.keys())
-        logger.debug("Dict_out after concatenation: %s", dict_out.keys()) """       
-        return dict_out
-
-    def concatenation_name_nr(self, dict_out): #[!] not supported atm
-        #concatenation name.number
-        """key_list = []
-        for k, v in dict_out.items():
-            if "." in k:
-                key = k.split(".")
-                key_list.append(key[0])
-        logger.debug("List of names to concatenate: %s", key_list)
-        if len(key_list) > 1:
-            temp_dict = dict_out.copy()
-            temp_dict2 = OrderedDict(sorted(dict_out.items()))
-            key_list = list(set(key_list))      
-            for i in range(len(key_list)):
-                value = []
-                for k, v in temp_dict2.items():
-                    if key_list[i] + "." in k:
-                        value.append(str(v))
-                        del temp_dict[k] # deleting name.number from temporary dictionary
-                value = "".join(value)
-                temp_dict[key_list[i]] = value
-            dict_out = temp_dict.copy()"""
+            dict_out[key] = var_out       
         return dict_out
 
 class TASK_FOR(TASK):
