@@ -68,7 +68,7 @@ def main():
         settings_list = [settings_path]
     for setts in settings_list:
         logger.info('Current xml settings: %s', setts)
-        pipeline, config_dict = XML_P.parse(setts, additional_arg)
+        pipeline, config_dict = XML_P.parse_xml(setts, additional_arg)
         # config_dict overwrite (additional) config_dict2 settings
         config_dict2.update(config_dict) 
         config_dict = config_dict2

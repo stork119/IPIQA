@@ -19,6 +19,9 @@ class Variable():
     def set_value(self, value, args = {}):
         self.value = value
         return
+    
+    def get_variable(self, env):
+        return self
        
 class VariableReference(Variable):
     def __init__(self, key, value, args = {}):
@@ -27,7 +30,8 @@ class VariableReference(Variable):
     def get_ref_key(self):
         return self.value
 
-    def get_reference(self, env): # function name requires changes
+    def get_variable(self, env):
+        # get reference value with VariableReference key
         ref_value = self.get_value(env)
         var = Variable(self.key, ref_value)
         return var
@@ -133,4 +137,3 @@ def parse_xml(input_path, additional_arg, main_setts = True):
         pipeline = _create_queue_task(main_queue)
         return pipeline, config_dict
     return config_dict
-

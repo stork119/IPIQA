@@ -55,16 +55,8 @@ class TASK():
 
     def update_env(self, dict_out, dict_in, variables):
         for key, var in variables.items():
-            var_class = str(var.__class__.__name__)
-            if var_class != "VariableReference":
-                dict_out[key] = var
-            else:
-                try:
-                    new_var = var.get_reference(dict_in)
-                except:
-                    ref_key = var.get_ref_key()
-                    logger.error("Environment update error. Given key (%s) doesn't exist in dictionary", ref_key)
-                dict_out[key] = new_var
+            var_out = var.get_variable(dict_in)
+            dict_out[key] = var_out
         """
         [!] CONCATENATION PLACEHOLDER
         try:
