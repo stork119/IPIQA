@@ -269,7 +269,6 @@ class TASK_PARALLELIZE(TASK):
                  "number_of_cores" : {"required" : True, "default" : "1"}, 
                  "sleep_time" : {"required" : True}}
     # [!] number_of_cores is temporary coded as string
-    # [!] class requires changes after merge with branch map_plate
 
     def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args):
         TASK.__init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args)
@@ -426,47 +425,6 @@ class TASK_APPLY_MAP_PLATE(TASK):
         csv_names = (dict_setts["csv_names_list"]).split(",")
         mp_dict = env_local[dict_setts["mp_name"]]
         map_plate.apply_mp(dict_setts["input_path"], dict_setts["output_path"], dict_setts["delimiter"], mp_dict, csv_names, dict_setts["mp_key"])
-
-class TASK_MAP_PLATE(TASK):
-
-    dict_task = {"input_path_csv" : {"required" : True},
-                 "input_path_metadata" : {"required" : True}, 
-                 "output_path" : {"required" : True},
-                 "csv_names_list" : {"required" : True},
-                 "exp_id" : {"required" : True, "default" : "1"},
-                 "delimiter_csv" : {"required" : True, "default" : ","},
-                 "delimiter_mp" : {"required" : True, "default" : "\t"},
-                 "exp_part" : {"required" : True, "default" : "1"},
-                 "exp_parts" : {"required" : True, "default" : "1"}}
-    # [!] class will be removed after merge with branch map_plate
-
-    def __init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name,  args = {}):
-        TASK.__init__(self, parameters_by_value, parameters_by_name, updates_by_value, updates_by_name, args)
-
-    def execute_specify(self, env_local, dict_setts):
-        input_path_csv = env_local["input_path_csv"]
-        input_path_metadata = env_local["input_path_metadata"]
-        output_path = env_local["output_path"]
-        csv_names = (env_local["csv_names_list"]).split(",")
-        try:
-            exp_id = env_local["exp_id"]
-        except:
-            exp_id = 1
-        try:
-            delimiter_csv = env_local["delimiter_csv"]
-        except:
-            delimiter_csv = ","
-        try:
-            delimiter_mp = env_local["delimiter_mp"]
-        except:
-            delimiter_mp = "\t"
-        try:
-            exp_part_id = env_local["exp_part"]
-            exp_parts = env_local["exp_parts"]
-        except:
-            exp_part_id = "1" 
-            exp_parts = "1"
-        map_plate.combine(input_path_csv, input_path_metadata, output_path, csv_names, exp_id, exp_part_id, exp_parts, delimiter_mp, delimiter_csv)
 
 class TASK_R(TASK):
 
