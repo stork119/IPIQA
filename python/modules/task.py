@@ -1,5 +1,6 @@
 #! /usr/bin/python
 from collections import OrderedDict
+import modules.variable as VAR
 import modules.file_managment as FM
 import modules.flow_control as FC
 import modules.cellprofiler as cpm
@@ -69,8 +70,9 @@ class TASK_FOR(TASK):
         self.task_to_do = args['task_to_do']
         
     def execute_specify(self, env_local, dict_setts):
+        env_tmp = env_local.copy()
         for variables_set in self.variables_sets_list:
-            env_local_for = self.update_env(env_local, env_local, variables_set)
+            env_local_for = self.update_env(env_local, env_tmp, variables_set)
             self.task_to_do.execute(env_local_for)
 
 class TASK_QUEUE(TASK):
@@ -217,13 +219,17 @@ class TASK_MERGE_SUBDIR_CSV(TASK):
             extension = FM.file_get_extension(csv_name)
             len_ext = len(extension)
             name = csv_name[:-(len_ext)]
-            env_local[name] = data
+            """
+            #Saving data in environment:
+            v_out = VAR.Variable(name, data)
+            env_local[name] = v_our
+            """
             #Saving data
             out_path = FM.path_join(dict_setts["output_path"], csv_name)
             if FM.path_check_existence(out_path):
                 logger.warning("File %s already exists. Removing old data.", out_path)
                 FM.dir_remove(out_path)
-            CSV_M.write_csv(out_path, dict_setts["delimiter"], data) #if we would like to write_csv somewhere...
+            CSV_M.write_csv(out_path, dict_setts["delimiter"], data)
 
 
 class TASK_PARALLELIZE(TASK):
@@ -295,7 +301,8 @@ class TASK_PARALLELIZE_MP(TASK_PARALLELIZE): #all objects (folders) for given ma
         self.config_dict = args['config_dict']
 
     def parse_elements_list(self, env_local, dict_setts): #implementing with tag
-        mp_dict = env_local[dict_setts["mp_name"]]
+        v_mp_dict = env_local[dict_setts["mp_name"]]
+        mp_dict = v_mp_dict.get_value(env_local)
         active_wells_keys = FC.get_active_wells(mp_dict, dict_setts["exp_part"]) #get active wells keys for mp_dict 
         ele_number = len(active_wells_keys)
         params = FC.get_wells_base_params(mp_dict, active_wells_keys, dict_setts["prefix"], dict_setts["sufix"], dict_setts["exp_part"])
@@ -360,7 +367,10 @@ class TASK_READ_MAP_PLATE(TASK):
         TASK.__init__(self, parameters, updates, args)
 
     def execute_specify(self, env_local, dict_setts):
-        env_local[dict_setts["mp_name"]] = map_plate.parse_mp(dict_setts["input_path"], dict_setts["delimiter"])
+        mp_out = map_plate.parse_mp(dict_setts["input_path"], dict_setts["delimiter"])
+        mp_name = dict_setts["mp_name"]
+        v_mp_out = VAR.Variable(mp_name, mp_out)
+        env_local[mp_name] = v_mp_out
 
 class TASK_APPLY_MAP_PLATE(TASK):
     """
@@ -387,7 +397,8 @@ class TASK_APPLY_MAP_PLATE(TASK):
 
     def execute_specify(self, env_local, dict_setts):
         csv_names = (dict_setts["csv_names_list"]).split(",")
-        mp_dict = env_local[dict_setts["mp_name"]]
+        v_mp_dict = env_local[dict_setts["mp_name"]]
+        mp_dict = v_mp_dict.get_value(env_local)
         map_plate.apply_mp(dict_setts["input_path"], dict_setts["output_path"], dict_setts["delimiter"], mp_dict, csv_names, dict_setts["mp_key"])
 
 class TASK_MAP_PLATE(TASK):
@@ -504,7 +515,9 @@ class TASK_READ_DATAFRAME_FROM_CSV(TASK):
     def execute_specify(self, env_local, dict_setts):
         input_path = FM.path_join(dict_setts["input_path"], dict_setts["filename"])
         data = R_connection.read_dataframe_from_csv(input_path, dict_setts["delimiter"])
-        env_local[dict_setts["dict_key_name"]] = data
+        dict_key = dict_setts["dict_key_name"]
+        v_data = VAR.Variable(dict_key, data)
+        env_local[dict_key] = v_data
 
 class TASK_WRITE_DATAFRAME_TO_CSV(TASK):
 
@@ -518,7 +531,8 @@ class TASK_WRITE_DATAFRAME_TO_CSV(TASK):
 
     def execute_specify(self, env_local, dict_setts):
         output_path = FM.path_join(dict_setts["output_path"], dict_setts["filename"])
-        data = env_local[dict_setts["dict_key_name"]]
+        v_data = env_local[dict_setts["dict_key_name"]]
+        data = v_data.get_value(env_local)
         R_connection.write_dataframe_to_csv(output_path, data, dict_setts["delimiter"])
 
 class TASK_MERGE_CSV(TASK):
