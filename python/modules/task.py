@@ -43,7 +43,7 @@ class TASK():
         for key in self.dict_task:
             try: 
                 var = env_local[key]
-                value = var.get_value(env_local)
+                value = VAR.get_value(env_local)
             except:
                 try:
                     value = self.dict_task[key]["default"]
@@ -56,8 +56,20 @@ class TASK():
 
     def update_env(self, dict_out, dict_in, variables):
         for key, var in variables.items():
-            var_out = var.get_variable(dict_in)
+            var_out = VAR.get_variable(dict_in)
             dict_out[key] = var_out       
+        return dict_out
+
+    def convert_to_var_dict(self, dict_in):
+        """
+        Converts all dictionary's values to the corresponding variable objects:
+        i.e. in_dict = {"input_path" : "C:/path/to/file"} ---> 
+             out_dict = {"input_path" : Variable("input_path", "C:/path/to/file")}
+        """
+        dict_out = {}
+        for key, value in dict_in.items():
+            variable = VAR.Variable(key, dict_in[key])
+            dict_out[key] = variable
         return dict_out
 
 class TASK_FOR(TASK):
@@ -307,7 +319,11 @@ class TASK_PARALLELIZE_MP(TASK_PARALLELIZE): #all objects (folders) for given ma
         ele_number = len(active_wells_keys)
         params = FC.get_wells_base_params(mp_dict, active_wells_keys, dict_setts["prefix"], dict_setts["sufix"], dict_setts["exp_part"])
         elements_list = FC.create_elements_list(dict_setts["input_path"], params, dict_setts["used_value"])
-        return elements_list, ele_number
+        var_elements_list = []
+        for element in elements_list:
+            var_element = self.convert_to_var_dict(element)
+            var_elements_list.append(var_element)
+        return var_elements_list, ele_number
 
 class TASK_PARALLELIZE_LIST(TASK_PARALLELIZE): # list of objects (folders) # [!] NOT SUPPORTED
 
@@ -346,6 +362,10 @@ class TASK_PARALLELIZE_PATH(TASK_PARALLELIZE): #all objects (folders) in given d
     def parse_elements_list(self, env_local, dict_setts):
         folders_number = int(dict_setts["folders_number"])
         dir_list = FM.dir_get_names(dict_setts["input_path"])
+        var_dir_list = []
+        for dir_name in dir_list:
+            variable = VAR.Variable("folder_name", dir_name)
+            var_dir_list.append({"folder_name" : variable})
         return dir_list, folders_number
 
 class TASK_READ_MAP_PLATE(TASK):
@@ -456,7 +476,8 @@ class TASK_R(TASK):
         # PLACEHOLDER for adding more external params
         param_dict = R_connection.prepare_param_dict(env_local, self.parameters_by_value, self.parameters_by_name, external_params)
         output_dict = R_connection.execute_r_script(param_dict, dict_setts["r_script_path"], dict_setts["r_function_name"])
-        env_local.update(output_dict)
+        out_var_dict = self.convert_to_var_dict(output_dict)
+        env_local.update(out_var_dict)
         
 class TASK_FFC_CREATE(TASK):
 
@@ -466,7 +487,8 @@ class TASK_FFC_CREATE(TASK):
     def execute_specify(self, env_local, dict_setts):
         # Check if user set input an output paths
         output_dict = ffc.create_camcor(env_local, self.parameters_by_value, self.parameters_by_name)
-        env_local.update(output_dict)
+        out_var_dict = self.convert_to_var_dict(output_dict)
+        env_local.update(out_var_dict)
 
 class TASK_FFC_READ(TASK):
 
@@ -479,7 +501,8 @@ class TASK_FFC_READ(TASK):
             output_dict = ffc.read_camcor(env_local, self.parameters_by_value, self.parameters_by_name)
         except:
             output_dict = ffc.create_camcor(env_local, self.parameters_by_value, self.parameters_by_name)
-        env_local.update(output_dict)
+        out_var_dict = self.convert_to_var_dict(output_dict)
+        env_local.update(out_var_dict)
 
 class TASK_FFC_APPLY(TASK):
 
@@ -489,7 +512,8 @@ class TASK_FFC_APPLY(TASK):
     def execute_specify(self, env_local, dict_setts):
         # Check if user set input an output paths
         output_dict = ffc.apply_camcor(env_local, self.parameters_by_value, self.parameters_by_name)
-        env_local.update(output_dict)
+        out_var_dict = self.convert_to_var_dict(output_dict)
+        env_local.update(out_var_dict)
    
    
 class TASK_FFC_READ_APPLY(TASK):
@@ -500,7 +524,8 @@ class TASK_FFC_READ_APPLY(TASK):
     def execute_specify(self, env_local, dict_setts):
         # Check if user set input an output paths
         output_dict = ffc.read_apply_camcor(env_local, self.parameters_by_value, self.parameters_by_name)
-        env_local.update(output_dict)
+        out_var_dict = self.convert_to_var_dict(output_dict)
+        env_local.update(out_var_dict)
         
 class TASK_READ_DATAFRAME_FROM_CSV(TASK):
 
