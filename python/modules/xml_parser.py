@@ -14,7 +14,7 @@ def _create_task(name, task_list = [], config_dict = {}):
         task_initialization = getattr(TK, task_name)
     except:
         logger.error("Error. %s is unknown.", task_name)
-        return
+        sys.exit(1) # wrong/non existing task -> shutting down program 
     parameters_by_value = _get_settings_dict(name, "parameters_by_value") # getting dicts of settings and updates
     parameters_by_name = _get_settings_dict(name, "parameters_by_name")
     updates_by_value = _get_settings_dict(name, "update_by_value")
@@ -31,7 +31,7 @@ def _create_queue_task(queue):
     task_list = []
     for request in queue.findall('TASK'):
         task_name = request.get('class')
-        if task_name == "TASK_QUEUE" or task_name.startswith("TASK_PARALLELIZE") or task_name.startswith("TASK_SYNCHRONOUSLY"):
+        if task_name == "TASK_QUEUE" or task_name == "TASK_IF" or task_name.startswith("TASK_PARALLELIZE") or task_name.startswith("TASK_SYNCHRONOUSLY"):
             task = _create_queue_task(request)
         elif task_name == "TASK_FOR":
             task = _create_for_task(request)
