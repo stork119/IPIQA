@@ -4,6 +4,7 @@ import argparse
 import modules.file_managment as FM
 import modules.logs_configuration as LC
 import modules.xml_parser as XML_P
+import modules.variable as VAR
 from time import sleep
 
 def main():
@@ -53,11 +54,12 @@ def main():
                                      'configuration_settings' ,
                                      args.s[0])
     if args.a != False: # optional argument
-        additional_arg = {(args.a[0]) : (args.a[1])}
+        add_variable = VAR.Variable((args.a[0]), (args.a[1])) # [!]
+        additional_arg = {(args.a[0]) : add_variable}
     else:
         additional_arg = {}
     if args.c != False: # optional (additional) config
-        config_dict2 = config_dict = XML_P.parse(args.c[0], 
+        config_dict2 = config_dict = XML_P.parse_xml(args.c[0], 
                                                 additional_arg, 
                                                 main_setts = False)
     else:
@@ -72,6 +74,7 @@ def main():
         # config_dict overwrite (additional) config_dict2 settings
         config_dict2.update(config_dict) 
         config_dict = config_dict2
+        config_dict.update(additional_arg)
         FM.parse_exec_info(PP_path, logs_path, setts, config_dict)
         pipeline.execute(config_dict)
 
