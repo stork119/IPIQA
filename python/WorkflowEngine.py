@@ -59,8 +59,7 @@ def main():
     else:
         additional_arg = {}
     if args.c != False: # optional (additional) config
-        config_dict2 = config_dict = XML_P.parse_xml(args.c[0], 
-                                                additional_arg, 
+        config_dict2 = config_dict = XML_P.parse_xml(args.c[0],
                                                 main_setts = False)
     else:
         config_dict2 = {}
@@ -70,7 +69,7 @@ def main():
         settings_list = [settings_path]
     for setts in settings_list:
         logger.info('Current xml settings: %s', setts)
-        pipeline, config_dict = XML_P.parse_xml(setts, additional_arg)
+        pipeline, config_dict = XML_P.parse_xml(setts)
         # config_dict overwrite (additional) config_dict2 settings
         config_dict2.update(config_dict) 
         config_dict = config_dict2

@@ -14,17 +14,29 @@ def _parse_parted_param(param_dict, param, parted_dict, p_part):
     variable = _create_variable(param)[0]
     parted_dict[key][p_part] = variable
 
-def _add_variable_list(settings, parted_params):
+def _add_variable_parted(settings, parted_params):
     for key, params_set in parted_params.items():
-        variable = VAR.VariableList(key, parted_params[key])
+        variable = VAR.VariableParted(key, parted_params[key])
         settings[key] = variable
 
-def _create_variable(param):
+def _parse_variable_list(key, param):
+    values_list = []
+    for i, p_value in enumerate(param):
+        var = _create_variable(p_value, i)[0]
+        values_list.append(var)
+    variable = VAR.VariableList(key, values_list)
+    return variable
+
+def _create_variable(param, tmp_key = ""):
     key = param.get('key')
+    if key == None:
+        key = tmp_key
     value = param.get('value')
     p_type = param.get('type')
     if p_type == "ref" or p_type == "reference":
         var = VAR.VariableReference(key, value)
+    elif p_type == "list":
+        var = _parse_variable_list(key, param)
     else:
         var = VAR.Variable(key, value)
     return var, key
@@ -83,7 +95,7 @@ def _get_settings_dict(task, set_type):
     for parameters_set in task.findall(set_type):
         for param in parameters_set:
             parse_param(settings, param, parted_params)
-    _add_variable_list(settings, parted_params)
+    _add_variable_parted(settings, parted_params)
     return settings
 
 def _create_task(name, task_list = [], config_dict = {}):
@@ -102,7 +114,7 @@ def _create_task(name, task_list = [], config_dict = {}):
     logger.debug("%s task created.", task_name)
     return task
 
-def parse_xml(input_path, additional_arg, main_setts = True):
+def parse_xml(input_path, main_setts = True):
     if main_setts == True:
         logger.info("Parsing XML input_settings.")
     else:
@@ -118,7 +130,6 @@ def parse_xml(input_path, additional_arg, main_setts = True):
     root = tree.getroot()
     Config = root[0]
     config_dict = _create_config_dict(Config, Config.tag)
-    #config_dict.update(additional_arg) # [!] not supported atm
     if main_setts == True:
         main_queue = root[1]
         pipeline = _create_queue_task(main_queue)
