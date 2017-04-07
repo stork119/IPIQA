@@ -54,6 +54,20 @@ class VariableParted(Variable):
         return "".join(values_list)
 
 class VariableList(Variable):
+    """
+    Parameters with type 'list' are represented in  xml settings
+    as following:
+    <parameter key = "<KEY>" type = "list">
+        <parameter value = "<VALUE>" type = "<TYPE>">
+        <parameter value = "<VALUE>" type = "<TYPE>">
+    </parameter>
+    
+    i.e.
+    <parameter key = "csv_data" type = "list">
+        <parameter value = "Nuclei.csv">
+        <parameter value = "ShrinkedNuclei.csv">
+    </parameter>
+    """
     def __init__(self, key, value, args = {}):
         Variable.__init__(self, key, value, args = {})
 
@@ -67,5 +81,3 @@ class VariableList(Variable):
         for element in self.value:
             out_list.append(element.get_value(env))
         return out_list
-
-
