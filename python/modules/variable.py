@@ -12,12 +12,12 @@ class Variable():
     def get_value(self, env, args = {}):
         return self.value
 
+    def get_variable(self, env):
+        return self
+
     def set_value(self, value, args = {}):
         self.value = value
         return
-     
-    def get_variable(self, env):
-        return self
 
 class VariableReference(Variable):
     def __init__(self, key, value, args = {}):
@@ -35,7 +35,7 @@ class VariableReference(Variable):
     def get_value(self, env, args = {}):
         return env[self.value].get_value(env, args)
 
-class VariableList(Variable):
+class VariableParted(Variable):
     def __init__(self, key, value, args = {}):
         Variable.__init__(self, key, value, args = {})
 
@@ -52,3 +52,32 @@ class VariableList(Variable):
             v_part = self.value[key].get_value(env)
             values_list.append(v_part)
         return "".join(values_list)
+
+class VariableList(Variable):
+    """
+    Parameters with type 'list' are represented in  xml settings
+    as following:
+    <parameter key = "<KEY>" type = "list">
+        <parameter value = "<VALUE>" type = "<TYPE>">
+        <parameter value = "<VALUE>" type = "<TYPE>">
+    </parameter>
+    
+    i.e.
+    <parameter key = "csv_data" type = "list">
+        <parameter value = "Nuclei.csv">
+        <parameter value = "ShrinkedNuclei.csv">
+    </parameter>
+    """
+    def __init__(self, key, value, args = {}):
+        Variable.__init__(self, key, value, args = {})
+
+    def get_variable(self, env):
+        converted_list = self.get_value(env)
+        var = Variable(self.key, converted_list)
+        return var
+        
+    def get_value(self, env, args = {}):
+        out_list = []
+        for element in self.value:
+            out_list.append(element.get_value(env))
+        return out_list

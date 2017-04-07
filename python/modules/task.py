@@ -43,7 +43,7 @@ class TASK():
         for key in self.dict_task:
             try: 
                 var = env_local[key]
-                value = VAR.get_value(env_local)
+                value = var.get_value(env_local)
             except:
                 try:
                     value = self.dict_task[key]["default"]
@@ -55,8 +55,8 @@ class TASK():
         return dict_setts
 
     def update_env(self, dict_out, dict_in, variables):
-        for key, var in variables.items():
-            var_out = VAR.get_variable(dict_in)
+        for key, variab in variables.items():
+            var_out = variab.get_variable(dict_in)
             dict_out[key] = var_out       
         return dict_out
 
