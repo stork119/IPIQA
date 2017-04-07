@@ -51,7 +51,9 @@ class VariableParted(Variable):
         for key in order:
             v_part = self.value[key].get_value(env)
             values_list.append(v_part)
-        return "".join(values_list)
+        merged_value = "".join(values_list)
+        logger.debug("Merged variable %s: %s", self.key, merged_value)
+        return 
 
 class VariableList(Variable):
     """

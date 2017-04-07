@@ -471,7 +471,7 @@ class TASK_R(TASK):
         TASK.__init__(self, parameters, updates, args)
 
     def execute_specify(self, env_local, dict_setts):
-        external_params = ["r_function_name", "r_script_path"]
+        external_params = list(self.dict_task.keys())
         logger.info("Executing R function %s from %s", dict_setts["r_function_name"], dict_setts["r_script_path"]) 
         # PLACEHOLDER for adding more external params
         param_dict = R_connection.prepare_param_dict(env_local, self.parameters_by_value, self.parameters_by_name, external_params)
