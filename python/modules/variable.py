@@ -39,6 +39,7 @@ class VariableReference(Variable):
 class VariablePath(Variable):
     def __init__(self, key, value, args = {}):
         Variable.__init__(self, key, value, args = {})
+        self.value = FM.path_unify(value)
 
 class VariableParted(Variable):
     def __init__(self, key, value, args = {}):

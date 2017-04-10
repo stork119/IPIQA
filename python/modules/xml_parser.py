@@ -19,12 +19,12 @@ def _add_variable_parted(settings, parted_params):
         variable = VAR.VariableParted(key, parted_params[key])
         settings[key] = variable
 
-def _parse_variable_list(key, param):
+def _parse_variable_list(key, param, args):
     values_list = []
     for i, p_value in enumerate(param):
         var = _create_variable(p_value, i)[0]
         values_list.append(var)
-    variable = VAR.VariableList(key, values_list)
+    variable = VAR.VariableList(key, values_list, args)
     return variable
 
 def _create_variable(param, tmp_key = ""):
@@ -33,10 +33,13 @@ def _create_variable(param, tmp_key = ""):
         key = tmp_key
     value = param.get('value')
     p_type = param.get('type')
+    args = {"type" : p_type}
     if p_type == "ref" or p_type == "reference":
-        var = VAR.VariableReference(key, value)
+        var = VAR.VariableReference(key, value, args)
+    elif p_type == "path":
+        var = VAR.VariablePath(key, value, args)
     elif p_type == "list":
-        var = _parse_variable_list(key, param)
+        var = _parse_variable_list(key, param, args)
     else:
         var = VAR.Variable(key, value)
     return var, key
