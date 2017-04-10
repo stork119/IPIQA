@@ -41,7 +41,7 @@ def _create_variable(param, tmp_key = ""):
     elif p_type == "list":
         var = _parse_variable_list(key, param, args)
     else:
-        var = VAR.Variable(key, value)
+        var = VAR.Variable(key, value, args)
     return var, key
 
 def parse_param(param_dict, param, parted_dict = {}):
