@@ -1,5 +1,6 @@
 #! /usr/bin/python
 import logging, sys
+import copy
 import modules.file_managment as FM
 
 logger = logging.getLogger("Variable module")
@@ -32,8 +33,7 @@ class VariableReference(Variable):
 
     def get_variable(self, env):
         # creates variable with reference value
-        ref_value = self.get_value(env)
-        var = Variable(self.key, ref_value)
+        var = copy.deepcopy(env[self.value])
         return var
 
     def get_value(self, env, args = {}):
@@ -55,21 +55,25 @@ class VariableParted(Variable):
         for key in order:
             v_part = self.value[key].get_value(env)
             values_list.append(v_part)
-        contains_path = False
-        for key, variable in self.value.items():
-            try:
-                p_type = variable.get_args()["type"]
-                if p_type == "path":
-                    contains_path = True
-            except:
-                pass
-        if contains_path:
-            merged_value = FM.path_join(*values_list)
-        else:
-            merged_value = "".join(values_list)
+        merged_value = "".join(values_list)
+        logger.debug("Merged variable %s: %s", self.key, merged_value)
         return merged_value
 
 class VariableList(Variable):
+    """
+    Parameters with type 'list' are represented in  xml settings
+    as following:
+    <parameter key = "<KEY>" type = "list">
+        <parameter value = "<VALUE>" type = "<TYPE>">
+        <parameter value = "<VALUE>" type = "<TYPE>">
+    </parameter>
+    
+    i.e.
+    <parameter key = "csv_data" type = "list">
+        <parameter value = "Nuclei.csv">
+        <parameter value = "ShrinkedNuclei.csv">
+    </parameter>
+    """
     def __init__(self, key, value, args = {}):
         Variable.__init__(self, key, value, args = {})
 
