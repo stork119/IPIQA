@@ -1,5 +1,6 @@
 #! /usr/bin/python
 import logging, sys
+import copy
 
 logger = logging.getLogger("Variable module")
 
@@ -28,8 +29,7 @@ class VariableReference(Variable):
 
     def get_variable(self, env):
         # creates variable with reference value
-        ref_value = self.get_value(env)
-        var = Variable(self.key, ref_value)
+        var = copy.deepcopy(env[self.value])
         return var
 
     def get_value(self, env, args = {}):
@@ -53,7 +53,7 @@ class VariableParted(Variable):
             values_list.append(v_part)
         merged_value = "".join(values_list)
         logger.debug("Merged variable %s: %s", self.key, merged_value)
-        return 
+        return merged_value
 
 class VariableList(Variable):
     """
@@ -83,3 +83,4 @@ class VariableList(Variable):
         for element in self.value:
             out_list.append(element.get_value(env))
         return out_list
+
