@@ -35,6 +35,10 @@ class VariableReference(Variable):
     def get_value(self, env, args = {}):
         return env[self.value].get_value(env, args)
 
+class VariablePath(Variable):
+    def __init__(self, key, value, args = {}):
+        Variable.__init__(self, key, value, args = {})
+
 class VariableParted(Variable):
     def __init__(self, key, value, args = {}):
         Variable.__init__(self, key, value, args = {})
