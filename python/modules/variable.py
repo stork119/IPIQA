@@ -89,33 +89,86 @@ class VariableList(Variable):
         return out_list
 
 class VariableMP(Variable):
+    """
+    VariableMP might represent
+    a) whole map_plate, where
+        value =  map_plate structure
+    b) single map_plate element (i.e. well), where
+        value = map_plate name
+
+    Map_plate structure (dictionary of ordered dictionaries)
+    presents as following example:
+        map_plate = { 'A01' : OrderedDict([('id', 'A01'),
+                                        ('exp_part', '1'),
+                                        ('name', 'A01'),
+                                        <...>]),
+                     'B01' : OrderedDict([('id', 'B01'),
+                                        ('exp_part', '2'),
+                                        ('name', 'A01'),
+                                        <...>]),
+                    <...> },
+        where:
+        map_plate.keys()- experimental wells
+        mp_plate[well_id]- dicionary of all experimental settings
+                            for given well
+
+    """
     def __init__(self, key, value, args = {}):
         Variable.__init__(self, key, value, args = {})
+        self.mp_dict = value
+        
+    def get_mp_dict(self):
+        return self.mp_dict
+
+        print('Python version does not meet software requirments. '
+        'Install python 3.5 or 3.6 to run IPIQA.')
+
+    def get_value(self, env):
+        args_keys = (self.args).keys()
+        if "well" in args_keys:
+            try:
+                mp_dict = env[self.value].get_mp_dict()
+            except:
+                logger.error("Following map_plate: %s is missing in environment."
+                             "Can't assign map_plate element %s", 
+                             self.value, self.key)
+                break
+            if "param" in args_keys:
+                return self.get_param_value(mp_dict, self.args["well"], self.args["param"])
+            else:
+                return self.get_well_params(mp_dict, self.args["well"])
+        else:
+            return self
 
     def get_variable(self, env):
-        pass
+        args_keys = (self.args).keys()
+        if any(i in args_keys for i in ["well", "param"]):
+            var = Variable(self.key, self.get_value(env))
+            return var
+        else:
+            return self
 
-    def get_value(self, env, args = {}):
-        pass
+    def get_wells_ids(self, mp_dict):
+        return list(mp_dict.keys())
 
-    def get_param_value(mp_dict, well_name, param):
+    def get_param_value(self, mp_dict, well_name, param):
         """
         Gets values for a given well and parameter.
         """
         value = mp_dict[well_name][param]
         return value
 
-    def get_param_values(mp_dict, param):
+    def get_param_values(self, mp_dict, param):
         """
         Gets all values for a given param 
         from map_plate dictionary.
-        """
+        """.
         values = []
         for well in mp_dict:
             values.append(mp_dict[well][param])
         return values
 
-    def get_param_unique_values(mp_dict, param): 
+    def get_param_unique_values(self, mp_dict, param): 
         """
         Gets all unique values for a given param 
         from map_plate dictionary.
@@ -124,18 +177,22 @@ class VariableMP(Variable):
         unique = list(set(values))
         return unique
 
-    def get_params_names(mp_dict): # get all key names from map_plate dictionary
+    def get_params_names(self, mp_dict):
+        """
+        Gets all key names from map_plate dictionary.
+        """
         names = []
         key_0 = list(mp_dict.keys())[0]
         names = list(mp_dict[key_0].keys()) 
         #if we assume that number of information between wells is constant
         return names
 
-    def get_well_params(mp_dict, well):
+    def get_well_params(self, mp_dict, well):
         """ 
-        Gives all parameters values for a given well
+        Gives all parameters values for a given well.
         """
         values = []
         for param in mp_dict[well]:
             values.append(mp_dict[well][param])
         return values
+
