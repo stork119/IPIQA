@@ -389,7 +389,7 @@ class TASK_READ_MAP_PLATE(TASK):
     def execute_specify(self, env_local, dict_setts):
         mp_out = map_plate.parse_mp(dict_setts["input_path"], dict_setts["delimiter"])
         mp_name = dict_setts["mp_name"]
-        v_mp_out = VAR.Variable(mp_name, mp_out)
+        v_mp_out = VAR.VariableMP(mp_name, mp_out)
         env_local[mp_name] = v_mp_out
 
 class TASK_APPLY_MAP_PLATE(TASK):
@@ -418,8 +418,7 @@ class TASK_APPLY_MAP_PLATE(TASK):
     def execute_specify(self, env_local, dict_setts):
         csv_names = (dict_setts["csv_names_list"]).split(",")
         v_mp_dict = env_local[dict_setts["mp_name"]]
-        mp_dict = v_mp_dict.get_value(env_local)
-        map_plate.apply_mp(dict_setts["input_path"], dict_setts["output_path"], dict_setts["delimiter"], mp_dict, csv_names, dict_setts["mp_key"])
+        map_plate.apply_mp(dict_setts["input_path"], dict_setts["output_path"], dict_setts["delimiter"], v_mp_dict, csv_names, dict_setts["mp_key"])
 
 class TASK_MAP_PLATE(TASK):
 
