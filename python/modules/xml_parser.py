@@ -22,10 +22,12 @@ def _add_variable_parted(settings, parted_params):
 def _parse_mp_element(key, value, param, args):
     if value == None:
         value = param.get('mp_name')
-    for i, mpe in enumerate["param", "well"]:
-        mpe_value = param.get(mpe)
-        if mpe_value != None:
-            args[mpe] = mpe_value
+    for mp_param in param:
+        variable, mpe_key = _create_variable(mp_param)
+        if mpe_key in ["param", "well"]:
+            args[mpe_key] = variable
+        else:
+            logger.error("Unexpected map_plate parameter key: %s", mpe_key)
     variable = VAR.VariableMP(key, value, args)
     return variable
 
@@ -49,7 +51,7 @@ def _create_variable(param, tmp_key = ""):
         var = VAR.VariableReference(key, value, args)
     elif p_type == "list":
         var = _parse_variable_list(key, param, args)
-    if p_type == "map_plate" or p_type == "mpe":
+    if p_type == "map_plate" or p_type == "mp":
         var = _parse_mp_element(key, value, param, args)
     else:
         var = VAR.Variable(key, value, args)

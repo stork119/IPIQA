@@ -94,7 +94,7 @@ class VariableMP(Variable):
     a) whole map_plate, where
         value =  map_plate structure
     b) single map_plate element (i.e. well), where
-        value = map_plate name
+        value = map_plate name (containing given map_plate element)
 
     Map_plate structure (dictionary of ordered dictionaries)
     presents as following example:
@@ -126,6 +126,7 @@ class VariableMP(Variable):
     def get_value(self, env):
         args_keys = (self.args).keys()
         if "well" in args_keys:
+            well = self.args["well"].get_value(env)
             try:
                 self.mp_dict = env[self.value].get_mp_dict()
             except:
@@ -133,9 +134,10 @@ class VariableMP(Variable):
                              "Can't assign map_plate element %s", 
                              self.value, self.key)
             if "param" in args_keys:
-                return self.get_param_value(self.args["well"], self.args["param"])
+                param = self.args["param"].get_value(env)
+                return self.get_param_value(well, param)
             else:
-                return self.get_well_params(self.args["well"])
+                return self.get_well_params(well)
         else:
             return self
 
