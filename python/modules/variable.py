@@ -24,6 +24,9 @@ class Variable():
     def get_args(self):
         return self.args
 
+    def create_dict(self, env):
+        return {self.key : self.get_variable(env)}
+
 class VariableReference(Variable):
     def __init__(self, key, value, args = {}):
         Variable.__init__(self, key, value, args = {})
@@ -120,3 +123,5 @@ class VariableStructure(Variable):
             converted_dict[key] = variable.get_value(env)
         return converted_dict
 
+    def create_dict(self, env):
+        return self

@@ -78,13 +78,14 @@ class TASK_FOR(TASK):
 
     def __init__(self, parameters, updates, args):
         TASK.__init__(self, parameters, updates, args)
-        self.variables_sets_list = args['variables_list']
+        self.variables_list = args['variables_list']
         self.task_to_do = args['task_to_do']
         
     def execute_specify(self, env_local, dict_setts):
         env_tmp = env_local.copy()
-        for variables_set in self.variables_sets_list:
-            env_local_for = self.update_env(env_local, env_tmp, variables_set)
+        for variable in self.variables_list:
+            variable_dict = variable.create_dict(env_local)
+            env_local_for = self.update_env(env_local, env_tmp, variable_dict)
             self.task_to_do.execute(env_local_for)
 
 class TASK_QUEUE(TASK):
