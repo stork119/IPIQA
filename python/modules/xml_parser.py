@@ -20,20 +20,17 @@ def _add_variable_parted(settings, parted_params):
         settings[key] = variable
 
 def _parse_variable_structure(key, param, args):
-    dict_list = []
-    for values_set in param:
-        struc_dict = {}
-        for j, subparam in enumerate(values_set):
-            var, subkey = _create_variable(subparam)
-            stuc_dict[subkey] = var
-        dict_list.append(struc_dict)
-    variable = VAR.VariableStructure(key, dict_list)
+    struc_dict = {}
+    for j, subparam in enumerate(param):
+        var, subkey = _create_variable(subparam)
+        stuc_dict[subkey] = var
+    variable = VAR.VariableStructure(key, struc_dict)
     return variable
 
 def _parse_variable_list(key, param):
     values_list = []
-    for i, p_value in enumerate(param):
-        var = _create_variable(p_value, i)[0]
+    for i, subparam in enumerate(param):
+        var = _create_variable(subparam, i)[0]
         values_list.append(var)
     variable = VAR.VariableList(key, values_list)
     return variable

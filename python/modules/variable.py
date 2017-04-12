@@ -102,26 +102,21 @@ class VariableStructure(Variable):
     Parameters with type 'structure' are represented in  xml settings
     as following:
     <parameter key = "<KEY>" type = "structure">
-        <value>
             <parameter key = "<KEY>" value = "<VALUE>" type = "<TYPE>">
             <parameter key = "<KEY>" value = "<VALUE>" type = "<TYPE>">
-        <value/>
     <parameter>
     """
     def __init__(self, key, value, args = {}):
         Variable.__init__(self, key, value, args = {})
 
     def get_variable(self, env):
-        converted_struc = self.get_value(env)
-        var = Variable(self.key, converted_struc)
+        converted_dict = self.get_value(env)
+        var = Variable(self.key, converted_dict)
         return var
         
     def get_value(self, env, args = {}):
-        converted_struc = []
-        for values_set in self.value:
-            tmp_dict = {}
-            for key, variable in values_set.items():
-                tmp_dict[key] = (variable.get_value(env))
-            converted_struc.append(tmp_dict)
-        return converted_struc
+        converted_dict = {}
+        for key, variable in values_set.items():
+            converted_dict[key] = variable.get_value(env)
+        return converted_dict
 
