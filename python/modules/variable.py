@@ -96,6 +96,7 @@ class VariableMP(Variable):
     b) single map_plate element (i.e. well), where
         value = map_plate name (containing given map_plate element)
 
+    a) 
     Map_plate structure (dictionary of ordered dictionaries)
     presents as following example:
         map_plate = { 'A01' : OrderedDict([('id', 'A01'),
@@ -112,6 +113,20 @@ class VariableMP(Variable):
         mp_plate[well_id]- dicionary of all experimental settings
                             for given well
 
+    VariableMP representing whole map_plate is created during 
+    TASK_READ_MAP_PLATE.
+    
+    Variable can be refered in  xml settings
+    as following:
+    <parameter key = "<KEY>" value = <MP_NAME> type = "ref">
+
+    b)
+    Parameters with type 'map_plate', referring to chosen map_plate element
+    are represented in  xml settings as following example:
+    <parameter key = "<KEY>" value/mp_name = <MP_NAME> type = "map_plate">
+        <parameter key = "well" value = "mp_key" type = "ref">
+        <parameter key = "param" value = "stimulation.1.1">
+    </parameter>
     """
     def __init__(self, key, value, args = {}):
         Variable.__init__(self, key, value, args = {})
