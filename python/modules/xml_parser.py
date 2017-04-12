@@ -19,6 +19,17 @@ def _add_variable_parted(settings, parted_params):
         variable = VAR.VariableParted(key, parted_params[key])
         settings[key] = variable
 
+def _parse_variable_structure(key, param, args):
+    dict_list = []
+    for values_set in param:
+        struc_dict = {}
+        for j, subparam in enumerate(values_set):
+            var, subkey = _create_variable(subparam)
+            stuc_dict[subkey] = var
+        dict_list.append(struc_dict)
+    variable = VAR.VariableStructure(key, dict_list)
+    return variable
+
 def _parse_variable_list(key, param):
     values_list = []
     for i, p_value in enumerate(param):
@@ -37,6 +48,8 @@ def _create_variable(param, tmp_key = ""):
         var = VAR.VariableReference(key, value)
     elif p_type == "list":
         var = _parse_variable_list(key, param)
+    elif p_type == "structure" or p_type == "struc":
+        var = _parse_variable_list(key, param, args)
     else:
         var = VAR.Variable(key, value)
     return var, key

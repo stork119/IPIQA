@@ -87,3 +87,41 @@ class VariableList(Variable):
         for element in self.value:
             out_list.append(element.get_value(env))
         return out_list
+
+class VariableStructure(Variable):
+    """
+    Variable structure (list of dictionaries)
+    presents as following example:
+        structure = [{<param_key> : Variable,
+                            <param_key2> : Variable2},
+                     {<param_key> : Variable,
+                            <param_key2> : Variable2},
+                            <...> }, 
+        where each list item represents set of parameters from xml.
+
+    Parameters with type 'structure' are represented in  xml settings
+    as following:
+    <parameter key = "<KEY>" type = "structure">
+        <value>
+            <parameter key = "<KEY>" value = "<VALUE>" type = "<TYPE>">
+            <parameter key = "<KEY>" value = "<VALUE>" type = "<TYPE>">
+        <value/>
+    <parameter>
+    """
+    def __init__(self, key, value, args = {}):
+        Variable.__init__(self, key, value, args = {})
+
+    def get_variable(self, env):
+        converted_struc = self.get_value(env)
+        var = Variable(self.key, converted_struc)
+        return var
+        
+    def get_value(self, env, args = {}):
+        converted_struc = []
+        for values_set in self.value:
+            tmp_dict = {}
+            for key, variable in values_set.items():
+                tmp_dict[key] = (variable.get_value(env))
+            converted_struc.append(tmp_dict)
+        return converted_struc
+
