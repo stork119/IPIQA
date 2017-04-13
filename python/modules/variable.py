@@ -90,6 +90,9 @@ class VariableList(Variable):
         for element in self.value:
             out_list.append(element.get_value(env))
         return out_list
+    
+    get get_raw_value(self):
+        return self.value
 
 class VariableStructure(Variable):
     """
