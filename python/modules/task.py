@@ -103,47 +103,20 @@ class TASK_QUEUE(TASK):
 class TASK_IF(TASK):
     """
     Required args:
-    - argument_1 [first argument to compare (from local_dict)]
+    - arg_1 [first argument to compare]
+    - arg_2 [second argument to compare]
     - comparison [type of comparison i.e. "equal" or "<"]
-
-    Optional args
-    - <arg2>, which can be parsed as:
-        1) - argument_2 [second argument to compare (from local_dict)]
-        2) <value from map_plate> which requires:
-            - mp_dict [map_plate disctionary name (default: map_plate)]
-            - mp_well [well id, i.e. 'A01']
-            - mp_param [param name i.e. 'exp_part']
     """
-    dict_task = {}
-
+    dict_task = {"arg_1" : {"required" : True},
+                 "arg_2" : {"required" : True}, 
+                 "comparison" : {"requred" : True}}
     def __init__(self, parameters, updates, args):
         TASK.__init__(self, parameters, updates, args)
         self.task_list = args['task_list']
 
     def execute_specify(self, env_local, dict_setts):
-        arg1 = env_local["argument_1"] #[!] code need to be change to allow parsing both args from mp_dict
-        comparison = env_local["comparison"].lower() 
-        try:
-            arg2 = env_local["argument_2"]
-            if FC.compare_args(arg1, arg2, comparison) == True:
-                self._execute_queue(env_local)
-            return
-        except:
-            pass
-        try:
-            mp_name = env_local["mp_dict"]
-        except:
-            mp_name = "map_plate"
-        try:
-            mp_dict = env_local[mp_name]
-            mp_well = env_local["mp_well"]
-            mp_param = env_local["mp_param"]
-            arg2 = mp_dict[mp_well][mp_param]
-        except:
-            logger.error("Cannot get value from map_plate for given " 
-            "dictionary, well and parameter: %s, %s, %s", mp_name, mp_well, mp_param)
-            return
-        if FC.compare_args(arg1, arg2, comparison) == True:
+        comparison = dict_setts["comparison"].lower() 
+        if FC.compare_args(dict_setts["arg_1"], dict_setts["arg_2"], comparison) == True:
             self._execute_queue(env_local)
         return
 
@@ -224,26 +197,13 @@ class TASK_MERGE_SUBDIR_CSV(TASK):
         TASK.__init__(self, parameters, updates, args)
 
     def execute_specify(self, env_local, dict_setts):
-        csv_names = (dict_setts["csv_names_list"]).split(",")
+        csv_names = dict_setts["csv_names_list"] # [!] might change after variables changes
         main_subdir_list = FM.dir_get_paths(dict_setts["input_path"])
         for csv_name in csv_names:
-            subdir_list = CSV_M.filter_subdir_list(main_subdir_list, csv_name) #filtering directiories containing given csv file
-            data = CSV_M.merge_subdir_csv(csv_name, subdir_list, dict_setts["delimiter"], dict_setts["column_name"])
-            extension = FM.file_get_extension(csv_name)
-            len_ext = len(extension)
-            name = csv_name[:-(len_ext)]
-            """
-            #Saving data in environment:
-            v_out = VAR.Variable(name, data)
-            env_local[name] = v_our
-            """
-            #Saving data
-            out_path = FM.path_join(dict_setts["output_path"], csv_name)
-            if FM.path_check_existence(out_path):
-                logger.warning("File %s already exists. Removing old data.", out_path)
-                FM.dir_remove(out_path)
-            CSV_M.write_csv(out_path, dict_setts["delimiter"], data)
-
+            try:
+                CSV_M.merge_csv_files(csv_name, main_subdir_list, dict_setts["delimiter"], dict_setts["column_name"], dict_setts["output_path"])
+            except:
+                logger.warning("Cannot merge following csv files: %s", csv_name)
 
 class TASK_PARALLELIZE(TASK):
 
@@ -390,7 +350,7 @@ class TASK_READ_MAP_PLATE(TASK):
     def execute_specify(self, env_local, dict_setts):
         mp_out = map_plate.parse_mp(dict_setts["input_path"], dict_setts["delimiter"])
         mp_name = dict_setts["mp_name"]
-        v_mp_out = VAR.Variable(mp_name, mp_out)
+        v_mp_out = VAR.VariableMP(mp_name, mp_out)
         env_local[mp_name] = v_mp_out
 
 class TASK_APPLY_MAP_PLATE(TASK):
@@ -419,8 +379,7 @@ class TASK_APPLY_MAP_PLATE(TASK):
     def execute_specify(self, env_local, dict_setts):
         csv_names = (dict_setts["csv_names_list"]).split(",")
         v_mp_dict = env_local[dict_setts["mp_name"]]
-        mp_dict = v_mp_dict.get_value(env_local)
-        map_plate.apply_mp(dict_setts["input_path"], dict_setts["output_path"], dict_setts["delimiter"], mp_dict, csv_names, dict_setts["mp_key"])
+        map_plate.apply_mp(dict_setts["input_path"], dict_setts["output_path"], dict_setts["delimiter"], v_mp_dict, csv_names, dict_setts["mp_key"])
 
 class TASK_MAP_PLATE(TASK):
 

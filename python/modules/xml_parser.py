@@ -27,12 +27,24 @@ def _parse_variable_structure(key, param, args):
     variable = VAR.VariableStructure(key, struc_dict)
     return variable
 
-def _parse_variable_list(key, param):
+def _parse_mp_element(key, value, param, args):
+    if value == None:
+        value = param.get('mp_name')
+    for mp_param in param:
+        variable, mpe_key = _create_variable(mp_param)
+        if mpe_key in ["param", "well"]:
+            args[mpe_key] = variable
+        else:
+            logger.error("Unexpected map_plate parameter key: %s", mpe_key)
+    variable = VAR.VariableMP(key, value, args)
+    return variable
+
+def _parse_variable_list(key, param, args):
     values_list = []
     for i, subparam in enumerate(param):
         var = _create_variable(subparam, i)[0]
         values_list.append(var)
-    variable = VAR.VariableList(key, values_list)
+    variable = VAR.VariableList(key, values_list, args)
     return variable
 
 def _create_variable(param, tmp_key = ""):
@@ -41,14 +53,19 @@ def _create_variable(param, tmp_key = ""):
         key = tmp_key
     value = param.get('value')
     p_type = param.get('type')
+    args = {"type" : p_type}
     if p_type == "ref" or p_type == "reference":
-        var = VAR.VariableReference(key, value)
+        var = VAR.VariableReference(key, value, args)
+    elif p_type == "path":
+        var = VAR.VariablePath(key, value, args)
     elif p_type == "list":
-        var = _parse_variable_list(key, param)
+        var = _parse_variable_list(key, param, args)
     elif p_type == "structure" or p_type == "struc":
         var = _parse_variable_list(key, param, args)
+    if p_type == "map_plate" or p_type == "mp":
+        var = _parse_mp_element(key, value, param, args)
     else:
-        var = VAR.Variable(key, value)
+        var = VAR.Variable(key, value, args)
     return var, key
 
 def parse_param(param_dict, param, parted_dict = {}):

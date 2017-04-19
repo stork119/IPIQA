@@ -171,23 +171,24 @@ def _verify_input_mp_file(input_file, delimiter, dimensions = 0):
             return False
     return True
 
-def _prepare_mp_output(input_data, mp_dict, mp_key):
+def _prepare_mp_output(input_data, v_mp_dict, mp_key):
     """
     Arguemnts:
     - input_data - data from input csv file
-    - mp_dict- map_plate structure containing all information about experiment
+    - v_mp_dict- variable representing map_plate structure,
+        which contains all information about experiment
     - mp_key - id/key of well in map_plate structure
     """
     output_data = []
     column_names = input_data[0]
-    new_line = column_names + get_params_names(mp_dict) #[!] WARNING: not supported atm, function was moved to VariableMP
+    new_line = column_names + + v_mp_dict.get_params_names() 
     output_data.append(new_line)
     for i in range(1, len(input_data)):
-        new_line = input_data[i] + get_well_params(mp_dict, mp_key)
+        new_line = input_data[i] + v_mp_dict.get_well_params(mp_key)
         output_data.append(new_line)
     return output_data
 
-def apply_mp(input_path, output_path, delimiter, mp_dict, 
+def apply_mp(input_path, output_path, delimiter, v_mp_dict, 
             csv_names, mp_key):
     """
     Main function of TASK_APPLY_MAP_PLATE. 
@@ -197,7 +198,8 @@ def apply_mp(input_path, output_path, delimiter, mp_dict,
     - input_path- path to dir collecting input files
     - output_path- path to output files
     - delimiter- separator used in csv files
-    - mp_dict- map_plate structure containing all information about experiment
+    - v_mp_dict- variable representing map_plate structure, which
+        contains all information about experiment
     - csv_names- list of filenames to apply map_plate
     - mp_key - id/key of well in map_plate structure
     """
@@ -210,7 +212,7 @@ def apply_mp(input_path, output_path, delimiter, mp_dict,
     for in_path, out_path in zip(input_paths_list, output_paths_list):
         if FM.path_check_existence(in_path):
             input_csv = CSV_M.read_csv(in_path, delimiter)
-            output = _prepare_mp_output(input_csv, mp_dict, mp_key)
+            output = _prepare_mp_output(input_csv, v_mp_dict, mp_key)
             CSV_M.write_csv(out_path, delimiter, output)
         else:
             logger.warning("Apply map_plate: following input csv file "
