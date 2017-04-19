@@ -45,7 +45,10 @@ class VariableParted(Variable):
     def __init__(self, key, value, args = {}):
         Variable.__init__(self, key, value, args = {})
 
-    def check_paths_presence(self, var_dict):
+    def _check_paths_presence(self, var_dict):
+        """
+        Verifies if there is any path in Variable's parts.
+        """
         for key, variable in var_dict.items():
             if isinstance(variable, VariablePath):
                 return True
@@ -69,7 +72,7 @@ class VariableParted(Variable):
         for key in order:
             v_part = self.value[key].get_value(env)
             values_list.append(v_part)
-        contains_path = self.check_paths_presence(self.value)
+        contains_path = self._check_paths_presence(self.value)
         if contains_path:
             merged_value = FM.path_join(*values_list)
         else:
