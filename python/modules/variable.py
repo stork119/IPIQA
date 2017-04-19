@@ -55,18 +55,23 @@ class VariableParted(Variable):
         return False
 
     def get_value(self, env, args = {}):
-        return self._get_value(env, args = {})[0]
+        return self._get_converted_value(env, args = {})[0]
 
     def get_variable(self, env):
         # creates variable with merged value
-        merged_value, contains_path = self._get_value(env)
+        merged_value, contains_path = self._get_converted_value(env)
         if contains_path:
             var = VariablePath(self.key, merged_value)
         else:
             var = Variable(self.key, merged_value)
         return var
 
-    def _get_value(self, env, args = {}):
+    def _get_converted_value(self, env, args = {}):
+        """
+        Gets converted value (depending on paths presence).
+        Returns converted value and boolean 
+        (contains_path = True/False).
+        """
         order = sorted(self.value.keys())
         values_list = []
         for key in order:
