@@ -222,30 +222,12 @@ class TASK_MERGE_SUBDIR_CSV(TASK):
     def __init__(self, parameters, updates, args = {}):
         TASK.__init__(self, parameters, updates, args)
 
-    def _merge_csv(self, csv_name, main_subdir_list, dict_setts):
-        subdir_list = CSV_M.filter_subdir_list(main_subdir_list, csv_name) #filtering directiories containing given csv file
-        data = CSV_M.merge_subdir_csv(csv_name, subdir_list, dict_setts["delimiter"], dict_setts["column_name"])
-        extension = FM.file_get_extension(csv_name)
-        name = csv_name[:-(len(extension))]
-        #Saving data
-        out_path = FM.path_join(dict_setts["output_path"], csv_name)
-        if FM.path_check_existence(out_path):
-            logger.warning("File %s already exists. Removing old data.", out_path)
-            FM.dir_remove(out_path)
-        CSV_M.write_csv(out_path, dict_setts["delimiter"], data)
-        """
-        #Saving data in environment: 
-        # requires to pass env_local
-        v_out = VAR.Variable(name, data)
-        env_local[name] = v_our
-        """
-
     def execute_specify(self, env_local, dict_setts):
         csv_names = dict_setts["csv_names_list"] # [!] might change after variables changes
         main_subdir_list = FM.dir_get_paths(dict_setts["input_path"])
         for csv_name in csv_names:
             try:
-                self._merge_csv(csv_name, main_subdir_list, dict_setts)
+                CSV_M.merge_csv_files(csv_name, main_subdir_list, dict_setts["delimiter"], dict_setts["column_name"], dict_setts["output_path"])
             except:
                 logger.warning("Cannot merge following csv files: %s", csv_name)
 
