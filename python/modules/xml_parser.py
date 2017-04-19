@@ -31,7 +31,6 @@ def _parse_mp_element(key, value, param, args):
     variable = VAR.VariableMP(key, value, args)
     return variable
 
-
 def _parse_variable_list(key, param, args):
     values_list = []
     for i, p_value in enumerate(param):
@@ -49,10 +48,13 @@ def _create_variable(param, tmp_key = ""):
     args = {"type" : p_type}
     if p_type == "ref" or p_type == "reference":
         var = VAR.VariableReference(key, value, args)
+    elif p_type == "path":
+        var = VAR.VariablePath(key, value, args)
     elif p_type == "list":
         var = _parse_variable_list(key, param, args)
     if p_type == "map_plate" or p_type == "mp":
         var = _parse_mp_element(key, value, param, args)
+
     else:
         var = VAR.Variable(key, value, args)
     return var, key

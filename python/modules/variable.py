@@ -39,25 +39,54 @@ class VariableReference(Variable):
     def get_value(self, env, args = {}):
         return env[self.value].get_value(env, args)
 
+class VariablePath(Variable):
+    def __init__(self, key, value, args = {}):
+        Variable.__init__(self, key, value, args = {})
+        self.value = FM.path_unify(value)
+
 class VariableParted(Variable):
     def __init__(self, key, value, args = {}):
         Variable.__init__(self, key, value, args = {})
 
-    def get_variable(self, env):
-        # creates variable with merged value
-        merged_value = self.get_value(env)
-        var = Variable(self.key, merged_value)
-        return var
+    def _check_paths_presence(self, var_dict):
+        """
+        Verifies if there is any path in Variable's parts.
+        """
+        for key, variable in var_dict.items():
+            if isinstance(variable, VariablePath):
+                return True
+        return False
 
     def get_value(self, env, args = {}):
+        return self._get_converted_value(env, args = {})[0]
+
+    def get_variable(self, env):
+        # creates variable with merged value
+        merged_value, contains_path = self._get_converted_value(env)
+        if contains_path:
+            var = VariablePath(self.key, merged_value)
+        else:
+            var = Variable(self.key, merged_value)
+        return var
+
+    def _get_converted_value(self, env, args = {}):
+        """
+        Gets converted value (depending on paths presence).
+        Returns converted value and boolean 
+        (contains_path = True/False).
+        """
         order = sorted(self.value.keys())
         values_list = []
         for key in order:
             v_part = self.value[key].get_value(env)
             values_list.append(v_part)
-        merged_value = "".join(values_list)
+        contains_path = self._check_paths_presence(self.value)
+        if contains_path:
+            merged_value = FM.path_join(*values_list)
+        else:
+            merged_value = "".join(values_list)  
         logger.debug("Merged variable %s: %s", self.key, merged_value)
-        return merged_value
+        return merged_value, contains_path
 
 class VariableList(Variable):
     """
@@ -213,4 +242,4 @@ class VariableMP(Variable):
         for param in self.mp_dict[well]:
             values.append(self.mp_dict[well][param])
         return values
-
+  
