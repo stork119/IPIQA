@@ -6,6 +6,8 @@ import modules.file_managment as FM
 logger = logging.getLogger("Variable module")
 
 class Variable():
+    """
+    """
     def __init__(self, key, value, args = {}):
         self.key = key
         self.value = value
@@ -28,6 +30,8 @@ class Variable():
         return {self.key : self.get_variable(env)}
 
 class VariableReference(Variable):
+    """
+    """
     def __init__(self, key, value, args = {}):
         Variable.__init__(self, key, value, args = {})
 
@@ -43,11 +47,15 @@ class VariableReference(Variable):
         return env[self.value].get_value(env, args)
 
 class VariablePath(Variable):
+    """
+    """
     def __init__(self, key, value, args = {}):
         Variable.__init__(self, key, value, args = {})
         self.value = FM.path_unify(value)
 
 class VariableParted(Variable):
+    """
+    """
     def __init__(self, key, value, args = {}):
         Variable.__init__(self, key, value, args = {})
 
@@ -124,7 +132,7 @@ class VariableList(Variable):
             out_list.append(element.get_value(env))
         return out_list
       
-    get get_raw_value(self):
+    def get_raw_value(self):
         return self.value
 
 class VariableStructure(Variable):

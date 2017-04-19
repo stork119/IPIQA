@@ -62,7 +62,7 @@ def _create_variable(param, tmp_key = ""):
         var = _parse_variable_list(key, param, args)
     elif p_type == "structure" or p_type == "struc":
         var = _parse_variable_list(key, param, args)
-    if p_type == "map_plate" or p_type == "mp":
+    elif p_type == "map_plate" or p_type == "mp":
         var = _parse_mp_element(key, value, param, args)
     else:
         var = VAR.Variable(key, value, args)
