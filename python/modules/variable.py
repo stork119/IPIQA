@@ -213,3 +213,4 @@ class VariableMP(Variable):
         for param in self.mp_dict[well]:
             values.append(self.mp_dict[well][param])
         return values
+
