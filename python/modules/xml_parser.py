@@ -19,6 +19,14 @@ def _add_variable_parted(settings, parted_params):
         variable = VAR.VariableParted(key, parted_params[key])
         settings[key] = variable
 
+def _parse_variable_structure(key, param, args):
+    struc_dict = {}
+    for j, subparam in enumerate(param):
+        var, subkey = _create_variable(subparam)
+        stuc_dict[subkey] = var
+    variable = VAR.VariableStructure(key, struc_dict)
+    return variable
+
 def _parse_mp_element(key, value, param, args):
     if value == None:
         value = param.get('mp_name')
@@ -33,8 +41,8 @@ def _parse_mp_element(key, value, param, args):
 
 def _parse_variable_list(key, param, args):
     values_list = []
-    for i, p_value in enumerate(param):
-        var = _create_variable(p_value, i)[0]
+    for i, subparam in enumerate(param):
+        var = _create_variable(subparam, i)[0]
         values_list.append(var)
     variable = VAR.VariableList(key, values_list, args)
     return variable
@@ -52,9 +60,10 @@ def _create_variable(param, tmp_key = ""):
         var = VAR.VariablePath(key, value, args)
     elif p_type == "list":
         var = _parse_variable_list(key, param, args)
+    elif p_type == "structure" or p_type == "struc":
+        var = _parse_variable_list(key, param, args)
     if p_type == "map_plate" or p_type == "mp":
         var = _parse_mp_element(key, value, param, args)
-
     else:
         var = VAR.Variable(key, value, args)
     return var, key
@@ -88,12 +97,21 @@ def _create_queue_task(queue):
     pipeline = _create_task(queue, task_list)
     return pipeline
 
-def _create_for_task(queue):
-    variables = queue.find('VARIABLES')
+def _parse_for_variables(variab):
     variables_list = []
-    for variable_set in variables.findall('VARIABLE'):
+    for variable_set in variab.findall('VARIABLE'):
         parameters = _get_settings_dict(variable_set, "parameters")
         variables_list.append(parameters)
+    var = VariableList("variables_list", variables_list)
+    return var
+
+def _create_for_task(queue):
+    variables = queue.find('VARIABLES')
+    ref_name = variables.get('value')
+    if ref_name == "None":
+        var = _parse_for_variables(variables)
+    else:
+        var = VAR.VariableReference("variable_list", ref_name)
     task_request = queue.find('TASK')
     task_name = task_request.get('class')
     if task_name == "TASK_QUEUE" or task_name.startswith("TASK_PARALLELIZE") or task_name.startswith("TASK_SYNCHRONOUSLY"):
@@ -104,7 +122,7 @@ def _create_for_task(queue):
         task_do = _create_task(task_request)  
     task = TK.TASK_FOR({},
                        {},
-                       {'variables_list' : variables_list, 'task_to_do' : task_do}) #creating task class objects
+                       {'variables_list' : var, 'task_to_do' : task_do}) #creating task class objects
     return task
 
 def _get_settings_dict(task, set_type):

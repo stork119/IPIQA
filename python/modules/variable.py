@@ -24,6 +24,9 @@ class Variable():
     def get_args(self):
         return self.args
 
+    def create_dict(self, env):
+        return {self.key : self.get_variable(env)}
+
 class VariableReference(Variable):
     def __init__(self, key, value, args = {}):
         Variable.__init__(self, key, value, args = {})
@@ -116,6 +119,44 @@ class VariableList(Variable):
         for element in self.value:
             out_list.append(element.get_value(env))
         return out_list
+      
+    get get_raw_value(self):
+        return self.value
+
+class VariableStructure(Variable):
+    """
+    Variable structure (list of dictionaries)
+    presents as following example:
+        structure = [{<param_key> : Variable,
+                            <param_key2> : Variable2},
+                     {<param_key> : Variable,
+                            <param_key2> : Variable2},
+                            <...> }, 
+        where each list item represents set of parameters from xml.
+
+    Parameters with type 'structure' are represented in  xml settings
+    as following:
+    <parameter key = "<KEY>" type = "structure">
+            <parameter key = "<KEY>" value = "<VALUE>" type = "<TYPE>">
+            <parameter key = "<KEY>" value = "<VALUE>" type = "<TYPE>">
+    <parameter>
+    """
+    def __init__(self, key, value, args = {}):
+        Variable.__init__(self, key, value, args = {})
+
+    def get_variable(self, env):
+        converted_dict = self.get_value(env)
+        var = Variable(self.key, converted_dict)
+        return var
+        
+    def get_value(self, env, args = {}):
+        converted_dict = {}
+        for key, variable in values_set.items():
+            converted_dict[key] = variable.get_value(env)
+        return converted_dict
+
+    def create_dict(self, env):
+        return self
 
 class VariableMP(Variable):
     """
@@ -242,4 +283,4 @@ class VariableMP(Variable):
         for param in self.mp_dict[well]:
             values.append(self.mp_dict[well][param])
         return values
-  
+
