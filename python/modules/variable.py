@@ -7,6 +7,12 @@ logger = logging.getLogger("Variable module")
 
 class Variable():
     """
+    Parameters without type are represented in  xml settings
+    as following:
+    <parameter key = <KEY> value = <VALUE>/>
+    
+    i.e.
+    <parameter key = "filename_1" value = "input_file_1"/>
     """
     def __init__(self, key, value, args = {}):
         self.key = key
@@ -29,8 +35,28 @@ class Variable():
     def create_dict(self, env):
         return {self.key : self.get_variable(env)}
 
+class VariablePath(Variable):
+    """
+    Parameters with type 'path' are represented in  xml settings
+    as following:
+    <parameter key = <KEY> value = <VALUE> type = "path" />
+    
+    i.e.
+    <parameter key = "path21" value = "C://input_file_1" type = "ref"/>
+    """
+    def __init__(self, key, value, args = {}):
+        Variable.__init__(self, key, value, args = {})
+        self.value = FM.path_unify(value)
+
+
 class VariableReference(Variable):
     """
+    Parameters with type 'reference' are represented in  xml settings
+    as following:
+    <parameter key = <KEY> value = <VALUE> type = "ref" />
+    
+    i.e.
+    <parameter key = "input_path" value = "path21" type = "ref"/>
     """
     def __init__(self, key, value, args = {}):
         Variable.__init__(self, key, value, args = {})
@@ -46,15 +72,15 @@ class VariableReference(Variable):
     def get_value(self, env, args = {}):
         return env[self.value].get_value(env, args)
 
-class VariablePath(Variable):
-    """
-    """
-    def __init__(self, key, value, args = {}):
-        Variable.__init__(self, key, value, args = {})
-        self.value = FM.path_unify(value)
-
 class VariableParted(Variable):
     """
+    Parameters with type 'part' are represented in  xml settings
+    as following:
+    <parameter key = <KEY> value = <VALUE> type = <TYPE> part = <PART>/>
+    
+    i.e.
+    <parameter key = "input_path" value = "C://" type = "path" part = "1"/>
+    <parameter key = "input_path" value = "filename_1" type = "ref" part = "2"/>
     """
     def __init__(self, key, value, args = {}):
         Variable.__init__(self, key, value, args = {})
@@ -103,9 +129,9 @@ class VariableList(Variable):
     """
     Parameters with type 'list' are represented in  xml settings
     as following:
-    <parameter key = "<KEY>" type = "list">
-        <parameter value = "<VALUE>" type = "<TYPE>">
-        <parameter value = "<VALUE>" type = "<TYPE>">
+    <parameter key = <KEY> type = "list">
+        <parameter value = <VALUE> type = <TYPE> />
+        <parameter value = <VALUE> type = <TYPE> />
     </parameter>
     
     i.e.
@@ -148,9 +174,9 @@ class VariableStructure(Variable):
 
     Parameters with type 'structure' are represented in  xml settings
     as following:
-    <parameter key = "<KEY>" type = "structure">
-            <parameter key = "<KEY>" value = "<VALUE>" type = "<TYPE>">
-            <parameter key = "<KEY>" value = "<VALUE>" type = "<TYPE>">
+    <parameter key = <KEY> type = "structure">
+            <parameter key = <KEY> value = <VALUE> type = <TYPE>/>
+            <parameter key = <KEY> value = <VALUE> type = <TYPE>/>
     <parameter>
     """
     def __init__(self, key, value, args = {}):
@@ -203,12 +229,12 @@ class VariableMP(Variable):
     
     Variable can be refered in  xml settings
     as following:
-    <parameter key = "<KEY>" value = <MP_NAME> type = "ref">
+    <parameter key = <KEY> value = <MP_NAME> type = "ref">
 
     b)
     Parameters with type 'map_plate', referring to chosen map_plate element
     are represented in  xml settings as following example:
-    <parameter key = "<KEY>" value/mp_name = <MP_NAME> type = "map_plate">
+    <parameter key = <KEY> value/mp_name = <MP_NAME> type = "map_plate">
         <parameter key = "well" value = "mp_key" type = "ref">
         <parameter key = "param" value = "stimulation.1.1">
     </parameter>
