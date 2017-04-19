@@ -135,9 +135,6 @@ class VariableMP(Variable):
     def get_mp_dict(self):
         return self.mp_dict
 
-        print('Python version does not meet software requirments. '
-        'Install python 3.5 or 3.6 to run IPIQA.')
-
     def get_value(self, env):
         args_keys = (self.args).keys()
         if "well" in args_keys:
@@ -170,6 +167,7 @@ class VariableMP(Variable):
     def get_param_value(self, well_name, param):
         """
         Gets value for a given well and parameter.
+        Returns string.
         """
         value = self.mp_dict[well_name][param]
         return value
@@ -178,6 +176,7 @@ class VariableMP(Variable):
         """
         Gets all values for a given param 
         from map_plate dictionary.
+        Returns list.
         """
         values = []
         for well in self.mp_dict:
@@ -188,12 +187,17 @@ class VariableMP(Variable):
         """
         Gets all unique values for a given param 
         from map_plate dictionary.
+        Returns list.
         """
         values = get_param_values(self.mp_dict, param)
         unique = list(set(values))
         return unique
 
-    def get_params_names(self): # get all key names from map_plate dictionary
+    def get_params_names(self):
+        """
+        Gets all key names from map_plate dictionary.
+        Returns list.
+        """
         names = []
         key_0 = list(self.mp_dict.keys())[0]
         names = list(self.mp_dict[key_0].keys()) 
@@ -202,7 +206,8 @@ class VariableMP(Variable):
 
     def get_well_params(self, well):
         """ 
-        Gives all parameters values for a given well
+        Gives all parameters values for a given well.
+        Returns list.
         """
         values = []
         for param in self.mp_dict[well]:
