@@ -173,6 +173,9 @@ def _folder_remove(path):
 Functions for coping objects.
 """
 def dir_copy(in_path, out_path):
+    if not path_check_existence(in_path):
+        logging.warning("Unable to copy %s. Given path doesn't exist", in_path)
+        return
     if os.path.isfile(in_path):
         file_copy(in_path, out_path)
     elif os.path.isdir(in_path):
