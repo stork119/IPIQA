@@ -82,7 +82,7 @@ class VariableParted(Variable):
         values_list = []
         for key in order:
             v_part = self.value[key].get_value(env)
-            values_list.append(v_part)
+            values_list.append(str(v_part))
         contains_path = self._check_paths_presence(self.value)
         if contains_path:
             merged_value = FM.path_join(*values_list)
@@ -110,9 +110,13 @@ class VariableList(Variable):
         Variable.__init__(self, key, value, args = {})
 
     def get_variable(self, env):
-        converted_list = self.get_value(env)
-        var = Variable(self.key, converted_list)
-        return var
+        converted_list = []
+        raw_list = self.value
+        for var in raw_list:
+            new_var = var.get_variable(env)
+            converted_list.append(new_var)
+        variable = VariableList(self.key, converted_list)
+        return variable
         
     def get_value(self, env, args = {}):
         out_list = []
@@ -145,9 +149,12 @@ class VariableStructure(Variable):
         Variable.__init__(self, key, value, args = {})
 
     def get_variable(self, env):
-        converted_dict = self.get_value(env)
-        var = Variable(self.key, converted_dict)
-        return var
+        converted_dict = {}
+        raw_dict = self.value
+        for key, var in raw_dict.items():
+            converted_dict[key] = var.get_variable(env)
+        variable = VariableStructure(self.key, converted_dict)
+        return variable
         
     def get_value(self, env, args = {}):
         converted_dict = {}
