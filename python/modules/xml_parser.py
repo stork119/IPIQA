@@ -102,20 +102,20 @@ def _parse_for_variables(variab):
     for variable_set in variab.findall('VARIABLE'):
         parameters = _get_settings_dict(variable_set, "parameters")
         variables_list.append(parameters)
-    var = VariableList("variables_list", variables_list)
+    var = VAR.VariableList("variables_list", variables_list)
     return var
 
 def _create_for_task(queue):
     variables = queue.find('VARIABLES')
     ref_name = variables.get('value')
-    if ref_name == "None":
+    if str(ref_name) == "None":
         var = _parse_for_variables(variables)
     else:
         var = VAR.VariableReference("variable_list", ref_name)
     task_request = queue.find('TASK')
     task_name = task_request.get('class')
     if task_name == "TASK_QUEUE" or task_name.startswith("TASK_PARALLELIZE") or task_name.startswith("TASK_SYNCHRONOUSLY"):
-        task_do = _creaste_queue_task(task_request)
+        task_do = _create_queue_task(task_request)
     elif task_name == "TASK_FOR":
         task_do = _create_for_task(task_request)
     else:
