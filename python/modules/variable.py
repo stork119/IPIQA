@@ -19,13 +19,13 @@ class Variable():
         self.value = value
         self.args = args
 
-    def get_value(self, env, args = {}):
+    def get_value(self, env):
         return self.value
 
     def get_variable(self, env):
         return self
 
-    def set_value(self, value, args = {}):
+    def set_value(self, value):
         self.value = value
         return
 
@@ -45,7 +45,7 @@ class VariablePath(Variable):
     <parameter key = "path21" value = "C://input_file_1" type = "ref"/>
     """
     def __init__(self, key, value, args = {}):
-        Variable.__init__(self, key, value, args = {})
+        Variable.__init__(self, key, value, args)
         self.value = FM.path_unify(value)
 
 
@@ -59,7 +59,7 @@ class VariableReference(Variable):
     <parameter key = "input_path" value = "path21" type = "ref"/>
     """
     def __init__(self, key, value, args = {}):
-        Variable.__init__(self, key, value, args = {})
+        Variable.__init__(self, key, value, args)
 
     def get_ref_key(self):
         return self.value
@@ -69,8 +69,8 @@ class VariableReference(Variable):
         var = copy.deepcopy(env[self.value])
         return var
 
-    def get_value(self, env, args = {}):
-        return env[self.value].get_value(env, args)
+    def get_value(self, env):
+        return env[self.value].get_value(env)
 
 class VariableParted(Variable):
     """
@@ -83,7 +83,7 @@ class VariableParted(Variable):
     <parameter key = "input_path" value = "filename_1" type = "ref" part = "2"/>
     """
     def __init__(self, key, value, args = {}):
-        Variable.__init__(self, key, value, args = {})
+        Variable.__init__(self, key, value, args)
 
     def _check_paths_presence(self, var_dict):
         """
@@ -94,8 +94,8 @@ class VariableParted(Variable):
                 return True
         return False
 
-    def get_value(self, env, args = {}):
-        return self._get_converted_value(env, args = {})[0]
+    def get_value(self, env):
+        return self._get_converted_value(env)[0]
 
     def get_variable(self, env):
         # creates variable with merged value
@@ -141,7 +141,7 @@ class VariableList(Variable):
     </parameter>
     """
     def __init__(self, key, value, args = {}):
-        Variable.__init__(self, key, value, args = {})
+        Variable.__init__(self, key, value, args)
 
     def get_variable(self, env):
         converted_list = []
@@ -152,7 +152,7 @@ class VariableList(Variable):
         variable = VariableList(self.key, converted_list)
         return variable
         
-    def get_value(self, env, args = {}):
+    def get_value(self, env):
         out_list = []
         for element in self.value:
             out_list.append(element.get_value(env))
@@ -180,7 +180,7 @@ class VariableStructure(Variable):
     <parameter>
     """
     def __init__(self, key, value, args = {}):
-        Variable.__init__(self, key, value, args = {})
+        Variable.__init__(self, key, value, args)
 
     def get_variable(self, env):
         converted_dict = {}
@@ -190,7 +190,7 @@ class VariableStructure(Variable):
         variable = VariableStructure(self.key, converted_dict)
         return variable
         
-    def get_value(self, env, args = {}):
+    def get_value(self, env):
         converted_dict = {}
         for key, variable in values_set.items():
             converted_dict[key] = variable.get_value(env)
@@ -240,7 +240,7 @@ class VariableMP(Variable):
     </parameter>
     """
     def __init__(self, key, value, args = {}):
-        Variable.__init__(self, key, value, args = {})
+        Variable.__init__(self, key, value, args)
         self.mp_dict = value
         
     def get_mp_dict(self):
@@ -254,8 +254,9 @@ class VariableMP(Variable):
                 self.mp_dict = env[self.value].get_mp_dict()
             except:
                 logger.error("Following map_plate: %s is missing in environment."
-                             "Can't assign map_plate element %s", 
+                             "Can't assign map_plate element %s.", 
                              self.value, self.key)
+                return
             if "param" in args_keys:
                 param = self.args["param"].get_value(env)
                 return self.get_param_value(well, param)
@@ -280,7 +281,12 @@ class VariableMP(Variable):
         Gets value for a given well and parameter.
         Returns string.
         """
-        value = self.mp_dict[well_name][param]
+        try:
+            value = self.mp_dict[well_name][param]
+        except KeyError as e:
+            logging.error("Cannot get value of given "
+                            "well/parameter: %s.", str(e))
+            return
         return value
 
     def get_param_values(self, param):
@@ -321,7 +327,13 @@ class VariableMP(Variable):
         Returns list.
         """
         values = []
-        for param in self.mp_dict[well]:
+        try:
+            well_params = self.mp_dict[well]
+        except KeyError as e:
+            logging.error("Cannot get given well: %s"
+                            "parameters.", str(e))
+            return
+        for param in well_params:
             values.append(self.mp_dict[well][param])
         return values
 
