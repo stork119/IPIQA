@@ -66,7 +66,7 @@ class VariableReference(Variable):
 
     def get_variable(self, env):
         # creates variable with reference value
-        var = copy.deepcopy(env[self.value])
+        var = type(env[self.value])(self.key, self.get_value(env))
         return var
 
     def get_value(self, env):
