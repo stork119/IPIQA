@@ -83,7 +83,8 @@ class TASK_FOR(TASK):
         
     def execute_specify(self, env_local, dict_setts):
         env_tmp = env_local.copy()
-        for variable in self.variables_list.get_raw_value():
+        conv_list = self.variables_list.get_value(env_local)
+        for variable in conv_list:
             variable_dict = variable.create_dict(env_local)
             env_local_for = self.update_env(env_local, env_tmp, variable_dict)
             self.task_to_do.execute(env_local_for)

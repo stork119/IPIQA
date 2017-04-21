@@ -42,7 +42,7 @@ def _parse_mp_element(key, value, param, args):
 def _parse_variable_list(key, param, args):
     values_list = []
     for i, subparam in enumerate(param):
-        var = _create_variable(subparam, i)[0]
+        var = _create_variable(subparam, key)[0]
         values_list.append(var)
     variable = VAR.VariableList(key, values_list, args)
     return variable
@@ -101,7 +101,8 @@ def _parse_for_variables(variab):
     variables_list = []
     for variable_set in variab.findall('VARIABLE'):
         parameters = _get_settings_dict(variable_set, "parameters")
-        variables_list.append(parameters)
+        param_var = VAR.VariableStructure("variables", parameters)
+        variables_list.append(param_var)
     var = VAR.VariableList("variables_list", variables_list)
     return var
 
