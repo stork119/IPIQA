@@ -435,7 +435,7 @@ class TASK_R(TASK):
         external_params = list(self.dict_task.keys())
         logger.info("Executing R function %s from %s", dict_setts["r_function_name"], dict_setts["r_script_path"]) 
         # PLACEHOLDER for adding more external params
-        param_dict = R_connection.prepare_param_dict(env_local, self.parameters_by_value, self.parameters_by_name, external_params)
+        param_dict = R_connection.prepare_param_dict(env_local, self.parameters, external_params)
         output_dict = R_connection.execute_r_script(param_dict, dict_setts["r_script_path"], dict_setts["r_function_name"])
         out_var_dict = self.convert_to_var_dict(output_dict)
         env_local.update(out_var_dict)
@@ -447,7 +447,7 @@ class TASK_FFC_CREATE(TASK):
 
     def execute_specify(self, env_local, dict_setts):
         # Check if user set input an output paths
-        output_dict = ffc.create_camcor(env_local, self.parameters_by_value, self.parameters_by_name)
+        output_dict = ffc.create_camcor(env_local, self.parameters)
         out_var_dict = self.convert_to_var_dict(output_dict)
         env_local.update(out_var_dict)
 
@@ -459,9 +459,9 @@ class TASK_FFC_READ(TASK):
     def execute_specify(self, env_local, dict_setts):
         # Check if user set input an output paths
         try:
-            output_dict = ffc.read_camcor(env_local, self.parameters_by_value, self.parameters_by_name)
+            output_dict = ffc.read_camcor(env_local, self.parameters)
         except:
-            output_dict = ffc.create_camcor(env_local, self.parameters_by_value, self.parameters_by_name)
+            output_dict = ffc.create_camcor(env_local, self.parameters)
         out_var_dict = self.convert_to_var_dict(output_dict)
         env_local.update(out_var_dict)
 
@@ -472,7 +472,7 @@ class TASK_FFC_APPLY(TASK):
 
     def execute_specify(self, env_local, dict_setts):
         # Check if user set input an output paths
-        output_dict = ffc.apply_camcor(env_local, self.parameters_by_value, self.parameters_by_name)
+        output_dict = ffc.apply_camcor(env_local, self.parameters)
         out_var_dict = self.convert_to_var_dict(output_dict)
         env_local.update(out_var_dict)
    
@@ -484,7 +484,7 @@ class TASK_FFC_READ_APPLY(TASK):
 
     def execute_specify(self, env_local, dict_setts):
         # Check if user set input an output paths
-        output_dict = ffc.read_apply_camcor(env_local, self.parameters_by_value, self.parameters_by_name)
+        output_dict = ffc.read_apply_camcor(env_local, self.parameters)
         out_var_dict = self.convert_to_var_dict(output_dict)
         env_local.update(out_var_dict)
         

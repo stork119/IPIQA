@@ -31,16 +31,13 @@ def example_execute(param_dict, r_script_path, function_name):
     out = do_call(r_runfunction, r_param_list)
     return out
 
-def prepare_param_dict(local_dict, parameters_by_value, parameters_by_name, external_params):
-    keys_by_value = list(parameters_by_value.keys())
-    keys_by_name = list(parameters_by_name.keys())
-    keys_list = set(keys_by_value + keys_by_name)
-    keys_list = [i.split(".")[0] for i in keys_list]
+def prepare_param_dict(local_dict, parameters, external_params):
+    keys_list = list(parameters.keys())
     param_dict = {}
     for key in local_dict:
         for element in keys_list:
             if key == element:
-                param_dict[key] = local_dict[key]
+                param_dict[key] = local_dict[key].get_value(local_dict)
     _remove_external_params(param_dict, external_params)
     return param_dict
 
