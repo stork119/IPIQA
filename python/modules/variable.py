@@ -34,6 +34,11 @@ class Variable():
 
     def create_dict(self, env):
         return {self.key : self.get_variable(env)}
+    
+    def assign_ref_value(self, env):
+        # allows to get real value for some exception
+        # see VariableMP
+        return self.get_value(env)
 
 class VariablePath(Variable):
     """
@@ -66,7 +71,7 @@ class VariableReference(Variable):
 
     def get_variable(self, env):
         # creates variable with reference value
-        var = type(env[self.value])(self.key, self.get_value(env))
+        var = type(env[self.value])(self.key, env[self.value].assign_ref_value(env))
         return var
 
     def get_value(self, env):
@@ -278,6 +283,9 @@ class VariableMP(Variable):
             return var
         else:
             return self
+
+    def assign_ref_value(self, env):
+        return self.value
 
     def get_wells_ids(self):
         return list(self.mp_dict.keys())
