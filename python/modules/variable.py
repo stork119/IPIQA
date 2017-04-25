@@ -351,3 +351,31 @@ class VariableMP(Variable):
             values.append(self.mp_dict[well][param])
         return values
 
+    def get_active_wells(self, exp_part):
+        """
+        Returns list of active wells from mp_dict for given experiment part.
+        """
+        wells = self.get_wells_ids()
+        active_wells = []
+        for well in wells:
+            if self.mp_dict[well]["exp_part"] == exp_part:
+                active_wells.append(well)
+        return active_wells
+
+    def get_wells_base_params(self, wells, prefix, sufix, exp_part):
+        """
+        Returns list of dictionaries of base well params for each parsed well id.
+        Input argument wells have to be a list.
+    
+        * Base params:
+        - mp_key (well_id)
+        - exp_part
+        - wellname_id (prefix + mp_id + suffix)
+        - wellname_tag (prefix + mp_tag + suffix)
+        """
+        params = []
+        for well in wells:
+            wellname_id = prefix + self.mp_dict[well]["id"] + sufix
+            wellname_tag = prefix + self.mp_dict[well]["tag"] + sufix
+            params.append({"wellname_id" : wellname_id, "wellname_tag" : wellname_tag, "exp_part" : exp_part, "mp_key" : self.mp_dict[well]["id"]})
+        return params

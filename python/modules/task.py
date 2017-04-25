@@ -275,11 +275,10 @@ class TASK_PARALLELIZE_MP(TASK_PARALLELIZE): #all objects (folders) for given ma
         self.config_dict = args['config_dict']
 
     def parse_elements_list(self, env_local, dict_setts): #implementing with tag
-        v_mp_dict = env_local[dict_setts["mp_name"]]
-        mp_dict = v_mp_dict.get_value(env_local)
-        active_wells_keys = FC.get_active_wells(mp_dict, dict_setts["exp_part"]) #get active wells keys for mp_dict 
+        map_plate = env_local[dict_setts["mp_name"]]
+        active_wells_keys = map_plate.get_active_wells(dict_setts["exp_part"]) #get map_plate active wells
         ele_number = len(active_wells_keys)
-        params = FC.get_wells_base_params(mp_dict, active_wells_keys, dict_setts["prefix"], dict_setts["sufix"], dict_setts["exp_part"])
+        params = map_plate.get_wells_base_params(active_wells_keys, dict_setts["prefix"], dict_setts["sufix"], dict_setts["exp_part"])
         elements_list = FC.create_elements_list(dict_setts["input_path"], params, dict_setts["used_value"])
         var_elements_list = []
         for element in elements_list:
