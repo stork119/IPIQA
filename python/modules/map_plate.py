@@ -181,7 +181,7 @@ def _prepare_mp_output(input_data, v_mp_dict, mp_key):
     """
     output_data = []
     column_names = input_data[0]
-    new_line = column_names + + v_mp_dict.get_params_names() 
+    new_line = column_names + v_mp_dict.get_params_names() 
     output_data.append(new_line)
     for i in range(1, len(input_data)):
         new_line = input_data[i] + v_mp_dict.get_well_params(mp_key)

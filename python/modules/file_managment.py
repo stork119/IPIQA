@@ -252,7 +252,7 @@ def filenames_make_paths_list(main_path, file_list):
     """
     path_list = []
     for filepath in file_list:
-        path = main_path + filepath
+        path = main_path + "//" + filepath
         path_list.append(path)
     return path_list
 
