@@ -377,7 +377,7 @@ class TASK_APPLY_MAP_PLATE(TASK):
         TASK.__init__(self, parameters, updates, args)
 
     def execute_specify(self, env_local, dict_setts):
-        csv_names = (dict_setts["csv_names_list"]).split(",")
+        csv_names = [x.get_value(env_local) for x in dict_setts["csv_names_list"]]
         v_mp_dict = env_local[dict_setts["mp_name"]]
         map_plate.apply_mp(dict_setts["input_path"], dict_setts["output_path"], dict_setts["delimiter"], v_mp_dict, csv_names, dict_setts["mp_key"])
 
