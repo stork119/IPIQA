@@ -201,10 +201,11 @@ class TASK_MERGE_SUBDIR_CSV(TASK):
         csv_names = dict_setts["csv_names_list"] # [!] might change after variables changes
         main_subdir_list = FM.dir_get_paths(dict_setts["input_path"])
         for csv_name in csv_names:
+            conv_name = csv_name.get_value(env_local)
             try:
-                CSV_M.merge_csv_files(csv_name, main_subdir_list, dict_setts["delimiter"], dict_setts["column_name"], dict_setts["output_path"])
+                CSV_M.merge_csv_files(conv_name, main_subdir_list, dict_setts["delimiter"], dict_setts["column_name"], dict_setts["output_path"])
             except:
-                logger.warning("Cannot merge following csv files: %s", csv_name)
+                logger.warning("Cannot merge following csv files: %s", conv_name)
 
 class TASK_PARALLELIZE(TASK):
 
