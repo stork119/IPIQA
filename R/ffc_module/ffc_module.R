@@ -211,6 +211,7 @@ fun_camcor_read_apply <- function(camcor_path,
                                   GLOBAL.sref.factor = 0.01,
                                   ...
 ){
+  tryCatch({
   print(regex_name)
   memory.limit(size=1800)
   #print(memory.size(max = TRUE))
@@ -224,7 +225,7 @@ fun_camcor_read_apply <- function(camcor_path,
   for(regex in image_regex){
     gc()
     print(regex)
-  fun_camcor_apply(input_path = input_path,
+    fun_camcor_apply(input_path = input_path,
                    output_path = output_path,
                    data_camcor_pbs = camcor[["data_camcor_pbs"]],
                    data_camcor_ref = camcor[["data_camcor_ref"]],
@@ -232,6 +233,7 @@ fun_camcor_read_apply <- function(camcor_path,
                    GLOBAL.sref.factor = GLOBAL.sref.factor,
                    ...)
           }
+          }, error = function(e){print(e)})
   return()
 }
   
