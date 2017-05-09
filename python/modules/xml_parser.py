@@ -139,7 +139,7 @@ def _create_task(name, task_list = [], config_dict = {}):
     task_name = name.get('class')
     try:
         task_initialization = getattr(TK, task_name)
-    except:
+    except AttributeError:
         logger.error("Error. %s is unknown.", task_name)
         sys.exit(1) # wrong/non existing task_name -> shutting down program 
     parameters = _get_settings_dict(name, "parameters") # getting dicts of settings and updates
@@ -158,11 +158,12 @@ def parse_xml(input_path, main_setts = True):
         logger.info("Parsing additional config input_settings.")
     try:
         tree = ET.parse(input_path)
-    except:
+    except Exception as e:
         if FM.path_check_existence(input_path):
             logger.error("Input_settings parsing error. Cannot parse %s as XML.", input_path)
+            #logger.error(e)
         else:
-            logger.error("Given input_settings: %s doesn't exist", input_path)
+            logger.error("Given input_settings: %s doesn't exist.", input_path)
         sys.exit(1) # wrong/non existing input settings -> shutting down program 
     root = tree.getroot()
     Config = root[0]

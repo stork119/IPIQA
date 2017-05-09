@@ -263,10 +263,13 @@ class VariableMP(Variable):
             well = self.args["well"].get_value(env)
             try:
                 self.mp_dict = env[self.value].get_mp_dict()
-            except:
+            except KeyError:
                 logger.error("Following map_plate: %s is missing in environment."
                              "Can't assign map_plate element %s.", 
                              self.value, self.key)
+            except Exception as e:
+                logger.error("Cannot obtain map_plate for a given variable name: %s",
+                             str(e))
                 return
             if "param" in args_keys:
                 param = self.args["param"].get_value(env)
