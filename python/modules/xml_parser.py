@@ -23,7 +23,7 @@ def _parse_variable_structure(key, param, args):
     struc_dict = {}
     for j, subparam in enumerate(param):
         var, subkey = _create_variable(subparam)
-        stuc_dict[subkey] = var
+        struc_dict[subkey] = var
     variable = VAR.VariableStructure(key, struc_dict)
     return variable
 
@@ -61,7 +61,7 @@ def _create_variable(param, tmp_key = ""):
     elif p_type == "list":
         var = _parse_variable_list(key, param, args)
     elif p_type == "structure" or p_type == "struc":
-        var = _parse_variable_list(key, param, args)
+        var = _parse_variable_structure(key, param, args)
     elif p_type == "map_plate" or p_type == "mp":
         var = _parse_mp_element(key, value, param, args)
     else:
