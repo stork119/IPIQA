@@ -110,7 +110,7 @@ class TASK_IF(TASK):
     """
     dict_task = {"arg_1" : {"required" : True},
                  "arg_2" : {"required" : True}, 
-                 "comparison" : {"requred" : True}}
+                 "comparison" : {"required" : True}}
     def __init__(self, parameters, updates, args):
         TASK.__init__(self, parameters, updates, args)
         self.task_list = args['task_list']
@@ -129,8 +129,8 @@ class TASK_CHECK_COMPLETNESS(TASK): # [!] not supported
 
     dict_task = {"experiment_finished" : {"required" : True, "default" : True},
                  "input_path" : {"required" : True}, 
-                 "required_files" : {"requred" : False},
-                 "sleep_time" : {"requred" : True}}
+                 "required_files" : {"required" : False},
+                 "sleep_time" : {"required" : True}}
     # [!] class requires changes after merge with branch map_plate
 
     def __init__(self, parameters, updates,  args = {}):
@@ -151,7 +151,7 @@ class TASK_CHECK_COMPLETNESS(TASK): # [!] not supported
 class TASK_DOWNLOAD(TASK):
 
     dict_task = {"input_path" : {"required" : True}, 
-                 "output_path" : {"requred" : True}}
+                 "output_path" : {"required" : True}}
 
     def __init__(self, parameters, updates,  args = {}):
         TASK.__init__(self, parameters, updates, args)
@@ -198,7 +198,7 @@ class TASK_MERGE_SUBDIR_CSV(TASK):
         TASK.__init__(self, parameters, updates, args)
 
     def execute_specify(self, env_local, dict_setts):
-        csv_names = dict_setts["csv_names_list"] # [!] might change after variables changes
+        csv_names = dict_setts["csv_names_list"]
         main_subdir_list = FM.dir_get_paths(dict_setts["input_path"])
         for csv_name in csv_names:
             conv_name = csv_name.get_value(env_local)
@@ -524,7 +524,7 @@ class TASK_WRITE_DATAFRAME_TO_CSV(TASK):
 class TASK_MERGE_CSV(TASK):
 
     dict_task = {"input_path_1" : {"required" : True},
-                 "input_path_1" : {"required" : True},
+                 "input_path_2" : {"required" : True},
                  "csv_names_list" : {"required" : True},
                  "output_path" : {"required" : True},
                  "delimiter" : {"required" : True, "default" : ","}}
