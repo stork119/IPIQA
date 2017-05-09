@@ -58,32 +58,3 @@ def create_elements_list(input_path, wells_params, used_value):
         else:
             logger.error("Unexpected used_value: %s", used_value)
     return verified_dirs
-
-def get_active_wells(mp_dict, exp_part):
-    """
-    Returns list of active wells from mp_dict for given experiment part.
-    """
-    wells = mp_dict.keys()
-    active_wells = []
-    for well in wells:
-        if mp_dict[well]["exp_part"] == exp_part:
-            active_wells.append(well)
-    return active_wells
-
-def get_wells_base_params(mp_dict, wells, prefix, sufix, exp_part):
-    """
-    Gets wells base params from mp_dict.
-    Base params:
-    - mp_id
-    - mp_tag
-    - exp_part
-    Adds prefixes and sufixes to mp_id and mp_tag to get:
-    - wellname_id
-    - wellname_tag
-    """
-    params = []
-    for well in wells:
-        wellname_id = prefix + mp_dict[well]["id"] + sufix
-        wellname_tag = prefix + mp_dict[well]["tag"] + sufix
-        params.append({"wellname_id" : wellname_id, "wellname_tag" : wellname_tag, "exp_part" : exp_part, "mp_key" : mp_dict[well]["id"]})
-    return params
