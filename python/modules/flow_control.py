@@ -49,12 +49,9 @@ def create_elements_list(input_path, wells_params, used_value):
     all_dir_list = FM.dir_get_names(input_path)
     verified_dirs = []
     for well in wells_params:
-        if used_value == "tag":
-            if any(dir_name == well["wellname_tag"] for dir_name in all_dir_list):
+        try:
+            if any(dir_name == well[("wellname_" + used_value)] for dir_name in all_dir_list):
                 verified_dirs.append(well)
-        elif used_value == "id":
-            if any(dir_name == well["wellname_id"] for dir_name in all_dir_list):
-                verified_dirs.append(well)
-        else:
+        except: 
             logger.error("Unexpected used_value: %s", used_value)
     return verified_dirs

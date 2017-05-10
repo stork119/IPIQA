@@ -23,50 +23,56 @@
     <parameter key="pbs_path_rel" value="pbs//"/>
     <parameter key="pbsbck_path_rel" value="pbsbck//"/>
     <parameter key="raw_path_rel" value="raw//"/>
-    
+
     <!-- Experiment configuration -->
     <parameter key="delimiter_mp" value = ","/>
-    
-    <parameter key="exp_id"  value="2017-03-14-AG07"/>
-    <parameter key="exp_id_date"  value="2017-02-22_000"/>
-    <parameter key="camcor_in_path"  value="2017-03-14-AG07-camcor//2017-02-22_000//"/>
+
+    <parameter key="exp_id"  value="2016-12-29-AG06"/>
+    <parameter key="exp_id_date"  value="2016-12-29_000"/>
+    <parameter key="camcor_in_path"  value="2016-12-29-AG06-camcor//2016-01-19_000//"/>
+
+    <parameter key="exp_parts"  value="2"/>
+    <parameter key="exp_part_1_id"  value="1"/>
+    <parameter key="exp_part_2_id"  value="2"/>
 
     <parameter key="csv_names_list" value = "Nuclei.csv,ShrinkedNuclei.csv,Cells.csv,Cytoplasm.csv,Image.csv"/>
-    <parameter key="pipeline_A549" value = "F://AG//IPIQA//tests//release//configuration_settings//input_materials//test3//cp_pipelines//pipeline-A549-Alexa488.cppipe"/>
-    <parameter key="pipeline_MEF" value = "F://AG//IPIQA//tests//release//configuration_settings//input_materials//test3//cp_pipelines//pipeline-MEF-Alexa488.cppipe"/>
-    
-    <parameter key="input_folder_path" value = "F://AG//IPIQA//tests//release//configuration_settings//input_materials//test3//experiments//"/>
-    <parameter key="output_folder_path" value = "F://AG//IPIQA//tests//release//configuration_settings//results//test3//"/>
-    <parameter key="output_server_folder_path" value = ""/> <!-- ADDITIONAL-->
-    <parameter key="metadata_in_path"  value = "F://AG//IPIQA//tests//release//configuration_settings//input_materials//test3//mapplates//metadata//"/>
+    <parameter key="pipeline_in_path" value = "F://AG//IPIQA//tests//release//configuration_settings//input_materials//test2//cp_pipeline//pipeline.cppipe"/>
 
+    <parameter key="analysis_in_path" value="F://AG//IPIQA//tests//release//configuration_settings//input_materials//test2//experiments//"/>    
+    <parameter key="analysis_out_path" value="F://AG//IPIQA//tests//release//configuration_settings//results//test2/"/>
+    <parameter key="output_server_folder_path" value = ""/> <!-- ADDITIONAL-->
+    <parameter key="metadata_in_path" value = "F://AG//IPIQA//tests//release//configuration_settings//input_materials//test2//mapplates//metadata//"/>
+
+    <parameter key="exp_part_1_path"  value="2016-12-29-AG06-01//2016-12-29_000//"/>
+    <parameter key="exp_part_2_path"  value="2016-12-29-AG06-02//2016-12-29_000//"/>
+ 
 </CONFIG>
+
 
 <TASK class="TASK_QUEUE"> 
     <parameters_by_value>
-        <parameter key="rel_path.2"  value="//"/>
-        <parameter key="rel_path.4"  value="//"/>
-        <parameter key="analysis_out_path.3" value = "//"/>
+        <parameter key="rel_both_path.2"  value="//"/>
+        <parameter key="rel_both_path.4"  value="//"/>
     </parameters_by_value>
     <parameters_by_name>
-        <parameter key="pathway_data_ffc_path_rel.1" value="ffc_path_rel"/>
-        <parameter key="pathway_data_ffc_path_rel.2" value="pathway_data_path_rel"/>
-        <parameter key="quantify_data_ffc_path_rel.1" value="ffc_path_rel"/>
-        <parameter key="quantify_data_ffc_path_rel.2" value="quantify_data_path_rel"/>
-        <parameter key="result_data_ffc_path_rel.1" value="ffc_path_rel"/>
-        <parameter key="result_data_ffc_path_rel.2" value="result_data_path_rel"/>
-        <parameter key="figures_ffc_path_rel.1" value="ffc_path_rel"/>
-        <parameter key="figures_ffc_path_rel.2" value="figures_path_rel"/>
+        <parameter key="pathway_data_raw_path_rel.1"  value="raw_path_rel"/>
+        <parameter key="pathway_data_raw_path_rel.2"  value="pathway_data_path_rel"/>
 
-        <parameter key="pathway_data_raw_path_rel.1" value="raw_path_rel"/>
-        <parameter key="pathway_data_raw_path_rel.2" value="pathway_data_path_rel"/>
         <parameter key="quantify_data_raw_path_rel.1" value="raw_path_rel"/>
         <parameter key="quantify_data_raw_path_rel.2" value="quantify_data_path_rel"/>
-        <parameter key="result_data_raw_path_rel.1" value="raw_path_rel"/>
-        <parameter key="result_data_raw_path_rel.2" value="result_data_path_rel"/>
-        <parameter key="figures_raw_path_rel.1" value="raw_path_rel"/>
-        <parameter key="figures_raw_path_rel.2" value="figures_path_rel"/>
-        
+
+        <parameter key="figures_raw_path_rel.1"       value="raw_path_rel"/>
+        <parameter key="figures_raw_path_rel.2"       value="figures_path_rel"/>
+
+        <parameter key="pathway_data_ffc_path_rel.1"  value="ffc_path_rel"/>
+        <parameter key="pathway_data_ffc_path_rel.2"  value="pathway_data_path_rel"/>
+
+        <parameter key="quantify_data_ffc_path_rel.1" value="ffc_path_rel"/>
+        <parameter key="quantify_data_ffc_path_rel.2" value="quantify_data_path_rel"/>
+
+        <parameter key="figures_ffc_path_rel.1"       value="ffc_path_rel"/>
+        <parameter key="figures_ffc_path_rel.2"       value="figures_path_rel"/>
+
         <parameter key="quantify_data_pbs_path_rel.1" value="pbs_path_rel"/>
         <parameter key="quantify_data_pbs_path_rel.2" value="quantify_data_path_rel"/>
 
@@ -84,16 +90,11 @@
 
         <parameter key="figures_bck_path_rel.1"       value="bck_path_rel"/>
         <parameter key="figures_bck_path_rel.2"       value="figures_path_rel"/>
-
-        <parameter key="analysis_in_path" value = "input_folder_path"/>
-
-        <parameter key="analysis_out_path.1" value = "output_folder_path"/>
-        <parameter key="analysis_out_path.2" value = "exp_id"/>
-
-        <parameter key="rel_path.1"  value="exp_id"/>
-        <parameter key="rel_path.3"  value ="exp_id_date"/>
-
+        
+        <parameter key="rel_both_path.1"  value="exp_id"/>
+        <parameter key="rel_both_path.3"  value ="exp_id_date"/>
     </parameters_by_name>
+
 
     <TASK class="TASK_DOWNLOAD">
         <parameters_by_value>
@@ -103,17 +104,17 @@
             <parameter key="input_path.1" value="analysis_in_path"/>
             <parameter key="input_path.2" value="camcor_in_path"/>
             <parameter key="output_path.1" value="analysis_out_path"/>
-            <parameter key="output_path.2" value="pathway_data_path_rel"/>
+            <parameter key="output_path.2" value="pathway_data_raw_path_rel"/>
             <parameter key="output_path.3" value="camcor_in_path"/>
         </parameters_by_name>
         <update_by_name>
-            <parameter key="camcor_data_in_path" value="output_path"/>    
+            <parameter key="camcor_path" value="output_path"/>    
         </update_by_name>
     </TASK>
     <TASK class="TASK_FFC_CREATE">
         <parameters_by_name>
-             <parameter key="input_path.1" value="analysis_out_path"/>
-            <parameter key="input_path.2" value="pathway_data_path_rel"/>
+            <parameter key="input_path.1" value="analysis_out_path"/>
+            <parameter key="input_path.2" value="pathway_data_raw_path_rel"/>
             <parameter key="input_path.3" value="camcor_in_path"/>
             <parameter key="output_path.1" value="analysis_out_path"/>
             <parameter key="output_path.2" value="camcor_data_path_rel"/>
@@ -122,7 +123,7 @@
     </TASK>
     <TASK class="TASK_REMOVE">
         <parameters_by_name>
-        <parameter key="input_path" value="camcor_data_in_path"/>
+        <parameter key="input_path" value="camcor_path"/>
         </parameters_by_name>
     </TASK>
 
@@ -144,193 +145,151 @@
             <parameter key="map_plate" value="map_plate"/>    
         </update_by_name>
     </TASK>
-
-    <TASK class="TASK_QUEUE"> 
-        <parameters_by_name>
-            <parameter key="pathway_data_raw_path.1" value="analysis_out_path"/>
-            <parameter key="pathway_data_raw_path.2" value="pathway_data_raw_path_rel"/>
-            <parameter key="pathway_data_raw_path.3" value="rel_path"/>
-            <parameter key="pathway_data_ffc_path.1" value="analysis_out_path"/>
-            <parameter key="pathway_data_ffc_path.2" value="pathway_data_ffc_path_rel"/>
-            <parameter key="pathway_data_ffc_path.3" value="rel_path"/>
-            <parameter key="quantify_data_raw_path.1" value="analysis_out_path"/>
-            <parameter key="quantify_data_raw_path.2" value="quantify_data_raw_path_rel"/>
-            <parameter key="quantify_data_raw_path.3" value="rel_path"/>
-            <parameter key="quantify_data_ffc_path.1" value="analysis_out_path"/>
-            <parameter key="quantify_data_ffc_path.2" value="quantify_data_ffc_path_rel"/>
-            <parameter key="quantify_data_ffc_path.3" value="rel_path"/>
-            <parameter key="result_data_raw_path.1" value="analysis_out_path"/>
-            <parameter key="result_data_raw_path.2" value="result_data_raw_path_rel"/>
-            <parameter key="result_data_ffc_path.1" value="analysis_out_path"/>
-            <parameter key="result_data_ffc_path.2" value="result_data_ffc_path_rel"/>
-        </parameters_by_name>
-
-       <TASK class="TASK_PARALLELIZE_MP">
-            <parameters_by_value>
-                <parameter key="sleep_time"  value="20"/>
-                <parameter key="prefix" value = "Well "/>
-            </parameters_by_value>
+    
+    <TASK class="TASK_FOR">
+        <VARIABLES>
+            <VARIABLE>
+                <parameters_by_name>
+                    <parameter key="exp_part"  value="exp_part_1_id"/>
+                    <parameter key="rel_path"  value="exp_part_1_path"/>
+                </parameters_by_name>
+            </VARIABLE>
+            <VARIABLE>
+                <parameters_by_name>
+                    <parameter key="exp_part"  value="exp_part_2_id"/>
+                    <parameter key="rel_path"  value="exp_part_2_path"/>
+                </parameters_by_name>
+            </VARIABLE>
+        </VARIABLES>
+        <TASK class="TASK_QUEUE"> 
             <parameters_by_name>
-                <parameter key="input_path.1" value = "analysis_in_path"/>
-                <parameter key="input_path.2"  value="rel_path"/> 
+                <parameter key="pipeline"  value="pipeline_in_path"/>
+                <parameter key="pathway_data_raw_path.1" value="analysis_out_path"/>
+                <parameter key="pathway_data_raw_path.2" value="pathway_data_raw_path_rel"/>
+                <parameter key="pathway_data_raw_path.3" value="rel_path"/>
+                <parameter key="pathway_data_ffc_path.1" value="analysis_out_path"/>
+                <parameter key="pathway_data_ffc_path.2" value="pathway_data_ffc_path_rel"/>
+                <parameter key="pathway_data_ffc_path.3" value="rel_path"/>
+                <parameter key="quantify_data_raw_path.1" value="analysis_out_path"/>
+                <parameter key="quantify_data_raw_path.2" value="quantify_data_raw_path_rel"/>
+                <parameter key="quantify_data_raw_path.3" value="rel_both_path"/>    
+                <parameter key="quantify_data_ffc_path.1" value="analysis_out_path"/>
+                <parameter key="quantify_data_ffc_path.2" value="quantify_data_ffc_path_rel"/>
+                <parameter key="quantify_data_ffc_path.3" value="rel_both_path"/>
             </parameters_by_name>
-            <TASK class="TASK_QUEUE">
-                <!--<TASK class="TASK_CHECK_COMPLETNESS">
-                    <parameters_by_name>
-                        <parameter key="input_path.1" value="input_path"/>
-                        <parameter key="input_path.2" value="wellname_id"/>
-                    </parameters_by_name>
-                </TASK>-->
-                <TASK class="TASK_DOWNLOAD">
-                    <parameters_by_name>
-                        <parameter key="input_path.1" value="input_path"/>
-                        <parameter key="input_path.2" value="wellname_id"/>
-                        <parameter key="output_path.1" value="pathway_data_raw_path"/>
-                        <parameter key="output_path.2" value="wellname_id"/>
-                    </parameters_by_name>
-                </TASK>
-                <TASK class="TASK_FFC_READ_APPLY">
-                    <parameters_by_name>
-                        <parameter key="camcor_path.1" value="analysis_out_path"/>
-                        <parameter key="camcor_path.2" value="camcor_data_path_rel"/>
-                        <parameter key="camcor_path.3" value="camcor_in_path"/>
-                        <parameter key="input_path.1"  value="pathway_data_raw_path"/>
-                        <parameter key="input_path.2"  value="wellname_id"/>
-                        <parameter key="output_path.1" value="pathway_data_ffc_path"/> 
-                        <parameter key="output_path.2"  value="wellname_id"/>
-                    </parameters_by_name>
-                </TASK>
-                <TASK class="TASK_FOR">
-                    <VARIABLES>
-                        <VARIABLE>
-                            <parameters_by_value>
-                                <parameter key="argument_1"  value="MEF"/>
-                            </parameters_by_value>
-                            <parameters_by_name>
-                                <parameter key="pipeline"  value="pipeline_MEF"/>
-                                <parameter key="pathway_data_xxx_path"  value="pathway_data_raw_path"/>
-                                <parameter key="quantify_data_xxx_path"  value="quantify_data_raw_path"/>
-                            </parameters_by_name>
-                        </VARIABLE>
-                        <VARIABLE>
-                            <parameters_by_value>
-                                <parameter key="argument_1"  value="A549"/>
-                            </parameters_by_value>
-                            <parameters_by_name>
-                                <parameter key="pipeline"  value="pipeline_A549"/>
-                                <parameter key="pathway_data_xxx_path"  value="pathway_data_raw_path"/>
-                                <parameter key="quantify_data_xxx_path"  value="quantify_data_raw_path"/>
-                            </parameters_by_name>
+            <TASK class="TASK_PARALLELIZE_MP">
+                <parameters_by_value>
+                    <parameter key="sleep_time"  value="120"/>
+                    <parameter key="prefix" value = "Well "/>
+                </parameters_by_value>
+                <parameters_by_name>
+                    <parameter key="input_path.1" value = "analysis_in_path"/>
+                    <parameter key="input_path.2"  value="rel_path"/> 
+                </parameters_by_name>
+                <TASK class="TASK_QUEUE">
+                    <!--<TASK class="TASK_CHECK_COMPLETNESS">
+                        <parameters_by_name>
+                            <parameter key="input_path.1" value="input_path"/>
+                            <parameter key="input_path.2" value="folder_name"/>
+                        </parameters_by_name>
+                    </TASK>-->
+                    <TASK class="TASK_DOWNLOAD">
+                        <parameters_by_name>
+                            <parameter key="input_path.1" value="input_path"/>
+                            <parameter key="input_path.2" value="wellname_tag"/>
+                            <parameter key="output_path.1" value="pathway_data_raw_path"/>
+                            <parameter key="output_path.2" value="wellname_id"/>
+                        </parameters_by_name>
+                    </TASK>   
+                    <TASK class="TASK_FFC_READ_APPLY">
+                        <parameters_by_name>
+                            <parameter key="camcor_path.1" value="analysis_out_path"/>
+                            <parameter key="camcor_path.2" value="camcor_data_path_rel"/>
+                            <parameter key="camcor_path.3" value="camcor_in_path"/>
+                            <parameter key="input_path.1"    value="pathway_data_raw_path"/>
+                            <parameter key="input_path.2"  value="wellname_id"/>
+                            <parameter key="output_path.1" value="pathway_data_ffc_path"/> 
+                            <parameter key="output_path.2"  value="wellname_id"/>
+                        </parameters_by_name>
+                    </TASK>
+                    <TASK class="TASK_FOR">  
+                        <VARIABLES>
+                            <VARIABLE>
+                                <parameters_by_name>
+                                    <parameter key="pathway_data_xxx_path"  value="pathway_data_raw_path"/>
+                                    <parameter key="quantify_data_xxx_path"  value="quantify_data_raw_path"/>
+                                </parameters_by_name>
                             </VARIABLE>
-                        <VARIABLE>
-                            <parameters_by_value>
-                                <parameter key="argument_1"  value="A549"/>
-                            </parameters_by_value>
+                            <VARIABLE>
+                                <parameters_by_name>
+                                    <parameter key="pathway_data_xxx_path"  value="pathway_data_ffc_path"/>
+                                    <parameter key="quantify_data_xxx_path"  value="quantify_data_ffc_path"/>
+                                </parameters_by_name>
+                            </VARIABLE>
+                        </VARIABLES>
+                        <TASK class="TASK_QUEUE">
+                        <TASK class="TASK_QUANTIFY">
                             <parameters_by_name>
-                                <parameter key="pipeline"  value="pipeline_A549"/>
-                                <parameter key="pathway_data_xxx_path"  value="pathway_data_ffc_path"/>
-                                <parameter key="quantify_data_xxx_path"  value="quantify_data_ffc_path"/>
+                                <parameter key="input_path.1"    value="pathway_data_xxx_path"/>
+                                <parameter key="input_path.2"  value="wellname_id"/>
+                                <parameter key="output_path.1" value="quantify_data_xxx_path"/> 
+                                <parameter key="output_path.2"  value="wellname_id"/>
                             </parameters_by_name>
-                        </VARIABLE>
-                        <VARIABLE>
-                            <parameters_by_value>
-                                <parameter key="argument_1"  value="MEF"/>
-                            </parameters_by_value>
-                            <parameters_by_name>
-                                <parameter key="pipeline"  value="pipeline_MEF"/>
-                                <parameter key="pathway_data_xxx_path"  value="pathway_data_ffc_path"/>
-                                <parameter key="quantify_data_xxx_path"  value="quantify_data_ffc_path"/>
-                            </parameters_by_name>
-                        </VARIABLE>
-                    </VARIABLES>
-                    <TASK class="TASK_QUEUE">
-                        <TASK class="TASK_IF">
-                            <parameters_by_value>
-                                <parameter key="comparison" value="equal"/> 
-                                <parameter key="mp_param" value="cells.1.1"/> 
-                            </parameters_by_value>
-                            <parameters_by_name>
-                                <parameter key="mp_well" value="mp_key"/> 
-                            </parameters_by_name>
-                            <TASK class="TASK_QUEUE"> 
-                                <TASK class="TASK_QUANTIFY">
-                                    <parameters_by_name>
-                                        <parameter key="input_path.1" value="pathway_data_xxx_path"/>
-                                        <parameter key="input_path.2" value="wellname_id"/>
-                                        <parameter key="output_path.1" value="quantify_data_xxx_path"/> 
-                                        <parameter key="output_path.2" value="wellname_id"/>
-                                    </parameters_by_name>
-                                </TASK>
-                                <TASK class="TASK_APPLY_MAP_PLATE">
-                                    <parameters_by_value>
-                                        <parameter key="input_path.3" value="//"/>
-                                        <parameter key="output_path.3" value="//"/> 
-                                    </parameters_by_value>
-                                    <parameters_by_name>
-                                        <parameter key="input_path.1" value="quantify_data_xxx_path"/>
-                                        <parameter key="output_path.1" value="quantify_data_xxx_path"/> 
-                                        <parameter key="input_path.2" value="wellname_id"/>
-                                        <parameter key="output_path.2" value="wellname_id"/> 
-                                    </parameters_by_name>
-                                </TASK>
-                                <TASK class="TASK_REMOVE">
-                                    <parameters_by_name>
-                                        <parameter key="input_path.1" value="pathway_data_xxx_path"/>
-                                        <parameter key="input_path.2" value="wellname_id"/>
-                                    </parameters_by_name>
-                                </TASK>
-                            </TASK>  
                         </TASK>
+                        <TASK class="TASK_APPLY_MAP_PLATE">
+                            <parameters_by_value>
+                                <parameter key="input_path.3" value="//"/>
+                                <parameter key="output_path.3" value="//"/> 
+                            </parameters_by_value>
+                            <parameters_by_name>
+                                <parameter key="input_path.1" value="quantify_data_xxx_path"/>
+                                <parameter key="output_path.1" value="quantify_data_xxx_path"/> 
+                                <parameter key="input_path.2" value="wellname_id"/>
+                                <parameter key="output_path.2" value="wellname_id"/> 
+                            </parameters_by_name>
+                        </TASK>
+                        <TASK class="TASK_REMOVE">
+                            <parameters_by_name>
+                                <parameter key="input_path.1" value="pathway_data_xxx_path"/>
+                                <parameter key="input_path.2" value="wellname_id"/>
+                            </parameters_by_name>
+                        </TASK>
+                        </TASK>
+                    </TASK>                    
+                </TASK>
+            
+            </TASK> <!-- PARALLELIZE -->
+
+            <TASK class="TASK_FOR">
+                <VARIABLES>
+                    <VARIABLE>
+                        <parameters_by_name>
+                            <parameter key="pathway_data_xxx_path"  value="pathway_data_raw_path"/>
+                            <parameter key="quantify_data_xxx_path"  value="quantify_data_raw_path"/>
+                            <parameter key="quantify_data_xxx_path_rel"  value="quantify_data_raw_path_rel"/>
+                        </parameters_by_name>
+                    </VARIABLE>
+                    <VARIABLE>
+                        <parameters_by_name>
+                            <parameter key="pathway_data_xxx_path"  value="pathway_data_ffc_path"/>
+                            <parameter key="quantify_data_xxx_path"  value="quantify_data_ffc_path"/>
+                            <parameter key="quantify_data_xxx_path_rel"  value="quantify_data_ffc_path_rel"/>
+                        </parameters_by_name>
+                    </VARIABLE>
+                </VARIABLES>
+                
+                <TASK class="TASK_QUEUE"> 
+                    <TASK class="TASK_MERGE_SUBDIR_CSV">
+                        <parameters_by_name>
+                            <parameter key="input_path" value = "quantify_data_xxx_path"/>
+                            <parameter key="output_path.1" value = "analysis_out_path"/> 
+                            <parameter key="output_path.2" value = "quantify_data_xxx_path_rel"/> 
+                        </parameters_by_name>
                     </TASK>
                 </TASK>
             </TASK>
         </TASK>
-       <TASK class="TASK_FOR">
-            <VARIABLES>
-                <VARIABLE>
-                    <parameters_by_name>
-                        <parameter key="pathway_data_xxx_path"  value="pathway_data_raw_path"/>
-                        <parameter key="quantify_data_xxx_path"  value="quantify_data_raw_path"/>
-                        <parameter key="quantify_data_xxx_path_rel"  value="quantify_data_raw_path_rel"/>
-                        <parameter key="result_data_xxx_path"  value="result_data_raw_path"/>
-                    </parameters_by_name>
-                </VARIABLE>
-                <VARIABLE>
-                    <parameters_by_name>
-                        <parameter key="pathway_data_xxx_path"  value="pathway_data_ffc_path"/>
-                        <parameter key="quantify_data_xxx_path"  value="quantify_data_ffc_path"/>
-                        <parameter key="quantify_data_xxx_path_rel"  value="quantify_data_ffc_path_rel"/>
-                        <parameter key="result_data_xxx_path"  value="result_data_ffc_path"/>
-                    </parameters_by_name>
-                </VARIABLE>
-            </VARIABLES>
-
-            <TASK class="TASK_QUEUE"> 
-
-                <TASK class="TASK_DOWNLOAD"> 
-                    <parameters_by_name>
-                        <parameter key="output_path.1" value="quantify_data_xxx_path"/>
-                        <parameter key="output_path.2" value="pipeline_path_rel"/>
-                        <parameter key="input_path" value="pipeline_MEF"/>
-                    </parameters_by_name>
-                </TASK>
-                <TASK class="TASK_DOWNLOAD"> 
-                    <parameters_by_name>
-                        <parameter key="output_path.1" value="quantify_data_xxx_path"/>
-                        <parameter key="output_path.2" value="pipeline_path_rel"/>
-                        <parameter key="input_path" value="pipeline_A549"/>
-                    </parameters_by_name>
-                </TASK> 
-                <TASK class="TASK_MERGE_SUBDIR_CSV">
-                    <parameters_by_name>
-                        <parameter key="input_path" value = "quantify_data_xxx_path"/>
-                        <parameter key="output_path.1" value = "analysis_out_path"/> 
-                        <parameter key="output_path.2" value = "quantify_data_xxx_path_rel"/> 
-                    </parameters_by_name>
-                </TASK>
-            </TASK>
-        </TASK>
-    </TASK>
+    </TASK> <!-- FOR -->
 
     <TASK class="TASK_FOR">
         <VARIABLES>
@@ -362,8 +321,8 @@
         </VARIABLES>
         
         <TASK class="TASK_QUEUE"> 
-             
-           <TASK class="TASK_R">
+            
+            <TASK class="TASK_R">
                 <parameters_by_value>
                     <parameter key="r_function_name" value = "background_normalization"/>
                     <parameter key="r_script_path.2" value = "normalization_module//"/>
@@ -383,7 +342,7 @@
                 </parameters_by_name>
             </TASK>
 
-           <TASK class="TASK_R">
+            <TASK class="TASK_R">
                 <parameters_by_value>
                     <parameter key="r_function_name" value = "pbs_normalization"/>
                     <parameter key="r_script_path.2" value = "normalization_module//"/>
@@ -463,12 +422,10 @@
             
                     <TASK class="TASK_READ_DATAFRAME_FROM_CSV">
                         <parameters_by_value>
-                            <parameter key="delimiter" value = ","/>
                             <parameter key="dict_key_name" value = "data_nuclei"/>
-                            <parameter key="filename.2" value = ".csv"/>
+                            <parameter key="filename" value = "Nuclei.csv"/>
                         </parameters_by_value>
                         <parameters_by_name>
-                            <parameter key="filename.1" value = "filename_prefix"/>
                             <parameter key="input_path.1" value="analysis_out_path"/>
                             <parameter key="input_path.2" value="quantify_data_xxx_path_rel"/>
                         </parameters_by_name>
@@ -492,7 +449,7 @@
                                 <parameters_by_value>
                                     <parameter key="channel" value = "Intensity_MeanIntensity_DAPI"/>
                                     <parameter key="plot_ylim_max_const" value = "1"/>
-                                    <parameter key="plot_ylim_max" value = "2000"/>
+                                    <parameter key="plot_ylim_max" value = "4000"/>
                                 </parameters_by_value>
                             </VARIABLE>
 
@@ -516,10 +473,10 @@
                         
                         <TASK class="TASK_QUEUE"> 
 
-                           <TASK class="TASK_R">
+                            <TASK class="TASK_R">
                                 <parameters_by_value>
                                     <parameter key="r_function_name" value = "plot_histogram_list"/>
-                                    <parameter key="grid_col" value = "id"/>
+                                    <parameter key="grid_col" value = "well.name"/>
                                     <parameter key="r_script_path.2" value = "plot_histogram.R"/>
                                     <parameter key="filename.3" value = "_histogram_list"/>
                                 </parameters_by_value>
@@ -536,13 +493,52 @@
                                 </parameters_by_name>
                             </TASK>
 
+                            <TASK class="TASK_R">
+                                <parameters_by_value>
+                                    <parameter key="r_function_name" value = "plot_histogram_grid"/>
+                                    <parameter key="grid_x" value = "group.1.1"/>
+                                    <parameter key="grid_y" value = "compare.1.1"/>
+                                    <parameter key="r_script_path.2" value = "plot_histogram.R"/>
+                                    <parameter key="filename.3" value = "_histogram_grid"/>
+                                </parameters_by_value>
+                                <parameters_by_name>
+                                    <parameter key="filename.2" value = "channel"/>
+                                    <parameter key="filename.1" value = "filename_prefix"/>
+                                    <parameter key="x" value = "channel"/>
+                                    <parameter key="r_script_path.1" value = "r_scripts_path"/>
+                                    <parameter key="output_path.1" value="analysis_out_path"/>
+                                    <parameter key="output_path.2" value="figures_xxx_path_rel"/>
+                                    <parameter key="data" value = "data_r"/>
+                                </parameters_by_name>
+                            </TASK>
 
                             <TASK class="TASK_R">
                                 <parameters_by_value>
                                     <parameter key="r_function_name" value = "plot_boxplot_compare"/>
-                                    <parameter key="x" value = "id"/>
+                                    <parameter key="x" value = "well.name"/>
                                     <parameter key="r_script_path.2" value = "plot_boxplot_compare.R"/>
                                     <parameter key="filename.3" value = "_boxplot"/>
+                                </parameters_by_value>
+                                <parameters_by_name>
+                                    <parameter key="filename.2" value = "channel"/>
+                                    <parameter key="filename.1" value = "filename_prefix"/>
+                                    <parameter key="y" value = "channel"/>
+                                    <parameter key="r_script_path.1" value = "r_scripts_path"/>
+                                    <parameter key="output_path.1" value="analysis_out_path"/>
+                                    <parameter key="output_path.2" value="figures_xxx_path_rel"/>
+                                    <parameter key="data" value = "data_r"/>
+                                    <parameter key="ylim_max_const" value = "plot_ylim_max_const"/>
+                                    <parameter key="ylim_max" value = "plot_ylim_max"/>
+                                </parameters_by_name>
+                            </TASK>
+
+                            <TASK class="TASK_R">
+                                <parameters_by_value>
+                                    <parameter key="r_function_name" value = "plot_boxplot_group"/>
+                                    <parameter key="x" value = "compare.1.1"/>
+                                    <parameter key="facet_grid_group_y" value = "group.1.1"/>
+                                    <parameter key="filename.3" value = "_boxplot_group"/>
+                                    <parameter key="r_script_path.2" value = "plot_boxplot.R"/>
                                 </parameters_by_value>
                                 <parameters_by_name>
                                     <parameter key="filename.2" value = "channel"/>
@@ -560,7 +556,9 @@
                     </TASK>
                 </TASK>
             </TASK>
-        </TASK>  
+        </TASK>
     </TASK>
 </TASK>
+
 </main>
+

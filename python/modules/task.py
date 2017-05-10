@@ -125,13 +125,12 @@ class TASK_IF(TASK):
         for task in self.task_list:
             task.execute(env_local)
 
-class TASK_CHECK_COMPLETNESS(TASK): # [!] not supported
+class TASK_CHECK_COMPLETNESS(TASK):
 
     dict_task = {"experiment_finished" : {"required" : True, "default" : True},
                  "input_path" : {"required" : True}, 
-                 "required_files" : {"required" : False},
+                 "required_files" : {"required" : True,},
                  "sleep_time" : {"required" : True}}
-    # [!] class requires changes after merge with branch map_plate
 
     def __init__(self, parameters, updates,  args = {}):
         TASK.__init__(self, parameters, updates, args)
@@ -213,7 +212,6 @@ class TASK_PARALLELIZE(TASK):
                  "number_of_cores" : {"required" : True, "default" : "1"}, 
                  "sleep_time" : {"required" : True}}
     # [!] number_of_cores is temporary coded as string
-    # [!] class requires changes after merge with branch map_plate
 
     def __init__(self, parameters, updates, args):
         TASK.__init__(self, parameters, updates, args)
