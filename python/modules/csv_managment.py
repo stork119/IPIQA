@@ -5,6 +5,18 @@ import modules.file_managment as FM
 logger = logging.getLogger("CSV managment")
 logger.info("Executing csv (merge) module.")
 
+def merge_csv_files(csv_name, main_subdir_list, delimiter, column_name, output_path):
+    subdir_list = filter_subdir_list(main_subdir_list, csv_name) #filtering directiories containing given csv file
+    data = merge_subdir_csv(csv_name, subdir_list, delimiter, column_name)
+    extension = FM.file_get_extension(csv_name)
+    name = csv_name[:-(len(extension))]
+    #Saving data
+    out_path = FM.path_join(output_path, csv_name)
+    if FM.path_check_existence(out_path):
+        logger.warning("File %s already exists. Removing old data.", out_path)
+        FM.dir_remove(out_path)
+    write_csv(out_path, delimiter, data)
+
 def merge_subdir_csv(csv_name, subdir_list, delimiter = ",", column_name = "well.name"): 
     """csv_names = the list of filenames with given CP output data (for example: Nuclei.csv,Cytoplasm.csv)
     subdir_list = the list of subdir's paths, each of subdir contains data of given well"""
