@@ -7,7 +7,7 @@ TASK_CHECK_COMPLETNESS - required_files - TRUE - [] - list of needed data to ver
 TASK_CHECK_COMPLETNESS - sleep_time - TRUE - >< - time between veryfing file presence
 TASK_DOWNLOAD - input_path - TRUE - >< - path to the downloaded file
 TASK_DOWNLOAD - output_path - TRUE - >< - path to save file
-TASK_REMOVE- input_path - TRUE - >< - path to the removed file
+TASK_REMOVE - input_path - TRUE - >< - path to the removed file
 TASK_QUANTIFY - cp_path - TRUE - >< - path to cellprofiler software
 TASK_QUANTIFY - input_path - TRUE - >< - path to input data
 TASK_QUANTIFY - output_path - TRUE - >< - path to save output data
@@ -55,3 +55,6 @@ TASK_WRITE_DATAFRAME_TO_CSV - output_path - TRUE - >< - path to save output file
 TASK_WRITE_DATAFRAME_TO_CSV - filename - TRUE - >< - filename of output file
 TASK_WRITE_DATAFRAME_TO_CSV - dict_key_name - TRUE - >< - [!]
 TASK_WRITE_DATAFRAME_TO_CSV - delimiter - TRUE - "," - delimiter used in csv files
+TASK_IF - arg_1 - TRUE - >< - first argument to compare
+TASK_IF - arg_2 - TRUE - >< - second argument to compare
+TASK_IF - comparison - TRUE - >< - type of comparison i.e. "equal" or "<"
