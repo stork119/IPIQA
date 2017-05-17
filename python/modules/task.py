@@ -119,7 +119,7 @@ class TASK_QUEUE(TASK):
             """try:
                 env_local = task.execute(env_local)
             except Exception as e:
-                if not self.optionasl_execution(self.execution, "TASK_QUEUE", e):
+                if not self.optional_execution(self.execution, "TASK_QUEUE", e):
                     break"""
                 
 class TASK_IF(TASK):
