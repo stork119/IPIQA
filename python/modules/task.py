@@ -72,6 +72,15 @@ class TASK():
             dict_out[key] = variable
         return dict_out
 
+    def optional_execution(self, execution, task_name, exception):
+        logger.warning("Unable to execute %s.", task_name)
+        if execution == "optional":
+            return True
+        elif execution == "required":
+            exit()
+        else:
+            return False
+
 class TASK_FOR(TASK):
 
     dict_task = {}
@@ -80,6 +89,7 @@ class TASK_FOR(TASK):
         TASK.__init__(self, parameters, updates, args)
         self.variables_list = args['variables_list']
         self.task_to_do = args['task_to_do']
+        self.execution = args['execution']
         
     def execute_specify(self, env_local, dict_setts):
         env_tmp = env_local.copy()
@@ -87,7 +97,12 @@ class TASK_FOR(TASK):
         for variable in conv_list:
             variable_dict = variable.create_dict(env_local)
             env_local_for = self.update_env(env_local, env_tmp, variable_dict)
-            self.task_to_do.execute(env_local_for)
+            try:
+                self.task_to_do.execute(env_local_for)
+            except Exception as e:
+                if not self.optional_execution(self.execution, "TASK_FOR", e):
+                    break
+                
 
 class TASK_QUEUE(TASK):
  
@@ -96,11 +111,17 @@ class TASK_QUEUE(TASK):
     def __init__(self, parameters, updates, args):
         TASK.__init__(self, parameters, updates, args)
         self.task_list = args['task_list']
+        #self.execution = args['execution']
 
     def execute_specify(self, env_local, dict_setts):
         for task in self.task_list:
             env_local = task.execute(env_local)
-
+            """try:
+                env_local = task.execute(env_local)
+            except Exception as e:
+                if not self.optional_execution(self.execution, "TASK_QUEUE", e):
+                    break"""
+                
 class TASK_IF(TASK):
     """
     Required args:
