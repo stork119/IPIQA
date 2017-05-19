@@ -301,7 +301,7 @@ class VariableMP(Variable):
         try:
             value = self.mp_dict[well_name][param]
         except KeyError as e:
-            logging.error("Cannot get value of given "
+            logger.error("Cannot get value of given "
                             "well/parameter: %s.", str(e))
             return
         return value
@@ -347,7 +347,7 @@ class VariableMP(Variable):
         try:
             well_params = self.mp_dict[well]
         except KeyError as e:
-            logging.error("Cannot get given well: %s"
+            logger.error("Cannot get given well: %s"
                             "parameters.", str(e))
             return
         for param in well_params:
