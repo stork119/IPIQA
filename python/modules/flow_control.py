@@ -3,9 +3,7 @@
 import os, logging
 import modules.file_managment as FM
 
-logger = logging.getLogger("flow control")
-logger.info("Executing flow_control module.")
-
+logger = logging.getLogger("IPIQA.flow_control")
 
 def compare_args(arg1, arg2, comparison):
     if comparison == "equal" or comparison == "==":

@@ -3,7 +3,7 @@ import logging, sys
 import copy
 import modules.file_managment as FM
 
-logger = logging.getLogger("Variable module")
+logger = logging.getLogger("IPIQA.variable")
 
 class Variable():
     """

@@ -5,7 +5,7 @@ from time import sleep
 import logging
 import shutil # for function copy_data
 
-logger = logging.getLogger("file managment")
+logger = logging.getLogger("IPIQA.file_managment")
 
 """
 Checking out if the director and file exist ["C:/path/to/file"].

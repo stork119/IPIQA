@@ -6,7 +6,7 @@ import modules.file_managment as FM
 import modules.task as TK
 import modules.variable as VAR
 
-logger = logging.getLogger("XML parser")
+logger = logging.getLogger("IPIQA.xml_parser")
 
 def _parse_parted_param(param_dict, param, parted_dict, p_part):
     key = param.get('key')

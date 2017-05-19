@@ -5,7 +5,7 @@ import os.path
 import sys
 #import modules.file_managment as FM
 
-logger = logging.getLogger("Cellprofiler")
+logger = logging.getLogger("IPIQA.cellprofiler")
 
 def run_cp_by_cmd(cp_path, input_file, output_file, pipeline):
     if not _pipeline_verification(pipeline):

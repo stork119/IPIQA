@@ -13,7 +13,7 @@ import multiprocessing
 import logging
 import os
 
-logger = logging.getLogger("Task module")
+logger = logging.getLogger("IPIQA.task_module")
 
 class TASK():
 
