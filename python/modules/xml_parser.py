@@ -110,6 +110,7 @@ def _parse_for_variables(variab):
 def _create_for_task(queue):
     variables = queue.find('VARIABLES')
     ref_name = variables.get('value')
+    execution = variables.get('execution')
     if str(ref_name) == "None":
         var = _parse_for_variables(variables)
     else:
@@ -124,7 +125,7 @@ def _create_for_task(queue):
         task_do = _create_task(task_request)  
     task = TK.TASK_FOR({},
                        {},
-                       {'variables_list' : var, 'task_to_do' : task_do}) #creating task class objects
+                       {'variables_list' : var, 'task_to_do' : task_do, "execution" : execution}) #creating task class objects
     return task
 
 def _get_settings_dict(task, set_type):
