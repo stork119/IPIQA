@@ -10,8 +10,11 @@ from time import sleep
 def main():
     PP_path = os.path.abspath('..')
     """Setting up logs."""
-    logs_path = LC.configure(PP_path)
-    logger = logging.getLogger("XML parser")
+    logs_path, q_listener, queue, handler1, handler2 = LC.configure(PP_path)
+    logger = logging.getLogger("IPIQA")
+    logger.setLevel(logging.DEBUG)
+    logger.addHandler(handler1)
+    logger.addHandler(handler2)
     logger.info("Starting program...")
     """Arg parse section."""
     parser = argparse.ArgumentParser(description = '\n PathwayPackage [PP] is '
