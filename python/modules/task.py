@@ -235,8 +235,7 @@ class TASK_PARALLELIZE(TASK):
                  "sleep_time" : {"required" : True}}
     # [!] number_of_cores is temporary coded as string
 
-    def worker_init(self, q):
-        # all records from worker processes go to qh and then into q
+    def _logs_init(self, q):
         #logger = logging.getLogger("IPIQA.task_module.paral")
         qh = QueueHandler(q)
         logger.setLevel(logging.INFO)
@@ -254,7 +253,7 @@ class TASK_PARALLELIZE(TASK):
         processes_number = int(dict_setts["number_of_cores"])
         sleep_time = int(dict_setts["sleep_time"])
         new_elements = elements_list
-        pool = multiprocessing.Pool(processes_number, self.worker_init, [p_queue])
+        pool = multiprocessing.Pool(processes_number, self._logs_init, [p_queue])
         while True:
             if len(new_elements) > 0:
                 args = ((env_local, element) for element in new_elements) #or just pass task, because we're able to get task_list and settings_dict from init if both functions will stay here
