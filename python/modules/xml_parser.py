@@ -155,9 +155,9 @@ def _create_task(name, task_list = [], config_dict = {}):
 
 def parse_xml(input_path, main_setts = True):
     if main_setts == True:
-        logger.info("Parsing XML input_settings.")
+        logger.info("Parsing XML input_settings: %s.", input_path)
     else:
-        logger.info("Parsing additional config input_settings.")
+        logger.info("Parsing additional config input_settings: %s.", input_path)
     try:
         tree = ET.parse(input_path)
     except Exception as e:
