@@ -83,6 +83,7 @@ def main():
         config_dict.update(additional_arg)
         FM.parse_exec_info(PP_path, logs_path, setts, config_dict)
         config_dict["parall_logs_queue"] = VAR.Variable("parall_queue", queue)
+        config_dict["logs_level"] = VAR.Variable("logs_level", level)
         pipeline.execute(config_dict)
         q_listener.stop()
     

@@ -235,19 +235,19 @@ class TASK_PARALLELIZE(TASK):
                  "sleep_time" : {"required" : True}}
     # [!] number_of_cores is temporary coded as string
 
-    def _logs_init(self, q):
-        #logger = logging.getLogger("IPIQA.task_module.paral")
-        qh = QueueHandler(q)
-        logger.setLevel(logging.INFO)
-        logger.addHandler(qh)
-
     def __init__(self, parameters, updates, args):
         TASK.__init__(self, parameters, updates, args)
         self.task_list = args['task_list']
         self.config_dict = args['config_dict']
 
+    def _logs_init(self, q):
+        qh = QueueHandler(q)
+        logger.setLevel(self.level)
+        logger.addHandler(qh)
+
     def execute_specify(self, env_local, dict_setts):
         p_queue = env_local["parall_logs_queue"].get_value(env_local)
+        self.level = env_local["logs_level"].get_value(env_local)
         del env_local["parall_logs_queue"]
         elements_list, ele_number = self.parse_elements_list(env_local, dict_setts)
         processes_number = int(dict_setts["number_of_cores"])
