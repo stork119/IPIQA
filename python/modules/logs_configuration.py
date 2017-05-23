@@ -5,6 +5,9 @@ import os
 from logging.handlers import QueueHandler, QueueListener
 
 def configure(PP_path):
+    # Setting up log level
+    level = logging.INFO
+
     log_output_path = (os.path.join(PP_path, "python", "logs", "")).replace("\\", "//")
     log_file =  log_output_path + ((strftime("%Y_%m_%d_")  + "_" + strftime("%H_%M")) ) + ".log" # setup log filename
     # Creating log handlers for stream (handler1) and file (handler2):
@@ -15,8 +18,8 @@ def configure(PP_path):
     handler1.setFormatter(base_formater)
     handler2.setFormatter(base_formater)
     #Setting up log level:
-    handler1.setLevel(logging.INFO)
-    handler2.setLevel(logging.INFO)
+    handler1.setLevel(level)
+    handler2.setLevel(level)
     
     queue = multiprocessing.Queue()
     q_listener = QueueListener(queue, handler1, handler2)
@@ -28,4 +31,4 @@ def configure(PP_path):
     logger.setLevel(logging.DEBUG)
     logger.info("Logs initialization...")
     
-    return log_file, q_listener, queue, handler1, handler2
+    return log_file, q_listener, queue, handler1, handler2, level
