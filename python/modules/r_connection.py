@@ -1,11 +1,13 @@
 #! /usr/bin/python
 import logging
-logger = logging.getLogger("R connection")
+from rpy2.rinterface import RRuntimeError
 try:
     import rpy2.robjects as robjects
     from rpy2.robjects.vectors import DataFrame
 except:
     logger.warning("Rpy2 import error. The package is not installed. R scripts processing is not available.")
+
+logger = logging.getLogger("R connection")
 
 def execute_r_script(param_dict, r_script_path, function_name):
     r_source = robjects.r['source']
@@ -13,7 +15,19 @@ def execute_r_script(param_dict, r_script_path, function_name):
     r_runfunction = robjects.globalenv[function_name]
     r_param_list = robjects.ListVector(param_dict)
     do_call = robjects.r['do.call']
-    out = do_call(r_runfunction, r_param_list)
+    try:
+        out = do_call(r_runfunction, r_param_list)
+    except RRuntimeError as e:
+        """
+        Msg will display two times,
+        first time just because exception was called,
+        second time would proper, normal logger msg.
+        It seems you cannot avoid first msg pop
+        even by catching and redirecting stream.
+        """
+        logger.error("Cannot execute fucntion %s from %s script due to: %s.", 
+                     function_name,r_script_path, e)
+        return {}
     try:
         output_dict = {key : out.rx2(key) if len(out.rx2(key)) > 1 else out.rx2(key)[0] for key in out.names }
     except:
@@ -21,15 +35,6 @@ def execute_r_script(param_dict, r_script_path, function_name):
     gc = robjects.r['gc']
     out = gc()
     return output_dict
-
-def example_execute(param_dict, r_script_path, function_name):
-    r_source = robjects.r['source']
-    r_source(r_script_path)
-    r_runfunction = robjects.globalenv[function_name]
-    r_param_list = robjects.ListVector(param_dict)
-    do_call = robjects.r['do.call']
-    out = do_call(r_runfunction, r_param_list)
-    return out
 
 def prepare_param_dict(local_dict, parameters, external_params):
     keys_list = list(parameters.keys())
