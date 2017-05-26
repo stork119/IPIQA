@@ -14,7 +14,7 @@ def main():
     logger = logging.getLogger("XML parser")
     logger.info("Starting program...")
     """Arg parse section."""
-    parser = argparse.ArgumentParser(description = '\n PathwayPackage [PP] is '
+    parser = argparse.ArgumentParser(description = '\n IPIQA is '
     'an integration platform for instantaneous processing and analysis of '
     'confocal/fluorescent microscopy images software. \n[...]')
     parser.add_argument('-s',
