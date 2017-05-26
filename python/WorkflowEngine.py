@@ -10,8 +10,11 @@ from time import sleep
 def main():
     PP_path = os.path.abspath('..')
     """Setting up logs."""
-    logs_path = LC.configure(PP_path)
-    logger = logging.getLogger("XML parser")
+    logs_path, q_listener, queue, handler1, handler2, level = LC.configure(PP_path)
+    logger = logging.getLogger("IPIQA")
+    logger.setLevel(level)
+    logger.addHandler(handler1)
+    logger.addHandler(handler2)
     logger.info("Starting program...")
     """Arg parse section."""
     parser = argparse.ArgumentParser(description = '\n IPIQA is '
@@ -72,15 +75,18 @@ def main():
     else:
         settings_list = [settings_path]
     for setts in settings_list:
-        logger.info('Current xml settings: %s', setts)
+        #logger.info('Current xml settings: %s', setts)
         pipeline, config_dict = XML_P.parse_xml(setts)
         # config_dict overwrite (additional) config_dict2 settings
         config_dict2.update(config_dict) 
         config_dict = config_dict2
         config_dict.update(additional_arg)
         FM.parse_exec_info(PP_path, logs_path, setts, config_dict)
+        config_dict["parall_logs_queue"] = VAR.Variable("parall_queue", queue)
+        config_dict["logs_level"] = VAR.Variable("logs_level", level)
         pipeline.execute(config_dict)
-
+        q_listener.stop()
+    
 if __name__ == '__main__':
     version = sys.version_info[:2]
     if not version >= (3,5):

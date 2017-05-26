@@ -1,7 +1,9 @@
 #! /usr/bin/python
+import logging, os
 import modules.r_connection as R_connection
 import modules.file_managment as FM
-import os
+
+logger = logging.getLogger("IPIQA.ffc")
 
 def prepare_script_path():
     path = os.path.abspath('..')

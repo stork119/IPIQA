@@ -1,6 +1,7 @@
 #! /usr/bin/python
 import logging
-logger = logging.getLogger("R connection")
+logger = logging.getLogger("IPIQA.r_connection")
+
 try:
     import rpy2.robjects as robjects
     from rpy2.robjects.vectors import DataFrame

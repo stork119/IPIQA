@@ -2,8 +2,7 @@
 import os, logging, csv
 import modules.file_managment as FM
 
-logger = logging.getLogger("CSV managment")
-logger.info("Executing csv (merge) module.")
+logger = logging.getLogger("IPIQA.csv_managment")
 
 def merge_csv_files(csv_name, main_subdir_list, delimiter, column_name, output_path):
     subdir_list = filter_subdir_list(main_subdir_list, csv_name) #filtering directiories containing given csv file
