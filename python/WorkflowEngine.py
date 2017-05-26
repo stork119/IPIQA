@@ -59,10 +59,14 @@ def main():
     else:
         additional_arg = {}
     if args.c != False: # optional (additional) config
-        config_dict2 = config_dict = XML_P.parse_xml(args.c[0],
-                                                main_setts = False)
+        config_dict2 = XML_P.parse_xml(args.c[0],
+                                       main_setts = False)
     else:
-        config_dict2 = {}
+        c_def_path = FM.path_join(PP_path, 
+                     'config',
+                     'IPIQA.xml')
+        config_dict2 = XML_P.parse_xml(c_def_path,
+                                       main_setts = False)
     if args.m != False: # single or multiple settings
         settings_list = FM.file_get_paths(settings_path)
     else:

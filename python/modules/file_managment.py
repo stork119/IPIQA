@@ -296,7 +296,7 @@ def _save_exec_info(settings_path, logs_path, out_path, dirname):
 def parse_exec_info(PP_path, logs_path, settings_path, config_dict):
     dir_name = path_extract_name(settings_path)[:-4]
     try:
-        out_path = local_dict["exec_output_path"] #temporary name
+        out_path = config_dict["exec_output_path"].get_value(config_dict) #temporary name
     except:
         out_path = PP_path + "//"
     atexit.register(_save_exec_info, settings_path, logs_path, out_path, dir_name)

@@ -2,8 +2,40 @@
 <main>
 <CONFIG>
     <!-- PC configuration -->
-    <parameter key="cp_path" value = "C://Program Files//CellProfiler//"/>
-    <parameter key="r_scripts_path" value = "F://AG//IPIQA-mapplate//R//"/>
+    <parameter key="cp_path" value = "C://Program Files//CellProfiler//" type="path"/>
+    <parameter key="r_scripts_path" value = "F://AG//IPIQA//R//" type="path"/>
+    <parameter key="exec_output_path" value = "F://AG//experiment_execution//" type="path"/>
 
+    <!-- Building up output analysis directory structure: -->
+    <parameter key="camcor_data_path_rel"   value="data_camcor//" type="path"/>
+    <parameter key="figures_path_rel"       value="figures//" type="path"/>
+    <parameter key="metadata_path_rel"      value="metadata//" type="path"/>
+    <parameter key="pathway_data_path_rel"  value="data_pathway//" type="path"/>
+    <parameter key="pipeline_path_rel"      value="cellprofiler//" type="path"/>
+    <parameter key="quantify_data_path_rel" value="data_quantify//" type="path"/>
+    <parameter key="result_data_path_rel" value="data//" type="path"/>
+    <parameter key="bck_path_rel" value="bck//" type="path"/>
+    <parameter key="ffc_path_rel" value="ffc//" type="path"/>
+    <parameter key="pbs_path_rel" value="pbs//" type="path"/>
+    <parameter key="pbsbck_path_rel" value="pbsbck//" type="path"/>
+    <parameter key="raw_path_rel" value="raw//" type="path"/>
+
+    <!-- Experiment configuration -->
+    <parameter key="delimiter_mp" value = ","/>
+
+    <!-- Additional variables lists -->
+    <parameter key = "csv_names_list" type = "list">
+        <parameter value = "Nuclei.csv" />
+        <parameter value = "ShrinkedNuclei.csv" />
+        <parameter value = "Cells.csv" />
+        <parameter value = "Cytoplasm.csv" />
+        <parameter value = "Image.csv" />
+        <parameter value = "Cells488.csv" />
+        <parameter value = "Cytoplasm488.csv" />
+        <parameter value = "Cells555.csv" />
+        <parameter value = "Cytoplasm555.csv" />
+    </parameter>
+
+    
 </CONFIG>
 </main>
