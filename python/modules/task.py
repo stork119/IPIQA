@@ -14,7 +14,7 @@ import logging
 import os
 from logging.handlers import QueueHandler, QueueListener
 
-logger = logging.getLogger("IPIQA.task_module")
+logger = logging.getLogger("IPIQA")
 
 class TASK():
 
