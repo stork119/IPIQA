@@ -1,13 +1,16 @@
 #! /usr/bin/python
 import logging
 from rpy2.rinterface import RRuntimeError
+
+logger = logging.getLogger("IPIQA.r_connection")
+
 try:
     import rpy2.robjects as robjects
     from rpy2.robjects.vectors import DataFrame
 except:
     logger.warning("Rpy2 import error. The package is not installed. R scripts processing is not available.")
 
-logger = logging.getLogger("R connection")
+logger = logging.getLogger("IPIQA.r_connection")
 
 def execute_r_script(param_dict, r_script_path, function_name):
     r_source = robjects.r['source']

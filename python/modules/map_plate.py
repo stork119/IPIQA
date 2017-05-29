@@ -4,8 +4,8 @@ from collections import OrderedDict
 import modules.file_managment as FM
 import modules.csv_managment as CSV_M
 
-logger = logging.getLogger("map plate")
-logger.info("Executing map_plate module.")
+logger = logging.getLogger("IPIQA.map_plate")
+
 fatal_error_msg = "Fatal error occured while trying to read mapplate."
 
 def parse_mp(input_path, delimiter):

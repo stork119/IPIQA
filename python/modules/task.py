@@ -12,8 +12,9 @@ from time import sleep
 import multiprocessing 
 import logging
 import os
+from logging.handlers import QueueHandler, QueueListener
 
-logger = logging.getLogger("Task module")
+logger = logging.getLogger("IPIQA")
 
 class TASK():
 
@@ -177,7 +178,7 @@ class TASK_DOWNLOAD(TASK):
         TASK.__init__(self, parameters, updates, args)
 
     def execute_specify(self, env_local, dict_setts):
-        logger.info("TASK_DOWNLOAD from input: %s to output :%s", dict_setts["input_path"], dict_setts["output_path"]) 
+        logger.debug("TASK_DOWNLOAD from input: %s to output :%s", dict_setts["input_path"], dict_setts["output_path"]) 
         FM.dir_copy(dict_setts["input_path"], dict_setts["output_path"])
 
 
@@ -239,12 +240,20 @@ class TASK_PARALLELIZE(TASK):
         self.task_list = args['task_list']
         self.config_dict = args['config_dict']
 
+    def _logs_init(self, q):
+        qh = QueueHandler(q)
+        logger.setLevel(self.level)
+        logger.addHandler(qh)
+
     def execute_specify(self, env_local, dict_setts):
+        p_queue = env_local["parall_logs_queue"].get_value(env_local)
+        self.level = env_local["logs_level"].get_value(env_local)
+        del env_local["parall_logs_queue"]
         elements_list, ele_number = self.parse_elements_list(env_local, dict_setts)
         processes_number = int(dict_setts["number_of_cores"])
         sleep_time = int(dict_setts["sleep_time"])
         new_elements = elements_list
-        pool = multiprocessing.Pool(processes_number)
+        pool = multiprocessing.Pool(processes_number, self._logs_init, [p_queue])
         while True:
             if len(new_elements) > 0:
                 args = ((env_local, element) for element in new_elements) #or just pass task, because we're able to get task_list and settings_dict from init if both functions will stay here

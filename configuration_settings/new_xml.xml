@@ -1,0 +1,587 @@
+<?xml version="1.0"?>
+<main>
+<CONFIG>
+        
+    <!-- IPIQA configurations: -->
+    <parameter key="number_of_cores" value= "4"/>
+    <parameter key="experiment_finished" value="TRUE"/>
+
+    <!-- Experiment configuration -->
+    <parameter key="exp_id"  value="2017-03-30-KZ45"/>
+
+    <parameter key="input_folder_path" value = "F://AG//tests//KZ45//"  type="path"/>
+    <parameter key="output_folder_path" value = "F://AG//tests//exp_output//" type="path"/>   
+    <parameter key="metadata_in_path"  value = "F://AG//tests//KZ45//mapplate//2017-03-30-KZ45//metadata//" type="path"/>
+
+    <parameter key="pipeline_folder" value = "////zmifp-nas1//Experiments//Pathway//m.komorowski//IPIQA//cp_pipelines//" type="path"/>
+    <parameter key="pipeline_date" value = "//2017-01-17//" type="path"/>
+    <parameter key="pipeline_filename" value = "pipeline-Alexa"/>
+    <parameter key="pipeline_suffix" value = ".cppipe"/>
+     
+    <!-- Experiment parts -->
+    <parameter key="exp_parts"  value="3"/>
+
+    <parameter key = "exp_parts_list" type = "list">
+        <parameter key = "exp_part_1" type = "structure">
+            <parameter key = "exp_part" value = "488"/>
+            <parameter key = "rel_path" value="2017-03-30-KZ45-488//2017-03-30_000//" type="path"/>
+        </parameter>
+        <parameter key = "exp_part_2" type = "structure">
+            <parameter key = "exp_part" value = "555"/>
+            <parameter key = "rel_path" value="2017-03-30-KZ45-555//2017-03-30_000//" type="path"/>
+        </parameter>
+        <parameter key = "exp_part_3" type = "structure">
+            <parameter key = "exp_part" value = "488-555"/>
+            <parameter key = "rel_path" value="2017-03-30-KZ45-488-555//2017-03-30_000//" type="path"/>
+        </parameter>    
+    </parameter>
+
+    <!-- Correction -->
+    <parameter key="camcor_in_path" value ="2017-03-30-KZ45-camcor-488//2017-03-30_000//" type="path"/>
+    <parameter key="camcor_in_path_488"  value="2017-03-30-KZ45-camcor-488//2017-03-30_000//" type="path"/>
+    <parameter key="camcor_in_path_555"  value="2017-03-30-KZ45-camcor-555//2017-03-30_000//" type="path"/>
+
+    <parameter key = "camcors_paths" type = "list">
+        <parameter value="camcor_in_path_488" type="ref" />
+        <parameter value="camcor_in_path_555" type="ref" />
+    </parameter>    
+    
+    <parameter key = "ffc_setup_list" type = "list">
+        <parameter key = "ffc_setup_1" type = "structure">
+            <parameter key="camcor_path_part"  value="camcor_in_path_488" type="ref"/>
+            <parameter key="regex"  value="DAPI"/>
+        </parameter>
+        <parameter key = "ffc_setup_2" type = "structure">
+            <parameter key="camcor_path_part"  value="camcor_in_path_488" type="ref"/>
+            <parameter key="regex"  value="Alexa 488"/>
+        </parameter>
+        <parameter key = "ffc_setup_3" type = "structure">
+            <parameter key="camcor_path_part"  value="camcor_in_path_555" type="ref"/>
+            <parameter key="regex"  value="Alexa 555"/>
+        </parameter>   
+    </parameter>
+
+    
+</CONFIG>
+
+<TASK class="TASK_QUEUE"> 
+    <parameters>
+        <parameter key="pathway_data_raw_path_rel"  value="raw_path_rel" type="ref" part="1"/>
+        <parameter key="pathway_data_raw_path_rel"  value="pathway_data_path_rel" type="ref" part="2"/>
+        <parameter key="quantify_data_raw_path_rel" value="raw_path_rel" type="ref" part="1"/>
+        <parameter key="quantify_data_raw_path_rel" value="quantify_data_path_rel" type="ref" part="2"/>
+        <parameter key="figures_raw_path_rel"       value="raw_path_rel" type="ref" part="1"/>
+        <parameter key="figures_raw_path_rel"       value="figures_path_rel" type="ref" part="2"/>
+        
+        <parameter key="pathway_data_ffc_path_rel"  value="ffc_path_rel" type="ref" part="1"/>
+        <parameter key="pathway_data_ffc_path_rel"  value="pathway_data_path_rel" type="ref" part="2"/>
+        <parameter key="quantify_data_ffc_path_rel" value="ffc_path_rel" type="ref" part="1"/>
+        <parameter key="quantify_data_ffc_path_rel" value="quantify_data_path_rel" type="ref" part="2"/>
+        <parameter key="figures_ffc_path_rel"       value="ffc_path_rel" type="ref" part="1"/>
+        <parameter key="figures_ffc_path_rel"       value="figures_path_rel" type="ref" part="2"/>
+
+        <parameter key="quantify_data_pbs_path_rel" value="pbs_path_rel" type="ref" part="1"/>
+        <parameter key="quantify_data_pbs_path_rel" value="quantify_data_path_rel" type="ref" part="2"/>
+        <parameter key="figures_pbs_path_rel"       value="pbs_path_rel" type="ref" part="1"/>
+        <parameter key="figures_pbs_path_rel"       value="figures_path_rel" type="ref" part="2"/>
+        <parameter key="quantify_data_pbsbck_path_rel" value="pbsbck_path_rel" type="ref" part="1"/>
+        <parameter key="quantify_data_pbsbck_path_rel" value="quantify_data_path_rel" type="ref" part="2"/>
+
+        <parameter key="figures_pbsbck_path_rel"       value="pbsbck_path_rel" type="ref" part="1"/>
+        <parameter key="figures_pbsbck_path_rel"       value="figures_path_rel" type="ref" part="2"/>
+        <parameter key="quantify_data_bck_path_rel" value="bck_path_rel" type="ref" part="1"/>
+        <parameter key="quantify_data_bck_path_rel" value="quantify_data_path_rel" type="ref" part="2"/>
+        <parameter key="figures_bck_path_rel"       value="bck_path_rel" type="ref" part="1"/>
+        <parameter key="figures_bck_path_rel"       value="figures_path_rel" type="ref" part="2"/>
+        
+        <parameter key="rel_both_path"  value="exp_id" type="ref"/>
+    
+        <parameter key="analysis_in_path" value = "input_folder_path" type="ref"/> 
+        <parameter key="analysis_out_path" value = "output_folder_path" type="ref" part="1"/> 
+        <parameter key="analysis_out_path" value = "exp_id" type="ref" part="2"/> 
+    </parameters>
+    <!-- FFC -->
+    <TASK class="TASK_FOR">
+        <VARIABLES value= "camcors_paths"/>
+        <TASK class="TASK_QUEUE">
+            <TASK class="TASK_DOWNLOAD">
+                <parameters>
+                    <parameter key="input_path" value="analysis_in_path" type="ref" part="1"/>
+                    <parameter key="input_path" value="camcors_paths" type="ref" part="2"/>
+                    <parameter key="output_path" value="analysis_out_path" type="ref" part="1"/>
+                    <parameter key="output_path" value="pathway_data_path_rel" type="ref" part="2"/>
+                    <parameter key="output_path" value="camcors_paths" type="ref" part="3"/>
+                </parameters>
+                <updates>
+                    <parameter key="camcor_data_in_path" value="output_path" type="ref"/>    
+                </updates>
+            </TASK>
+            <TASK class="TASK_FFC_CREATE">
+                <parameters>
+                    <parameter key="input_path" value="camcor_data_in_path" type="ref"/>
+                    <parameter key="output_path" value="analysis_out_path" type="ref" part="1"/>
+                    <parameter key="output_path" value="camcor_data_path_rel" type="ref" part="2"/>
+                    <parameter key="output_path" value="camcors_paths" type="ref" part="3"/>
+                </parameters>
+            </TASK>
+            <TASK class="TASK_REMOVE">
+                <parameters>
+                <parameter key="input_path" value="camcor_data_in_path" type="ref"/>
+                </parameters>
+            </TASK>
+        </TASK>
+    </TASK>
+    <!-- MAP_PLATE: download, normalize, read -->
+    <TASK class="TASK_DOWNLOAD"> 
+        <parameters>
+            <parameter key="input_path" value="metadata_in_path" type="ref"/>
+            <parameter key="output_path" value="analysis_out_path" type="ref" part="1"/>
+            <parameter key="output_path" value="metadata_path_rel" type="ref" part="2"/>
+        </parameters>
+        <updates>
+            <parameter key="metadata_path" value="output_path" type="ref"/>    
+        </updates>
+    </TASK>
+    <TASK class="TASK_R">
+        <parameters>
+            <parameter key="r_function_name" value = "normalizeMetadata"/>
+            <parameter key="r_script_path" value = "r_scripts_path" type="ref" part="1"/>
+            <parameter key="r_script_path" value = "metadata_format.R" part="2"/>
+            <parameter key="delimiter" value = "delimiter_mp" type="ref"/>
+            <parameter key="metadata_path" value="analysis_out_path" type="ref" part="1"/>
+            <parameter key="metadata_path" value="metadata_path_rel" type="ref" part="2"/>
+        </parameters>
+    </TASK>
+    <TASK class="TASK_READ_MAP_PLATE"> 
+        <parameters>
+            <parameter key="input_path" value="analysis_out_path" type="ref" part="1"/>
+            <parameter key="input_path" value="metadata_path_rel" type="ref" part="2"/>
+        </parameters>
+        <updates>
+            <parameter key="map_plate" value="map_plate" type="ref"/>    
+        </updates>
+    </TASK>
+    <!--Parted exp analysis: -->
+    <TASK class="TASK_FOR">
+        <VARIABLES value="exp_parts_list"/>
+        <TASK class="TASK_QUEUE"> 
+            <parameters>
+                <parameter key="pipeline_name"  value="pipeline_filename"  type="ref" part="1"/>
+                <parameter key="pipeline_name" value="exp_part" type="ref" part="2"/>
+                <parameter key="pipeline_name" value="pipeline_suffix" type="ref" part="3"/>
+                
+                <parameter key="pathway_data_raw_path" value="analysis_out_path" type="ref" part="1"/>
+                <parameter key="pathway_data_raw_path" value="exp_part" type="ref" part="2"/>
+                <parameter key="pathway_data_raw_path" value="pathway_data_raw_path_rel" type="ref" part="3"/>
+                <parameter key="pathway_data_raw_path" value="rel_path" type="ref" part="4"/>
+
+                <parameter key="pathway_data_ffc_path" value="analysis_out_path" type="ref" part="1"/>
+                <parameter key="pathway_data_ffc_path" value="exp_part" type="ref" part="2"/>
+                <parameter key="pathway_data_ffc_path" value="pathway_data_ffc_path_rel" type="ref" part="3"/>
+                <parameter key="pathway_data_ffc_path" value="rel_path" type="ref" part="4"/>
+                
+                <parameter key="quantify_data_raw_path" value="analysis_out_path" type="ref" part="1"/>
+                <parameter key="quantify_data_raw_path" value="exp_part" type="ref" part="2"/>
+                <parameter key="quantify_data_raw_path" value="quantify_data_raw_path_rel" type="ref" part="3"/> 
+                <parameter key="quantify_data_raw_path" value="rel_both_path" type="ref" part="4"/> 
+                
+                <parameter key="quantify_data_ffc_path" value="analysis_out_path" type="ref" part="1"/>
+                <parameter key="quantify_data_ffc_path" value="exp_part" type="ref" part="2"/>
+                <parameter key="quantify_data_ffc_path" value="quantify_data_ffc_path_rel" type="ref" part="3"/>
+                <parameter key="quantify_data_ffc_path" value="rel_both_path" type="ref" part="4"/>
+                
+                <parameter key="quantify_data_pbs_path" value="analysis_out_path" type="ref" part="1"/>
+                <parameter key="quantify_data_pbs_path" value="exp_part" type="ref" part="2"/>
+                <parameter key="quantify_data_pbs_path" value="quantify_data_pbs_path_rel" type="ref" part="3"/>
+                <parameter key="quantify_data_pbs_path" value="rel_both_path" type="ref" part="4"/>
+                
+                <parameter key="quantify_data_bck_path" value="analysis_out_path" type="ref" part="1"/>
+                <parameter key="quantify_data_bck_path" value="exp_part" type="ref" part="2"/>
+                <parameter key="quantify_data_bck_path" value="quantify_data_bck_path_rel" type="ref" part="3"/>
+                <parameter key="quantify_data_bck_path" value="rel_both_path" type="ref" part="4"/>
+               
+                <parameter key="quantify_data_pbsbck_path" value="analysis_out_path" type="ref" part="1"/>
+                <parameter key="quantify_data_pbsbck_path" value="exp_part" type="ref" part="2"/>
+                <parameter key="quantify_data_pbsbck_path" value="quantify_data_pbsbck_path_rel" type="ref" part="3"/>
+                <parameter key="quantify_data_pbsbck_path" value="rel_both_path" type="ref" part="4"/>
+                
+                <parameter key="analysis_out_path_part" value = "analysis_out_path" type="ref" part="1"/> 
+                <parameter key="analysis_out_path_part" value = "exp_part" type="ref" part="2"/> 
+            </parameters>
+    <!-- Parallelize ON -->
+             <TASK class="TASK_PARALLELIZE_MP">
+                <parameters>
+                    <parameter key="sleep_time"  value="120"/>
+                    <parameter key="prefix" value = "Well "/>
+                    <parameter key="input_path" value = "analysis_in_path" type="ref" part="1"/>
+                    <parameter key="input_path"  value="rel_path" type="ref" part="2"/> 
+                </parameters>
+                <TASK class="TASK_QUEUE">
+                    <TASK class="TASK_DOWNLOAD">
+                        <parameters>
+                            <parameter key="input_path" value="input_path"  type="ref" part="1"/>
+                            <parameter key="input_path" value="wellname_tag"  type="ref" part="2"/>
+                            <parameter key="output_path" value="pathway_data_raw_path"  type="ref" part="1"/>
+                            <parameter key="output_path" value="wellname_id"  type="ref" part="2"/>
+                        </parameters>
+                    </TASK>
+                    <TASK class="TASK_FOR">
+                        <VARIABLES value="ffc_setup_list"/>
+                        <TASK class="TASK_QUEUE"> 
+                            <TASK class="TASK_FFC_READ_APPLY">
+                                <parameters>
+                                    <parameter key="camcor_path" value="analysis_out_path"  type="ref" part="1"/>
+                                    <parameter key="camcor_path" value="camcor_data_path_rel"  type="ref" part="2"/>
+                                    <parameter key="camcor_path" value="camcor_path_part"  type="ref" part="3"/>
+                                    <parameter key="input_path"  value="pathway_data_raw_path"  type="ref" part="1"/>
+                                    <parameter key="input_path"  value="wellname_id"  type="ref" part="2"/>
+                                    <parameter key="output_path" value="pathway_data_ffc_path"  type="ref" part="1"/> 
+                                    <parameter key="output_path"  value="wellname_id"  type="ref" part="2"/>
+                                    <parameter key="regex_name"  value="regex" type="ref"/>
+                                </parameters>
+                            </TASK>
+                        </TASK>
+                    </TASK>
+    <!-- Quantification (based on cell type) -->  
+                    <TASK class="TASK_QUEUE"> 
+                        <parameters>
+                            <parameter key="pipeline"  value="pipeline_folder"  type="ref" part="1"/>
+                            <parameter key="pipeline"  mp_name="map_plate" type="map_plate" part="2">
+                                <parameter key = "well" value="mp_key" type = "ref"/>
+                                <parameter key = "param" value = "cells.1.1"/>
+                            </parameter>
+                            <parameter key="pipeline"  value="pipeline_date"  type="ref" part="3"/>
+                            <parameter key="pipeline"  value="pipeline_name"  type="ref" part="4"/>
+                        </parameters>
+                        <TASK class="TASK_FOR">  
+                            <VARIABLES>
+                                <VARIABLE>
+                                    <parameters>
+                                        <parameter key="pathway_data_xxx_path"  value="pathway_data_raw_path"  type="ref"/>
+                                        <parameter key="quantify_data_xxx_path"  value="quantify_data_raw_path"  type="ref"/>
+                                    </parameters>
+                                </VARIABLE>
+                                <VARIABLE>
+                                    <parameters>
+                                        <parameter key="pathway_data_xxx_path"  value="pathway_data_ffc_path"  type="ref"/>
+                                        <parameter key="quantify_data_xxx_path"  value="quantify_data_ffc_path"  type="ref"/>
+                                    </parameters>
+                                </VARIABLE>
+                            </VARIABLES>
+                            <TASK class="TASK_QUEUE">
+                                <TASK class="TASK_QUANTIFY">
+                                    <parameters>
+                                        <parameter key="input_path"    value="pathway_data_xxx_path" type="ref" part="1"/>
+                                        <parameter key="input_path"  value="wellname_id" type="ref" part="2"/>
+                                        <parameter key="output_path" value="quantify_data_xxx_path" type="ref" part="1"/> 
+                                        <parameter key="output_path"  value="wellname_id" type="ref" part="2"/>
+                                    </parameters>
+                                    </TASK>
+                                    <TASK class="TASK_APPLY_MAP_PLATE">
+                                        <parameters>
+                                            <parameter key="input_path" value="quantify_data_xxx_path"  type="ref" part="1"/>
+                                            <parameter key="input_path" value="wellname_id" type="ref" part="2"/>
+                                            <parameter key="output_path" value="quantify_data_xxx_path" type="ref" part="1"/> 
+                                            <parameter key="output_path" value="wellname_id" type="ref" part="2"/> 
+                                        </parameters>
+                                    </TASK>
+                                    <TASK class="TASK_REMOVE">
+                                        <parameters>
+                                        <parameter key="input_path"    value="pathway_data_xxx_path" type="ref" part="1"/>
+                                        <parameter key="input_path"  value="wellname_id" type="ref" part="2"/>
+                                        </parameters>
+                                    </TASK>
+                                </TASK>
+                            </TASK>                    
+                        </TASK>
+    <!-- Normalization) --> 
+                    <TASK class="TASK_FOR">
+                        <VARIABLES value="csv_names_list" execution="optional"/>
+                        <TASK class="TASK_QUEUE">
+                            <TASK class="TASK_R">
+                                <parameters>
+                                    <parameter key="r_function_name" value = "background_normalization"/>
+                                    <parameter key="r_script_path" value = "r_scripts_path" type="ref" part="1"/> 
+                                    <parameter key="r_script_path" value = "normalization_module//" part="2" type="path"/>
+                                    <parameter key="r_script_path" value = "pbs_normalization.R" part="3"/>
+                                    <parameter key="background_path" value="quantify_data_ffc_path" type="ref" part="1"/>
+                                    <parameter key="background_path" value="wellname_id" type="ref" part="2"/>  
+                                    <parameter key="background_path" value="Image.csv" part="3"/>
+                                    <parameter key="input_path" value="quantify_data_ffc_path" type="ref" part="1"/>
+                                    <parameter key="input_path" value="wellname_id" type="ref" part="2"/>
+                                    <parameter key="output_path" value="quantify_data_bck_path" type="ref" part="1"/>
+                                    <parameter key="output_path" value="wellname_id" type="ref" part="2"/>
+                                    <parameter key="filename" value = "csv_names_list" type="ref"/>
+                                </parameters>
+                            </TASK>
+                            <TASK class="TASK_R">
+                                <parameters>
+                                    <parameter key="r_function_name" value = "pbs_normalization"/>
+                                    <parameter key="r_script_path" value = "r_scripts_path" type="ref" part="1"/> 
+                                    <parameter key="r_script_path" value = "normalization_module//" part="2" type="path"/>
+                                    <parameter key="r_script_path" value = "pbs_normalization.R" part="3"/> 
+                                    <parameter key="camcor_path" value="analysis_out_path" type="ref" part="1"/>
+                                    <parameter key="camcor_path" value="camcor_data_path_rel" type="ref" part="2"/>
+                                    <parameter key="camcor_path" value="camcor_in_path" type="ref" part="3"/>
+                                    <parameter key="camcor_path" value="camcor.csv" part="4"/>
+                                    <parameter key="input_path" value="quantify_data_bck_path" type="ref" part="1"/>
+                                    <parameter key="input_path" value="wellname_id" type="ref" part="2"/>
+                                    <parameter key="output_path" value="quantify_data_pbsbck_path" type="ref" part="1"/>
+                                    <parameter key="output_path" value="wellname_id" type="ref" part="2"/>
+                                    <parameter key="filename" value = "csv_names_list" type="ref"/>
+                                </parameters>
+                            </TASK>
+                            <TASK class="TASK_R">
+                                <parameters>
+                                    <parameter key="r_function_name" value = "pbs_normalization"/>
+                                    <parameter key="r_script_path" value = "r_scripts_path" type="ref" part="1"/> 
+                                    <parameter key="r_script_path" value = "normalization_module//" part="2" type="path"/>
+                                    <parameter key="r_script_path" value = "pbs_normalization.R" part="3"/>   
+                                    <parameter key="camcor_path" value="analysis_out_path" type="ref" part="1"/>
+                                    <parameter key="camcor_path" value="camcor_data_path_rel" type="ref" part="2"/>
+                                    <parameter key="camcor_path" value="camcor_in_path" type="ref" part="3"/>
+                                    <parameter key="camcor_path" value="camcor.csv" part="4"/>
+                                    <parameter key="input_path" value="quantify_data_ffc_path" type="ref" part="1"/>
+                                    <parameter key="input_path" value="wellname_id" type="ref" part="2"/>
+                                    <parameter key="output_path" value="quantify_data_pbs_path" type="ref" part="1"/>
+                                    <parameter key="output_path" value="wellname_id" type="ref" part="2"/>
+                                    <parameter key="filename" value = "csv_names_list" type="ref"/>
+                                </parameters>
+                            </TASK>
+                        </TASK>
+                    </TASK>           
+                </TASK>
+             </TASK>
+    <!-- Parallelize OFF -->
+    <!-- TASK_FOR (data merge) -->   
+            <TASK class="TASK_FOR">
+                <VARIABLES>
+                    <VARIABLE>
+                        <parameters>
+                            <parameter key="quantify_data_xxx_path"  value="quantify_data_raw_path" type="ref"/>
+                            <parameter key="quantify_data_xxx_path_rel"  value="quantify_data_raw_path_rel" type="ref"/>
+                        </parameters>
+                    </VARIABLE>
+                    <VARIABLE>
+                        <parameters>
+                            <parameter key="quantify_data_xxx_path"  value="quantify_data_ffc_path" type="ref"/>
+                            <parameter key="quantify_data_xxx_path_rel"  value="quantify_data_ffc_path_rel" type="ref"/>
+                        </parameters>
+                    </VARIABLE>
+                    <VARIABLE>
+                        <parameters>
+                            <parameter key="quantify_data_xxx_path"  value="quantify_data_pbs_path" type="ref"/>
+                            <parameter key="quantify_data_xxx_path_rel"  value="quantify_data_pbs_path_rel" type="ref"/>
+                        </parameters>
+                    </VARIABLE>
+                    <VARIABLE>
+                        <parameters>
+                            <parameter key="quantify_data_xxx_path"  value="quantify_data_pbsbck_path" type="ref"/>
+                            <parameter key="quantify_data_xxx_path_rel"  value="quantify_data_pbsbck_path_rel" type="ref"/>
+                        </parameters>
+                    </VARIABLE>
+                    <VARIABLE>
+                        <parameters>
+                            <parameter key="quantify_data_xxx_path"  value="quantify_data_bck_path" type="ref"/>
+                            <parameter key="quantify_data_xxx_path_rel"  value="quantify_data_bck_path_rel" type="ref"/>
+                        </parameters>
+                    </VARIABLE>
+                </VARIABLES>
+                <TASK class="TASK_QUEUE"> 
+                    <TASK class="TASK_MERGE_SUBDIR_CSV">
+                        <parameters>
+                            <parameter key="input_path" value = "quantify_data_xxx_path" type="ref"/>
+                            <parameter key="output_path" value = "analysis_out_path" type="ref" part="1"/> 
+                            <parameter key="output_path" value = "exp_part" type="ref" part="2"/> 
+                            <parameter key="output_path" value = "quantify_data_xxx_path_rel" type="ref" part="3"/> 
+                     </parameters>
+                    </TASK>
+                </TASK>         
+            </TASK>  
+    <!-- TASK_FOR (csv_output (names)) -->   
+            <TASK class="TASK_FOR">
+                <VARIABLES value="csv_names_list" execution="optional"/>
+                <TASK class="TASK_QUEUE">   
+    <!-- TASK_FOR (csv_output (correction)) -->      
+                    <TASK class="TASK_FOR">
+                        <VARIABLES>
+                            <VARIABLE>
+                                <parameters>
+                                    <parameter key="quantify_data_xxx_path_rel"  value="quantify_data_raw_path_rel" type="ref"/>
+                                    <parameter key="figures_xxx_path_rel"  value="figures_raw_path_rel" type="ref"/>
+                                </parameters>
+                            </VARIABLE>
+                            <VARIABLE>
+                                <parameters>
+                                    <parameter key="quantify_data_xxx_path_rel"  value="quantify_data_ffc_path_rel" type="ref"/>
+                                    <parameter key="figures_xxx_path_rel"  value="figures_ffc_path_rel" type="ref"/>
+                                </parameters>
+                            </VARIABLE>
+                            <VARIABLE>
+                                <parameters>
+                                    <parameter key="quantify_data_xxx_path_rel"  value="quantify_data_pbs_path_rel" type="ref"/>
+                                    <parameter key="figures_xxx_path_rel"  value="figures_pbs_path_rel" type="ref"/>
+                                </parameters>
+                            </VARIABLE>
+                        </VARIABLES>
+                        <TASK class="TASK_QUEUE"> 
+                            <TASK class="TASK_READ_DATAFRAME_FROM_CSV">
+                                <parameters>
+                                    <parameter key="dict_key_name" value = "data_nuclei"/>
+                                    <parameter key="filename" value = "csv_names_list" type="ref"/>
+                                    <parameter key="input_path" value="analysis_out_path_part" type="ref" part="1"/>
+                                    <parameter key="input_path" value="quantify_data_xxx_path_rel" type="ref" part="2"/>
+                                </parameters>
+                                <updates>
+                                    <parameter key="data_r" value = "data_nuclei"/>
+                                </updates>
+                            </TASK>
+    <!-- TASK_FOR (plotting) -->  
+                            <TASK class="TASK_FOR">
+                                <VARIABLES>
+                                    <VARIABLE>
+                                        <parameters>
+                                            <parameter key="channel" value = "Intensity_IntegratedIntensity_DAPI"/>
+                                            <parameter key="plot_ylim_max_const" value = "0"/>
+                                            <parameter key="plot_ylim_max" value = "1000"/>
+                                        </parameters>
+                                    </VARIABLE>
+                                    <VARIABLE>
+                                        <parameters>
+                                            <parameter key="channel" value = "Intensity_MeanIntensity_DAPI"/>
+                                            <parameter key="plot_ylim_max_const" value = "1"/>
+                                            <parameter key="plot_ylim_max" value = "4000"/>
+                                        </parameters>
+                                    </VARIABLE>
+                                    <VARIABLE>
+                                        <parameters>
+                                            <parameter key="channel" value = "Intensity_MeanIntensity_Alexa"/>
+                                            <parameter key="plot_ylim_max_const" value = "1"/>
+                                            <parameter key="plot_ylim_max" value = "1000"/>
+                                        </parameters>
+                                    </VARIABLE>
+                                    <VARIABLE>
+                                        <parameters>
+                                            <parameter key="channel" value = "Intensity_IntegratedIntensity_Alexa"/>
+                                            <parameter key="plot_ylim_max_const" value = "0"/>
+                                            <parameter key="plot_ylim_max" value = "2000"/>
+                                        </parameters>
+                                    </VARIABLE>
+                                    <VARIABLE>
+                                        <parameters>
+                                            <parameter key="channel" value = "Intensity_MeanIntensity_Alexa488"/>
+                                            <parameter key="plot_ylim_max_const" value = "1"/>
+                                            <parameter key="plot_ylim_max" value = "1000"/>
+                                        </parameters>
+                                    </VARIABLE>
+                                    <VARIABLE>
+                                        <parameters>
+                                            <parameter key="channel" value = "Intensity_IntegratedIntensity_Alexa488"/>
+                                            <parameter key="plot_ylim_max_const" value = "0"/>
+                                            <parameter key="plot_ylim_max" value = "2000"/>
+                                        </parameters>
+                                    </VARIABLE>
+                                    <VARIABLE>
+                                        <parameters>
+                                            <parameter key="channel" value = "Intensity_MeanIntensity_Alexa555"/>
+                                            <parameter key="plot_ylim_max_const" value = "1"/>
+                                            <parameter key="plot_ylim_max" value = "1000"/>
+                                        </parameters>
+                                    </VARIABLE>
+                                    <VARIABLE>
+                                        <parameters>
+                                            <parameter key="channel" value = "Intensity_IntegratedIntensity_Alexa555"/>
+                                            <parameter key="plot_ylim_max_const" value = "0"/>
+                                            <parameter key="plot_ylim_max" value = "2000"/>
+                                        </parameters>
+                                    </VARIABLE>
+                                </VARIABLES>
+                                <TASK class="TASK_QUEUE"> 
+                                    <TASK class="TASK_R">
+                                        <parameters>
+                                            <parameter key="r_function_name" value = "plot_histogram_list"/>
+                                            <parameter key="grid_col" value = "id"/>
+                                            <parameter key="r_script_path" value = "plot_histogram.R" part="2"/>
+                                            <parameter key="filename" value = "_histogram_list" part="3"/>
+                                            <parameter key="x" value = "channel" type="ref"/>
+                                            <parameter key="filename" value = "channel" type="ref" part="2"/>
+                                            <parameter key="filename" value = "csv_names_list" type="ref" part="1"/>
+                                            <parameter key="r_script_path" value = "r_scripts_path" type="ref" part="1"/>
+                                            <parameter key="output_path" value="analysis_out_path_part" type="ref" part="1"/>
+                                            <parameter key="output_path" value="figures_xxx_path_rel" type="ref" part="2"/>
+                                            <parameter key="data" value = "data_r" type="ref"/>
+                                            <parameter key="ylim_max_const" value = "plot_ylim_max_const" type="ref"/>
+                                            <parameter key="ylim_max" value = "plot_ylim_max" type="ref"/>
+                                        </parameters>
+                                    </TASK>
+                                    <TASK class="TASK_R">
+                                        <parameters>
+                                            <parameter key="r_function_name" value = "plot_boxplot_compare"/>
+                                            <parameter key="x" value = "id"/>
+                                            <parameter key="r_script_path" value = "plot_boxplot_compare.R" part="2"/>
+                                            <parameter key="filename" value = "_boxplot" part="3"/>
+                                            <parameter key="filename" value = "channel"/>
+                                            <parameter key="filename" value = "csv_names_list"/>
+                                            <parameter key="y" value = "channel" type="ref"/>
+                                            <parameter key="r_script_path" value = "r_scripts_path" type="ref" part="1"/>
+                                            <parameter key="output_path" value="analysis_out_path_part" type="ref" part="1"/>
+                                            <parameter key="output_path" value="figures_xxx_path_rel" type="ref" part="2"/>
+                                            <parameter key="data" value = "data_r" type="ref"/>
+                                            <parameter key="ylim_max_const" value = "plot_ylim_max_const" type="ref"/>
+                                            <parameter key="ylim_max" value = "plot_ylim_max" type="ref"/>
+                                        </parameters>
+                                    </TASK>
+                                    <TASK class="TASK_R">
+                                        <parameters>
+                                            <parameter key="r_function_name" value = "plot_boxplot_group"/>
+                                            <parameter key="x" value = "time.1.1"/>
+                                            <parameter key="facet_grid_group_y" value = "stimulation.1.1"/>
+                                            <parameter key="facet_grid_group_x" value = "priming.1.1"/>
+                                            <parameter key="filename" value = "_boxplot_group_stimulation_1" part="3"/>
+                                            <parameter key="r_script_path" value = "plot_boxplot.R" part="2"/>
+                                            <parameter key="boxplot_group" value = "id"/>
+                                            <parameter key="plot_height" value = "12"/>
+                                            <parameter key="filename" value = "channel" type="ref" part="2"/>
+                                            <parameter key="filename" value = "csv_names_list" type="ref" part="1"/>
+                                            <parameter key="y" value = "channel" type="ref"/>
+                                            <parameter key="r_script_path" value = "r_scripts_path" type="ref" part="1"/>
+                                            <parameter key="output_path" value="analysis_out_path_part" type="ref" part="1"/>
+                                            <parameter key="output_path" value="figures_xxx_path_rel" type="ref" part="2"/>
+                                            <parameter key="data" value = "data_r" type="ref"/>
+                                            <parameter key="ylim_max_const" value = "plot_ylim_max_const" type="ref"/>
+                                            <parameter key="ylim_max" value = "plot_ylim_max" type="ref"/>
+                                        </parameters>
+                                    </TASK>
+                                    <TASK class="TASK_R">
+                                        <parameters>
+                                            <parameter key="r_function_name" value = "plot_boxplot_group"/>
+                                            <parameter key="x" value = "time.1.1"/>
+                                            <parameter key="facet_grid_group_x" value = "stimulation.1.1"/>
+                                            <parameter key="facet_grid_group_y" value = "priming.1.1"/>
+                                            <parameter key="filename" value = "_boxplot_group_stimulation_2" part="3"/>
+                                            <parameter key="r_script_path" value = "plot_boxplot.R" part="2"/>
+                                            <parameter key="boxplot_group" value = "id"/>
+                                            <parameter key="plot_height" value = "12"/>
+                                            <parameter key="filename" value = "channel" type="ref" part="2"/>
+                                            <parameter key="filename" value = "csv_names_list" type="ref" part="1"/>
+                                            <parameter key="y" value = "channel" type="ref"/>
+                                            <parameter key="r_script_path.1" value = "r_scripts_path" type="ref" part="1"/>
+                                            <parameter key="output_path" value="analysis_out_path_part" type="ref" part="1"/>
+                                            <parameter key="output_path" value="figures_xxx_path_rel" type="ref" part="2"/>
+                                            <parameter key="data" value = "data_r" type="ref"/>
+                                            <parameter key="ylim_max_const" value = "plot_ylim_max_const" type="ref"/>
+                                            <parameter key="ylim_max" value = "plot_ylim_max" type="ref"/>
+                                        </parameters>
+                                    </TASK>
+                                </TASK>
+                            </TASK>
+                        </TASK>
+                    </TASK>  
+                </TASK>        
+            </TASK>   
+        </TASK>
+    </TASK>
+
+</TASK>
+
+</main>

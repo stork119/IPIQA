@@ -6,7 +6,7 @@ import modules.file_managment as FM
 import modules.task as TK
 import modules.variable as VAR
 
-logger = logging.getLogger("XML parser")
+logger = logging.getLogger("IPIQA.xml_parser")
 
 def _parse_parted_param(param_dict, param, parted_dict, p_part):
     key = param.get('key')
@@ -155,9 +155,9 @@ def _create_task(name, task_list = [], config_dict = {}):
 
 def parse_xml(input_path, main_setts = True):
     if main_setts == True:
-        logger.info("Parsing XML input_settings.")
+        logger.info("Parsing XML input_settings: %s.", input_path)
     else:
-        logger.info("Parsing additional config input_settings.")
+        logger.info("Parsing additional config input_settings: %s.", input_path)
     try:
         tree = ET.parse(input_path)
     except Exception as e:
