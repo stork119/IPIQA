@@ -4,8 +4,8 @@ from collections import OrderedDict
 import modules.file_managment as FM
 import modules.csv_managment as CSV_M
 
-logger = logging.getLogger("map plate")
-logger.info("Executing map_plate module.")
+logger = logging.getLogger("IPIQA.map_plate")
+
 fatal_error_msg = "Fatal error occured while trying to read mapplate."
 
 def parse_mp(input_path, delimiter):
@@ -157,64 +157,6 @@ def _collect_exp_settings(abs_path, mp_file, delimiter, mp_dict):
         value = (data[pos_x][pos_y])
         mp_dict[well][name] = value
 
-def get_param_value(mp_dict, well_name, param):
-    """
-    Gets values for a given well and parameter.
-    """
-    value = mp_dict[well_name][param]
-    return value
-
-def get_param_values(mp_dict, param):
-    """
-    Gets all values for a given param 
-    from map_plate dictionary.
-    """
-    values = []
-    for well in mp_dict:
-        values.append(mp_dict[well][param])
-    return values
-
-def get_param_unique_values(mp_dict, param): 
-    """
-    Gets all unique values for a given param 
-    from map_plate dictionary.
-    """
-    values = get_param_values(mp_dict, param)
-    unique = list(set(values))
-    return unique
-
-def get_params_names(mp_dict): # get all key names from map_plate dictionary
-    names = []
-    key_0 = list(mp_dict.keys())[0]
-    names = list(mp_dict[key_0].keys()) 
-    """
-    Uncommented option (above):
-        if we assume that number of information between wells is constant
-    Commented option (below): 
-        if we assume that number of information about wells may somehow differ
-    """
-    """params_count = len(mp_dict[key_0])
-    for well in mp_dict: 
-        tmp= len(mp_dict[well])
-        if params_count != tmp:
-            logger.warning("Some wells are not described by " 
-                    "the same number of information: %s, %s", key_0, well)
-            if tmp > params_count:
-                names = []
-                params_count = tmp
-                for param in mp_dict[well]:
-                    names.append(param)"""
-    return names
-
-def get_well_params(mp_dict, well):
-    """ 
-    Gives all parameters values for a given well
-    """
-    values = []
-    for param in mp_dict[well]:
-        values.append(mp_dict[well][param])
-    return values
-
 def _verify_input_mp_file(input_file, delimiter, dimensions = 0):
     if not FM.file_verify_extension(input_file, ".csv"):
         logger.error("Wrong input format: %s", input_file)
@@ -229,23 +171,24 @@ def _verify_input_mp_file(input_file, delimiter, dimensions = 0):
             return False
     return True
 
-def _prepare_mp_output(input_data, mp_dict, mp_key):
+def _prepare_mp_output(input_data, v_mp_dict, mp_key):
     """
     Arguemnts:
     - input_data - data from input csv file
-    - mp_dict- map_plate structure containing all information about experiment
+    - v_mp_dict- variable representing map_plate structure,
+        which contains all information about experiment
     - mp_key - id/key of well in map_plate structure
     """
     output_data = []
     column_names = input_data[0]
-    new_line = column_names + get_params_names(mp_dict)
+    new_line = column_names + v_mp_dict.get_params_names() 
     output_data.append(new_line)
     for i in range(1, len(input_data)):
-        new_line = input_data[i] + get_well_params(mp_dict, mp_key)
+        new_line = input_data[i] + v_mp_dict.get_well_params(mp_key)
         output_data.append(new_line)
     return output_data
 
-def apply_mp(input_path, output_path, delimiter, mp_dict, 
+def apply_mp(input_path, output_path, delimiter, v_mp_dict, 
             csv_names, mp_key):
     """
     Main function of TASK_APPLY_MAP_PLATE. 
@@ -255,7 +198,8 @@ def apply_mp(input_path, output_path, delimiter, mp_dict,
     - input_path- path to dir collecting input files
     - output_path- path to output files
     - delimiter- separator used in csv files
-    - mp_dict- map_plate structure containing all information about experiment
+    - v_mp_dict- variable representing map_plate structure, which
+        contains all information about experiment
     - csv_names- list of filenames to apply map_plate
     - mp_key - id/key of well in map_plate structure
     """
@@ -268,7 +212,7 @@ def apply_mp(input_path, output_path, delimiter, mp_dict,
     for in_path, out_path in zip(input_paths_list, output_paths_list):
         if FM.path_check_existence(in_path):
             input_csv = CSV_M.read_csv(in_path, delimiter)
-            output = _prepare_mp_output(input_csv, mp_dict, mp_key)
+            output = _prepare_mp_output(input_csv, v_mp_dict, mp_key)
             CSV_M.write_csv(out_path, delimiter, output)
         else:
             logger.warning("Apply map_plate: following input csv file "

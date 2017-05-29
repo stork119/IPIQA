@@ -5,7 +5,7 @@ from time import sleep
 import logging
 import shutil # for function copy_data
 
-logger = logging.getLogger("file managment")
+logger = logging.getLogger("IPIQA.file_managment")
 
 """
 Checking out if the director and file exist ["C:/path/to/file"].
@@ -154,36 +154,39 @@ def dir_remove(path): # file or directory
     elif os.path.isdir(path):
         _folder_remove(path)
     else:
-        logging.info("Unable to remove %s. Object not found.", path)   
+        logger.info("Unable to remove %s. Object not found.", path)   
 
 def _file_remove(path):
     try:
         os.remove(path)
-        logging.info("File %s succesfully removed.", path)
+        logger.info("File %s succesfully removed.", path)
     except Exception as e:
-        logging.error(e)
+        logger.error(e)
         
 def _folder_remove(path):
     try:
         shutil.rmtree(path)
-        logging.info("Folder %s succesfully removed.", path)
+        logger.info("Folder %s succesfully removed.", path)
     except Exception as e:
-        logging.error(e)   
+        logger.error(e)   
 """
 Functions for coping objects.
 """
 def dir_copy(in_path, out_path):
+    if not path_check_existence(in_path):
+        logger.warning("Unable to copy %s. Given path doesn't exist", in_path)
+        return
     if os.path.isfile(in_path):
         file_copy(in_path, out_path)
     elif os.path.isdir(in_path):
         folder_copy(in_path, out_path)
     else:
-        logging.info("Unable to copy %s. Object not found.", in_path)   
+        logger.info("Unable to copy %s. Object not found.", in_path)   
 
 def folder_copy(in_path, out_path):
     copied_dir_path = out_path
     if path_check_existence(copied_dir_path):
-        logging.warning("Directory %s already exists. Removing old data.", copied_dir_path)
+        logger.warning("Directory %s already exists. Removing old data.", copied_dir_path)
         dir_remove(copied_dir_path)
     os.makedirs(copied_dir_path)
     files_paths_list = file_get_paths(in_path)
@@ -196,7 +199,7 @@ def folder_copy(in_path, out_path):
 def file_copy(in_path, out_path):
     dst = path_join(out_path, path_extract_name(in_path))
     if path_check_existence(dst):
-        logging.warning("File %s already exists. Data will be overwritten.", dst)
+        logger.warning("File %s already exists. Data will be overwritten.", dst)
     _file_copy(in_path, out_path)
 
 def _file_copy(in_path, out_path):
@@ -206,27 +209,27 @@ def _file_copy(in_path, out_path):
             shutil.copy(in_path, out_path)
             return out_path
         except shutil.Error as e: #same path
-            logging.error(e)
+            logger.error(e)
         except IOError as e:
             print('Error: %s' % e.strerror)
-            logging.error(e)
+            logger.error(e)
     else:
-        logging.error("Object \"" + in_path + "\" not found.")
+        logger.error("Object \"" + in_path + "\" not found.")
 
 def file_copy_constantly(in_path, out_path, sleep_time): #sleep_time is given in seconds and it's meant to be higher than 0.
     while True:
         if path_check_existence(in_path):
             try:
                 shutil.copy(in_path, out_path)
-                logging.info("Object succesfully copied to \"" + out_path + "\".")
+                logger.info("Object succesfully copied to \"" + out_path + "\".")
                 return out_path
             except shutil.Error as e: #same path
-                logging.error(e)
+                logger.error(e)
             except IOError as e:
                 print('Error: %s' % e.strerror)
-                logging.error(e)
+                logger.error(e)
         else:
-            logging.info("Object \"" + in_path + "\" have not been found yet. Searching will be continued.")
+            logger.info("Object \"" + in_path + "\" have not been found yet. Searching will be continued.")
             sleep(sleep_time)
 
 def dir_copy_constantly(in_path, out_path, sleep_time):
@@ -249,7 +252,7 @@ def filenames_make_paths_list(main_path, file_list):
     """
     path_list = []
     for filepath in file_list:
-        path = main_path + filepath
+        path = main_path + "//" + filepath
         path_list.append(path)
     return path_list
 
@@ -293,7 +296,7 @@ def _save_exec_info(settings_path, logs_path, out_path, dirname):
 def parse_exec_info(PP_path, logs_path, settings_path, config_dict):
     dir_name = path_extract_name(settings_path)[:-4]
     try:
-        out_path = local_dict["exec_output_path"] #temporary name
+        out_path = config_dict["exec_output_path"].get_value(config_dict) #temporary name
     except:
         out_path = PP_path + "//"
     atexit.register(_save_exec_info, settings_path, logs_path, out_path, dir_name)
