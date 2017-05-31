@@ -84,8 +84,26 @@ def _create_config_dict(root, tag):
         parse_param(config, parameter)
     return config
 
+def _parse_external_queue(queue, in_path):
+    path = FM.path_unify(in_path)
+    root = _get_root(path)
+    new_queue =  root[0]
+    if new_queue.get('class') == "TASK_QUEUE":
+        logger.warning("Parsing external queue: %s", in_path)
+        return new_queue
+    else:
+        logger.warning("Unproper external queue name: %s. "
+                    "Cannot parse external settings: %s", 
+                    new_queue.get('class'),in_path)
+        return queue
+
+
 def _create_queue_task(queue):
     task_list = []
+    if queue.get('class') == "TASK_QUEUE":
+        path = queue.get('path')
+        if path != None:
+            queue = _parse_external_queue(queue, path)
     for task in queue.findall('TASK'):
         task_name = task.get('class')
         if task_name == "TASK_QUEUE" or task_name == "TASK_IF" or task_name.startswith("TASK_PARALLELIZE"):
@@ -153,11 +171,8 @@ def _create_task(name, task_list = [], config_dict = {}):
     logger.debug("%s task created.", task_name)
     return task
 
-def parse_xml(input_path, main_setts = True):
-    if main_setts == True:
-        logger.info("Parsing XML input_settings: %s.", input_path)
-    else:
-        logger.info("Parsing additional config input_settings: %s.", input_path)
+def _get_root(input_path):
+    # Getting root of xml tree
     try:
         tree = ET.parse(input_path)
     except Exception as e:
@@ -166,8 +181,16 @@ def parse_xml(input_path, main_setts = True):
             #logger.error(e)
         else:
             logger.error("Given input_settings: %s doesn't exist.", input_path)
-        sys.exit(1) # wrong/non existing input settings -> shutting down program 
+        sys.exit(1) # wrong/non existing input settings -> shutting down program
     root = tree.getroot()
+    return root
+
+def parse_xml(input_path, main_setts = True):
+    if main_setts == True:
+        logger.info("Parsing XML input_settings: %s.", input_path)
+    else:
+        logger.info("Parsing additional config input_settings: %s.", input_path)
+    root = _get_root(input_path)
     Config = root[0]
     config_dict = _create_config_dict(Config, Config.tag)
     if main_setts == True:
