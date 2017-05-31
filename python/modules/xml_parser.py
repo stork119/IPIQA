@@ -85,6 +85,14 @@ def _create_config_dict(root, tag):
     return config
 
 def _parse_external_queue(queue, in_path):
+    """
+    Parsing IPIQA's queue from additional external settings.
+    I.e.:
+    <TASK class="TASK_QUEUE" path="path/to/queue.xml"> 
+    </TASK>
+    Function allows to merge few analysis procedure (in xml format)
+    into one pipeline.
+    """
     path = FM.path_unify(in_path)
     root = _get_root(path)
     new_queue =  root[0]
