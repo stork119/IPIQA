@@ -7,6 +7,8 @@ import modules.cellprofiler as cpm
 import modules.csv_managment as CSV_M
 import modules.map_plate as map_plate
 import modules.r_connection as R_connection
+import modules.python_connection as python_connection
+import modules.jython_connection as jython_connection
 import modules.ffc as ffc
 from time import sleep
 import multiprocessing 
@@ -450,6 +452,38 @@ class TASK_MAP_PLATE(TASK):
             exp_part_id = "1" 
             exp_parts = "1"
         map_plate.combine(input_path_csv, input_path_metadata, output_path, csv_names, exp_id, exp_part_id, exp_parts, delimiter_mp, delimiter_csv)
+
+class TASK_PYTHON(TASK):
+
+    dict_task = {"python_function_name" : {"required" : True},
+                 "python_script_path" : {"required" : True}}
+
+    def __init__(self, parameters, updates,  args = {}):
+        TASK.__init__(self, parameters, updates, args)
+
+    def execute_specify(self, env_local, dict_setts):
+        external_params = list(self.dict_task.keys())
+        logger.info("Executing python function %s from %s", dict_setts["python_function_name"], dict_setts["python_script_path"]) 
+        param_dict = python_connection.prepare_param_dict(env_local, self.parameters, external_params)
+        output_dict = python_connection.execute_python_script(param_dict, dict_setts["python_script_path"], dict_setts["python_function_name"])
+        out_var_dict = self.convert_to_var_dict(output_dict)
+        env_local.update(out_var_dict)
+
+class TASK_JYTHON(TASK):
+
+    dict_task = {"jython_function_name" : {"required" : True},
+                 "jython_script_path" : {"required" : True}}
+
+    def __init__(self, parameters, updates,  args = {}):
+        TASK.__init__(self, parameters, updates, args)
+
+    def execute_specify(self, env_local, dict_setts):
+        external_params = list(self.dict_task.keys())
+        logger.info("Executing jython function %s from %s", dict_setts["jython_function_name"], dict_setts["jython_script_path"]) 
+        param_dict = jython_connection.prepare_param_dict(env_local, self.parameters, external_params)
+        output_dict = jython_connection.execute_jython_script(param_dict, dict_setts["jython_script_path"], dict_setts["jython_function_name"])
+        out_var_dict = self.convert_to_var_dict(output_dict)
+        env_local.update(out_var_dict)
 
 class TASK_R(TASK):
 

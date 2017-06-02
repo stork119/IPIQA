@@ -6,7 +6,7 @@ from logging.handlers import QueueHandler, QueueListener
 
 def configure(PP_path):
     # Setting up log level
-    level = logging.INFO
+    level = logging.WARNING
 
     log_output_path = (os.path.join(PP_path, "python", "logs", "")).replace("\\", "//")
     log_file =  log_output_path + ((strftime("%Y_%m_%d_")  + "_" + strftime("%H_%M")) ) + ".log" # setup log filename
