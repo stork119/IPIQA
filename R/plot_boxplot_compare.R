@@ -19,7 +19,7 @@ try({package.list <- list("ggplot2")
 })
 
 ### sources ###
-# wd.tmp <- "" ### Rstudio 
+# wd.tmp <- "" ### Rstudio
 wd.tmp <- dirname(sys.frame(1)$ofile) ### script
 source(paste(wd.tmp, "theme_jetka.R", sep = "/"))
 source(paste(wd.tmp, "data_library.R", sep = "/"))
@@ -44,11 +44,11 @@ plot_boxplot_compare <- function(data,
                                xlab_hjust = 0,
                                legend_position = "bottom",
                                plot_fun = "geom_boxplot",
-                               theme_text_size = 12,        
-                               normalize_data   = TRUE, 
+                               theme_text_size = 12,
+                               normalize_data   = TRUE,
                                normalize_factor = 65535,
                                ylim_max_const = FALSE){
-  
+
   ylim_min <- as.integer(ylim_min)
   ylim_max  <- as.integer(ylim_max)
   plot_width <- as.integer(plot_width)
@@ -59,33 +59,33 @@ plot_boxplot_compare <- function(data,
   normalize_data <- as.integer(normalize_data)
   normalize_factor <- as.integer(normalize_factor)
   ylim_max_const <- as.integer(ylim_max_const)
-  
+
   if(!CheckColumnExistence(data = data, list(x,y,boxplot_group))){
     return()
   }
-  
+
   if(normalize_data){
     data[,y] <- normalize_factor*data[,y]
   }
   if(!ylim_max_const){
     ylim_max <- 1.2*max(data[,y])
   }
-  
-  gplot <- ggplot(data = data, 
+
+  gplot <- ggplot(data = data,
                   aes_string(x = x,
                              y = y,
                              group = boxplot_group)
-  ) + 
+  ) +
     do.call(plot_fun, args = list()) +
     ylim(ylim_min, ylim_max) +
     xlab(xlab) +
-    ylab(ylab) + 
+    ylab(ylab) +
     ggtitle(plot_title) +
     theme_jetka(text_size = theme_text_size)
   try({
     output_path <- normalizePath(output_path, "/")
     dir.create(path = output_path, recursive = TRUE, showWarnings = FALSE)
-    
+
   ggsave(filename = paste(output_path, "/", filename, ".pdf", sep = ""),
          plot = gplot,
          width = plot_width,
@@ -98,7 +98,7 @@ plot_boxplot_compare <- function(data,
 #### plot_boxplot_compare_grid ####
 plot_boxplot_compare_grid <- function(data,
                                       path,
-                                      filename = "boxplot", 
+                                      filename = "boxplot",
                                       grid.col,
                                       grid.col.name,
                                       boxplot.group,
@@ -111,48 +111,48 @@ plot_boxplot_compare_grid <- function(data,
   if(!CheckColumnExistence(data = data, list(x,y))){
     return()
   }
-  
+
   plot_width <- as.integer(plot_width)
   plot_height <- as.integer(plot_height)
-  
+
   grid <- expand.grid(sapply(grid.col, function(g){unique(data[,g])}))
   plots.list <- list()
-  
+
   filename.global.path <- paste(path,
                                 paste(unlist(args.filename), collapse = "/"),
                                 paste(grid.col, collapse = "-"),
                                 sep = "/")
-  
+
   filename.global <- paste(filename.global.path,
                            "boxplot",
                            sep = "/")
-  
+
   dir.create(path = filename.global.path, recursive = TRUE)
-  
+
   for(i in 1:nrow(grid)){
     try({
       data.tmp <- data[as.logical(
         apply(
           sapply(1:length(grid.col),
-                 function(j){ 
+                 function(j){
                    data[,grid.col[j]] == grid[i,j]}),
           1,
           prod)),]
-      
+
       data.tmp[,boxplot.group] <- factor(data.tmp[,boxplot.group],
                                          levels = sort(as.character(unique(data.tmp[,boxplot.group]))))
-      
+
       plot.title <- paste("cells = ",
                           data.tmp$cells[1],
                           paste(sapply(1:length(grid.col),
-                                       function(j){ 
+                                       function(j){
                                          paste(grid.col.name[j], "=", grid[i,j])}
                           ), collapse = " ")
       )
-      
+
       filename <- paste(filename.global, "-",
                         paste(sapply(1:length(grid.col),
-                                     function(j){ 
+                                     function(j){
                                        paste(grid.col[j], grid[i,j], sep = "-")}),
                               collapse = "-"), sep = "")
       plots.list[[i]] <-   plot_boxplot_compare(data.tmp,
@@ -170,7 +170,7 @@ plot_boxplot_compare_grid <- function(data,
       )
     })
   }
-  
+
   try({dev.off()})
   pdf(file = paste(filename.global, ".pdf", sep = ""),
       width = plot.width,
@@ -178,4 +178,84 @@ plot_boxplot_compare_grid <- function(data,
       useDingbats = FALSE)
   l <- lapply(plots.list, print)
   dev.off()
+}
+
+
+#### #####
+plot_boxplot_group <- function(data,
+                               ...,
+                               output_path,
+                               filename,
+                               x = "time",
+                               y = "ShrinkedNuclei.CHA.Intensity",
+                               boxplot_group = x,
+                               facet_grid_group_y = "",
+                               facet_grid_group_x = "",
+                               ylab = y,
+                               xlab = x,
+                               ylim_min = 0,
+                               ylim_max = 2000,
+                               plot_width = 24,
+                               plot_height = 8,
+                               plot_title = "",
+                               xlab_angle = 90,
+                               xlab_hjust = 0,
+                               legend_position = "bottom",
+                               plot_fun = "geom_boxplot",
+                               theme_text_size = 12,
+                               normalize_data   = TRUE,
+                               normalize_factor = 65535,
+                               ylim_max_const = TRUE,
+                               x_factor = TRUE){
+  print("ZOSIA")
+  ylim_min <- as.integer(ylim_min)
+  ylim_max  <- as.integer(ylim_max)
+  plot_width <- as.integer(plot_width)
+  plot_height <- as.integer(plot_height)
+  xlab_angle <- as.integer(xlab_angle)
+  xlab_hjust <- as.integer(xlab_hjust)
+  theme_text_size <- as.integer(theme_text_size)
+  normalize_data <- as.integer(normalize_data)
+  normalize_factor <- as.integer(normalize_factor)
+  ylim_max_const <- as.integer(ylim_max_const)
+  x_factor  <- as.integer(x_factor)
+
+  if(!CheckColumnExistence(data = data, list(x,y,boxplot_group))){
+    return()
+  }
+
+  if(normalize_data){
+    data[,y] <- normalize_factor*data[,y]
+  }
+  if(!ylim_max_const){
+    ylim_max <- 1.2*max(data[,y])
+  }
+  if(x_factor){
+    data[,x] <- factor(data[,x])
+  }
+
+#  data$bg <- factor(sapply(1:nrow(data),function(i){paste(as.character(data[i,boxplot_group]), sep = " ", collapse = " ")}))
+
+  gplot <- ggplot(data = data,
+                  aes_string(x = x,
+                             y = y,
+                             group = boxplot_group)
+  ) +
+    do.call(plot_fun, args = list()) +
+    ylim(ylim_min, ylim_max) +
+    xlab(xlab) +
+    ylab(ylab) +
+    ggtitle(plot_title) +
+    facet_grid(paste(facet_grid_group_x, "~", facet_grid_group_y, sep = " "), scale ="free", space = "free") +
+    theme_jetka(text_size = theme_text_size)
+  try({
+    output_path <- normalizePath(output_path, "/")
+    dir.create(path = output_path, recursive = TRUE, showWarnings = FALSE)
+  ggsave(filename = paste(output_path, "/", filename, ".pdf", sep = ""),
+         plot = gplot,
+         width = plot_width,
+         height = plot_height,
+         useDingbats = FALSE)
+  })
+  return(gplot)
 }

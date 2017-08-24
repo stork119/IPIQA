@@ -50,7 +50,6 @@ plot_boxplot_group <- function(data,
                                normalize_factor = 65535,
                                ylim_max_const = TRUE,
                                x_factor = TRUE){
-
   ylim_min <- as.integer(ylim_min)
   ylim_max  <- as.integer(ylim_max)
   plot_width <- as.integer(plot_width)
@@ -63,7 +62,7 @@ plot_boxplot_group <- function(data,
   ylim_max_const <- as.integer(ylim_max_const)
   x_factor  <- as.integer(x_factor)
   
-  if(!CheckColumnExistence(data = data, list(x,y,boxplot_group))){
+  if(!CheckColumnExistence(data = data, list(x,y,boxplot_group,facet_grid_group_y))){
     return()
   }
   
@@ -78,7 +77,9 @@ plot_boxplot_group <- function(data,
   }
   
 #  data$bg <- factor(sapply(1:nrow(data),function(i){paste(as.character(data[i,boxplot_group]), sep = " ", collapse = " ")}))
-  
+  if(facet_grid_group_x != "" & !CheckColumnExistence(data = data, list(facet_grid_group_x))){
+    facet_grid_group_x <- ""
+  }
   gplot <- ggplot(data = data, 
                   aes_string(x = x,
                              y = y,

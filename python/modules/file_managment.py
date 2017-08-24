@@ -47,8 +47,8 @@ def path_join(*paths_list):
     windows = True
     final_path = []
     if len(paths_list) < 2:
-        logger.error("Can't join less then 2 paths. Paths to join list: %s", paths_list)
-        return 0
+        #logger.error("Can't join less then 2 paths. Paths to join list: %s", paths_list)
+        final_path = _path_split(paths_list[0])
     for path in paths_list:
         splited_path = _path_split(path)
         final_path = final_path + splited_path
