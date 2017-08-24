@@ -11,7 +11,6 @@ normalizeMetadata <- function(metadata_path,
                               ...){
     csv.list <- list.files(path = metadata_path, pattern = ".csv", recursive = TRUE, full.names = TRUE)
     for(csv in csv.list){
-        print(csv)
         line <- readLines(csv, n = 1)
         if(grepl("\t", line)){
             csv.data <- read.table(file = csv, header = FALSE, sep = "\t")

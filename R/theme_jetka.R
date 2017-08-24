@@ -31,7 +31,7 @@ theme_jetka <-  function (base_size = 12,
   (theme_foundation(base_size = base_size, base_family = base_family) + 
      theme(line = element_line(), 
            rect = element_rect(fill = ggthemes_data$fivethirtyeight["ltgray"], linetype = 0, colour = NA),
-           plot.title = element_text(colour = ggthemes_data$fivethirtyeight["dkgray"], vjust = 1, hjust = 0.5, size=text_size, face="bold"), 
+           #plot.title = element_text(colour = ggthemes_data$fivethirtyeight["dkgray"], vjust = 1, hjust = 0.5, size=text_size, face="bold"), 
            text = element_text(colour = ggthemes_data$fivethirtyeight["dkgray"]), 
            axis.title = element_text(size=text_size),
            axis.title.y = element_text(angle=90),

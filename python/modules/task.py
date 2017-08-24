@@ -206,6 +206,9 @@ class TASK_QUANTIFY(TASK):
         TASK.__init__(self, parameters, updates, args)
 
     def execute_specify(self, env_local, dict_setts):
+        logger.debug("TASK_QUANTIFY cp_path: %s input_path :%s, output_path :%s, pipeline :%s",
+                     dict_setts["cp_path"], dict_setts["input_path"], 
+                     dict_setts["output_path"], dict_setts["pipeline"]) 
         cpm.run_cp_by_cmd(dict_setts["cp_path"], dict_setts["input_path"], 
                           dict_setts["output_path"], dict_setts["pipeline"])
    

@@ -117,3 +117,4 @@ vignettes/*.pdf
 
 # resources
 resources/*
+.Rproj.user
