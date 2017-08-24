@@ -49,12 +49,12 @@ def _parse_params(input_path, delimiter, dimensions, mp_dict):
     param_paths = sorted(param_paths, key = str)
     logger.debug("Map_plate params input paths: %s.", param_paths)
     for mp_file in param_paths:
-        correctness = _verify_input_mp_file(mp_file, delimiter, dimensions)
+        correctness = _verify_input_mp_file(mp_file, delimiter, dimensions = dimensions)
         if correctness == False:
             logger.error(fatal_error_msg)
             exit()
         else:
-            _collect_exp_settings(input_path, mp_file, delimiter, mp_dict)
+            _collect_exp_settings(input_path, mp_file, delimiter, mp_dict, dimensions = dimensions)
 
 def _parse_base_params(input_path, delimiter, mp_dict):
     """
@@ -68,9 +68,9 @@ def _parse_base_params(input_path, delimiter, mp_dict):
         i.e. cell type
     """
     dimensions, active = _parse_active(input_path, delimiter)
-    tag_path, id_path = _verify_tag_and_id(input_path, delimiter, dimensions)
-    tag = CSV_M.read_csv(tag_path, delimiter)
-    mp_id = CSV_M.read_csv(id_path, delimiter)
+    tag_path, id_path = _verify_tag_and_id(input_path, delimiter, dimensions = dimensions)
+    tag = CSV_M.read_csv(tag_path, delimiter, dimensions = dimensions)
+    mp_id = CSV_M.read_csv(id_path, delimiter, dimensions = dimensions)
     for i, row in enumerate(active):
         for j, col in enumerate(active[i]):
             exp_part = active[i][j]
@@ -111,7 +111,7 @@ def _verify_tag_and_id(input_path, delimiter, dimensions):
                     "due to original id file doesn't exist: %s", id_path)
         id_path = tag_path
     else:
-        if not _verify_input_mp_file(id_path, delimiter, dimensions):
+        if not _verify_input_mp_file(id_path, delimiter, dimensions = dimensions):
             logger.error(fatal_error_msg)
             exit()
     if not FM.path_check_existence(tag_path):
@@ -119,7 +119,7 @@ def _verify_tag_and_id(input_path, delimiter, dimensions):
                     " Cannot parse map_plate tags, "
                     "file doesn't exist: %s", tag_path)
         exit()
-    if not _verify_input_mp_file(tag_path, delimiter, dimensions):
+    if not _verify_input_mp_file(tag_path, delimiter, dimensions = dimensions):
         logger.error(fatal_error_msg)
         exit()
     return tag_path, id_path
@@ -136,7 +136,7 @@ def _get_param_paths(input_path):
             param_paths.append(path)
     return param_paths
 
-def _collect_exp_settings(abs_path, mp_file, delimiter, mp_dict):
+def _collect_exp_settings(abs_path, mp_file, delimiter, mp_dict, dimensions):
     """
     Extracts information about optional experiment's parameter,
     i.e. stimulation.1.1.
@@ -150,7 +150,7 @@ def _collect_exp_settings(abs_path, mp_file, delimiter, mp_dict):
     # i.e. compare.1.1 from compare/1.1.csv
     extension_length = len(FM.file_get_extension(fullname)) 
     name = fullname[:-extension_length]
-    data = CSV_M.read_csv(mp_file, delimiter)
+    data = CSV_M.read_csv(mp_file, delimiter, dimensions = dimensions)
     for well in mp_dict:
         pos_x = int(mp_dict[well]["position_x"])
         pos_y = int(mp_dict[well]["position_y"])
@@ -166,9 +166,14 @@ def _verify_input_mp_file(input_file, delimiter, dimensions = 0):
         x = len(data)
         y = len(data[0])
         if dimensions != [x,y]:
-            logger.error("Wrong input file "
-                        "(improper csv dimensions): %s.", input_file)
-            return False
+            logger.warning("Wrong input file  %s."
+                        "Improper csv dimensions: [%d, %d]. "
+                        "Should be [ %d, %d ].", 
+                        input_file,
+                        x, 
+                        y,
+                        dimensions[0],
+                        dimensions[1])
     return True
 
 def _prepare_mp_output(input_data, v_mp_dict, mp_key):
