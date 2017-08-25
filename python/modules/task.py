@@ -183,6 +183,25 @@ class TASK_DOWNLOAD(TASK):
         logger.debug("TASK_DOWNLOAD from input: %s to output :%s", dict_setts["input_path"], dict_setts["output_path"]) 
         FM.dir_copy(dict_setts["input_path"], dict_setts["output_path"])
 
+class TASK_FIND_FILE(TASK):
+
+    dict_task = {"input_path" : {"required" : True}, 
+                 "input_path_list" : {"required" : True, "default" : None}}
+
+    def __init__(self, parameters, updates,  args = {}):
+        TASK.__init__(self, parameters, updates, args)
+
+    def execute_specify(self, env_local, dict_setts):
+        if input_path_list is None:
+            path_list = [dict_setts["input_path_list"]]
+        else:
+            path_list = [FM.path_join(input_path_list_elem.get_value(env_local), dict_setts["input_path"]) for input_path_list_elem in dict_setts["input_path_list"]]
+        #path = ""
+        #for path_lis
+        #FM.path_check_existence(path)
+        #logger.debug("TASK_DOWNLOAD from input: %s to output :%s", dict_setts["input_path"], dict_setts["output_path"]) 
+        #FM.dir_copy(dict_setts["input_path"], dict_setts["output_path"])
+
 class TASK_REMOVE(TASK):
 
     dict_task = {"input_path" : {"required" : True}}
