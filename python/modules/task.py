@@ -183,24 +183,30 @@ class TASK_DOWNLOAD(TASK):
         logger.debug("TASK_DOWNLOAD from input: %s to output :%s", dict_setts["input_path"], dict_setts["output_path"]) 
         FM.dir_copy(dict_setts["input_path"], dict_setts["output_path"])
 
-class TASK_FIND_FILE(TASK):
+class TASK_FIND_FILE(TASK): # TO REMOVE
 
     dict_task = {"input_path" : {"required" : True}, 
-                 "input_path_list" : {"required" : True, "default" : None}}
+                 "input_path_list" : {"required" : True, "default" : None},
+                 "found_path" : {"required" : True, "default" : "found_path" }}
+
 
     def __init__(self, parameters, updates,  args = {}):
         TASK.__init__(self, parameters, updates, args)
 
     def execute_specify(self, env_local, dict_setts):
-        if input_path_list is None:
-            path_list = [dict_setts["input_path_list"]]
+        if dict_setts["input_path_list"] is None:
+            path_list = [dict_setts["input_path"]]
         else:
-            path_list = [FM.path_join(input_path_list_elem.get_value(env_local), dict_setts["input_path"]) for input_path_list_elem in dict_setts["input_path_list"]]
-        #path = ""
-        #for path_lis
-        #FM.path_check_existence(path)
-        #logger.debug("TASK_DOWNLOAD from input: %s to output :%s", dict_setts["input_path"], dict_setts["output_path"]) 
-        #FM.dir_copy(dict_setts["input_path"], dict_setts["output_path"])
+            path_list = [FM.path_join(input_path_list_elem.get_value(env_local),
+                                      dict_setts["input_path"]) for input_path_list_elem in dict_setts["input_path_list"]]
+        path_exist = ""    
+        for path in path_list:
+            if FM.path_check_existence(path):
+                path_exist = path
+                break
+        var_name = dict_setts["found_path"]
+        var_path = VAR.VariablePath(var_name, path_exist)
+        env_local[var_name] = var_path
 
 class TASK_REMOVE(TASK):
 
@@ -276,7 +282,6 @@ class TASK_PARALLELIZE(TASK):
         processes_number = int(dict_setts["number_of_cores"])
         sleep_time = int(dict_setts["sleep_time"])
         new_elements = elements_list
-        logger.warning("new_elements %s", new_elements)
         pool = multiprocessing.Pool(processes_number, self._logs_init, [p_queue])
         while True:
             if len(new_elements) > 0:
@@ -333,12 +338,10 @@ class TASK_PARALLELIZE_MP(TASK_PARALLELIZE): #all objects (folders) for given ma
         active_wells_keys = map_plate.get_active_wells(dict_setts["exp_part"]) #get map_plate active wells
         ele_number = len(active_wells_keys)
         params = map_plate.get_wells_base_params(active_wells_keys, dict_setts["prefix"], dict_setts["sufix"], dict_setts["exp_part"])        
-        logger.warning("karol 0: %s", dict_setts["input_path"])
         if dict_setts["input_path_list"] is None:
             elements_list = FC.create_elements_list(dict_setts["input_path"], params, dict_setts["used_value"])
         else:
             input_path_list = [FM.path_join(input_path_list_elem.get_value(env_local), dict_setts["input_path"]) for input_path_list_elem in dict_setts["input_path_list"]]
-            logger.warning("karol 1: %s", input_path_list)
             elements_list = FC.create_elements_list(None, params, dict_setts["used_value"],input_path_list = input_path_list)
         var_elements_list = []
         for element in elements_list:
