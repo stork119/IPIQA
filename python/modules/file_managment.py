@@ -128,7 +128,6 @@ def dir_get_names(input_path):
     if not path_check_existence(input_path):
         logger.error("Error. Can't get subdirs names list for a given path: %s. Path doesn't exist", input_path)
         return subdir_list
-    
     for subdir in os.listdir(input_path):
         if os.path.isdir(path_join(input_path, subdir)):
             subdir_list.append(subdir)

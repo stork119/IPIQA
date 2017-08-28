@@ -212,7 +212,6 @@ class TASK_FIND_FILE(TASK): # TO REMOVE
                 path_list = [FM.path_join(dict_setts["input_path_prefix"], path) for path in path_list]
             if dict_setts["input_path_sufix"] is not None:
                 path_list = [FM.path_join(path, dict_setts["input_path_sufix"]) for path in path_list]
-            logger.info("TASK_FIND_FILE path_list %s", path_list) 
         path_exist = ""    
         for path in path_list:
             if FM.path_check_existence(path):
@@ -221,6 +220,7 @@ class TASK_FIND_FILE(TASK): # TO REMOVE
         var_name = dict_setts["found_path"]
         var_path = VAR.VariablePath(var_name, path_exist)
         env_local[var_name] = var_path
+        logger.info("TASK_FIND_FILE file %s exists and was chosen for analysis", path_exist) 
 
 
 class TASK_REMOVE(TASK):
@@ -356,7 +356,9 @@ class TASK_PARALLELIZE_MP(TASK_PARALLELIZE): #all objects (folders) for given ma
         if dict_setts["input_path_list"] is None:
             elements_list = FC.create_elements_list(dict_setts["input_path"], params, dict_setts["used_value"])
         else:
-            input_path_list = [FM.path_join(input_path_list_elem.get_value(env_local), dict_setts["input_path"]) for input_path_list_elem in dict_setts["input_path_list"]]
+            input_path_list = [FM.path_join(input_path_list_elem.get_value(env_local), 
+                                            dict_setts["input_path"])
+            for input_path_list_elem in dict_setts["input_path_list"]]
             elements_list = FC.create_elements_list(None, params, dict_setts["used_value"],input_path_list = input_path_list)
         var_elements_list = []
         for element in elements_list:
