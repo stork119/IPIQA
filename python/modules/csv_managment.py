@@ -1,5 +1,5 @@
 #! /usr/bin/python
-import os, logging, csv
+import os, logging, csv, numpy
 import modules.file_managment as FM
 
 logger = logging.getLogger("IPIQA.csv_managment")
@@ -72,10 +72,27 @@ def simple_merge(csv_name, input_paths, delimiter, header = True):
                 output = output + data
     return output
 
-def read_csv(path, mark, dict_local = {}, key_name = ""):
+def read_csv(path, mark, dict_local = {}, key_name = "", dimensions = None):
     with open(path, 'r') as f:
+        try:
+            f = open(path, 'r')
+        except:
+            logger.error("Cannot read csv input file: %s.", f)
+            exit()
         reader = csv.reader(f)
-        data = list(list(line) for line in csv.reader(f, delimiter=mark))
+        if dimensions is None:
+            data = list(list(line) for line in csv.reader(f, delimiter=mark))
+        else:
+            try:
+                data = list(list(line[i] for i in numpy.arange(dimensions[1])) for line in csv.reader(f, delimiter=mark))
+                data = list(data[j] for j in numpy.arange(dimensions[0]))
+            except:
+                logger.error("Cannot read csv input file: %s." 
+                             "Desired dimmensions [%d, %d] out of range.", 
+                             f, 
+                             dimensions[0], 
+                             dimensions[1])
+                exit()            
     if len(dict_local) == 0: #no dictionary was passed
         return data
     else:

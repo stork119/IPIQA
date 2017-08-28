@@ -35,7 +35,7 @@ def _greater_or_less(arg1, arg2, comparison):
             return True
     return False
 
-def create_elements_list(input_path, wells_params, used_value):   
+def create_elements_list(input_path, wells_params, used_value, input_path_list = None):   
     """
     Arguments:
     - input_path - path to directories
@@ -44,12 +44,19 @@ def create_elements_list(input_path, wells_params, used_value):
     Returns
     - verified_dirs- list of subdirs representing chosen active wells set
     """
-    all_dir_list = FM.dir_get_names(input_path)
-    verified_dirs = []
-    for well in wells_params:
-        try:
-            if any(dir_name == well[("wellname_" + used_value)] for dir_name in all_dir_list):
-                verified_dirs.append(well)
-        except: 
-            logger.error("Unexpected used_value: %s", used_value)
+    try:
+        if input_path_list is None:
+            input_path_list = [input_path]
+        all_dir_list = [{'dir_list': FM.dir_get_names(input_path), 'input_path':input_path} for input_path in input_path_list]
+        verified_dirs = []
+        for well in wells_params:
+            well_found = False
+            for path_dir_list in all_dir_list:
+                if not well_found:
+                    if any(dir_name == well[("wellname_" + used_value)] for dir_name in path_dir_list['dir_list']):
+                        well['input_path'] = path_dir_list['input_path']
+                        verified_dirs.append(well)
+                        well_found = True
+    except:
+        logger.error("Unexpected error in create_elements_list")
     return verified_dirs
