@@ -180,12 +180,13 @@ class TASK_DOWNLOAD(TASK):
         TASK.__init__(self, parameters, updates, args)
 
     def execute_specify(self, env_local, dict_setts):
-        logger.debug("TASK_DOWNLOAD from input: %s to output :%s", dict_setts["input_path"], dict_setts["output_path"]) 
+        logger.info("TASK_DOWNLOAD from input: %s to output :%s", dict_setts["input_path"], dict_setts["output_path"]) 
         FM.dir_copy(dict_setts["input_path"], dict_setts["output_path"])
 
 class TASK_FIND_FILE(TASK): # TO REMOVE
 
-    dict_task = {"input_path" : {"required" : True}, 
+    dict_task = {"input_path_prefix" : {"required" : True, "default" : None}, 
+                 "input_path_sufix" : {"required" : True, "default" : None}, 
                  "input_path_list" : {"required" : True, "default" : None},
                  "found_path" : {"required" : True, "default" : "found_path" }}
 
@@ -195,10 +196,23 @@ class TASK_FIND_FILE(TASK): # TO REMOVE
 
     def execute_specify(self, env_local, dict_setts):
         if dict_setts["input_path_list"] is None:
-            path_list = [dict_setts["input_path"]]
+            if dict_setts["input_path_prefix"] is None:
+                if dict_setts["input_path_sufix"] is None:
+                    path_list = []
+                else:
+                    path_list = [dict_setts["input_path_sufix"]]
+            else:
+                if dict_setts["input_path_sufix"] is None:
+                    path_list = [dict_setts["input_path_prefix"]]
+                else:
+                    path_list = [FM.path_join(dict_setts["input_path_prefix"], dict_setts["input_path_sufix"])]
         else:
-            path_list = [FM.path_join(input_path_list_elem.get_value(env_local),
-                                      dict_setts["input_path"]) for input_path_list_elem in dict_setts["input_path_list"]]
+            path_list = [input_path_list_elem.get_value(env_local) for input_path_list_elem in dict_setts["input_path_list"]]
+            if dict_setts["input_path_prefix"] is not None:
+                path_list = [FM.path_join(dict_setts["input_path_prefix"], path) for path in path_list]
+            if dict_setts["input_path_sufix"] is not None:
+                path_list = [FM.path_join(path, dict_setts["input_path_sufix"]) for path in path_list]
+            logger.info("TASK_FIND_FILE path_list %s", path_list) 
         path_exist = ""    
         for path in path_list:
             if FM.path_check_existence(path):
@@ -207,6 +221,7 @@ class TASK_FIND_FILE(TASK): # TO REMOVE
         var_name = dict_setts["found_path"]
         var_path = VAR.VariablePath(var_name, path_exist)
         env_local[var_name] = var_path
+
 
 class TASK_REMOVE(TASK):
 
