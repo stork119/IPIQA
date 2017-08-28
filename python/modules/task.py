@@ -180,8 +180,47 @@ class TASK_DOWNLOAD(TASK):
         TASK.__init__(self, parameters, updates, args)
 
     def execute_specify(self, env_local, dict_setts):
-        logger.debug("TASK_DOWNLOAD from input: %s to output :%s", dict_setts["input_path"], dict_setts["output_path"]) 
+        logger.info("TASK_DOWNLOAD from input: %s to output :%s", dict_setts["input_path"], dict_setts["output_path"]) 
         FM.dir_copy(dict_setts["input_path"], dict_setts["output_path"])
+
+class TASK_FIND_FILE(TASK): # TO REMOVE
+
+    dict_task = {"input_path_prefix" : {"required" : True, "default" : None}, 
+                 "input_path_sufix" : {"required" : True, "default" : None}, 
+                 "input_path_list" : {"required" : True, "default" : None},
+                 "found_path" : {"required" : True, "default" : "found_path" }}
+
+
+    def __init__(self, parameters, updates,  args = {}):
+        TASK.__init__(self, parameters, updates, args)
+
+    def execute_specify(self, env_local, dict_setts):
+        if dict_setts["input_path_list"] is None:
+            if dict_setts["input_path_prefix"] is None:
+                if dict_setts["input_path_sufix"] is None:
+                    path_list = []
+                else:
+                    path_list = [dict_setts["input_path_sufix"]]
+            else:
+                if dict_setts["input_path_sufix"] is None:
+                    path_list = [dict_setts["input_path_prefix"]]
+                else:
+                    path_list = [FM.path_join(dict_setts["input_path_prefix"], dict_setts["input_path_sufix"])]
+        else:
+            path_list = [input_path_list_elem.get_value(env_local) for input_path_list_elem in dict_setts["input_path_list"]]
+            if dict_setts["input_path_prefix"] is not None:
+                path_list = [FM.path_join(dict_setts["input_path_prefix"], path) for path in path_list]
+            if dict_setts["input_path_sufix"] is not None:
+                path_list = [FM.path_join(path, dict_setts["input_path_sufix"]) for path in path_list]
+        path_exist = ""    
+        for path in path_list:
+            if FM.path_check_existence(path):
+                path_exist = path
+                break
+        var_name = dict_setts["found_path"]
+        var_path = VAR.VariablePath(var_name, path_exist)
+        env_local[var_name] = var_path
+        logger.info("TASK_FIND_FILE file %s exists and was chosen for analysis", path_exist) 
 
 
 class TASK_REMOVE(TASK):
@@ -295,6 +334,7 @@ class TASK_PARALLELIZE_MP(TASK_PARALLELIZE): #all objects (folders) for given ma
     """
     
     dict_task = {"input_path" : {"required" : True},
+                 "input_path_list" : {"required" : True, "default" : None},
                  "number_of_cores" : {"required" : True, "default" : "1"}, 
                  "sleep_time" : {"required" : True},
                  "used_value" : {"required" : True, "default" : "tag"},
@@ -312,56 +352,62 @@ class TASK_PARALLELIZE_MP(TASK_PARALLELIZE): #all objects (folders) for given ma
         map_plate = env_local[dict_setts["mp_name"]]
         active_wells_keys = map_plate.get_active_wells(dict_setts["exp_part"]) #get map_plate active wells
         ele_number = len(active_wells_keys)
-        params = map_plate.get_wells_base_params(active_wells_keys, dict_setts["prefix"], dict_setts["sufix"], dict_setts["exp_part"])
-        elements_list = FC.create_elements_list(dict_setts["input_path"], params, dict_setts["used_value"])
+        params = map_plate.get_wells_base_params(active_wells_keys, dict_setts["prefix"], dict_setts["sufix"], dict_setts["exp_part"])        
+        if dict_setts["input_path_list"] is None:
+            elements_list = FC.create_elements_list(dict_setts["input_path"], params, dict_setts["used_value"])
+        else:
+            input_path_list = [FM.path_join(input_path_list_elem.get_value(env_local), 
+                                            dict_setts["input_path"])
+            for input_path_list_elem in dict_setts["input_path_list"]]
+            elements_list = FC.create_elements_list(None, params, dict_setts["used_value"],input_path_list = input_path_list)
         var_elements_list = []
         for element in elements_list:
             var_element = self.convert_to_var_dict(element)
             var_elements_list.append(var_element)
         return var_elements_list, ele_number
 
-class TASK_PARALLELIZE_LIST(TASK_PARALLELIZE): # list of objects (folders) # [!] NOT SUPPORTED
+#class TASK_PARALLELIZE_LIST(TASK_PARALLELIZE): # list of objects (folders) # [!] NOT SUPPORTED
 
-    dict_task = {"input_path" : {"required" : True},
-                 "number_of_cores" : {"required" : True, "default" : "1"}, 
-                 "sleep_time" : {"required" : True},
-                 "folders_list" : {"required" : True}}
-    # [!] number_of_cores is temporary coded as string
+    #dict_task = {"input_path" : {"required" : True},
+                 #"number_of_cores" : {"required" : True, "default" : "1"}, 
+                 #"sleep_time" : {"required" : True},
+                 #"folders_list" : {"required" : True}}
+    ## [!] number_of_cores is temporary coded as string
 
-    def __init__(self, parameters, updates, args):
-        TASK_PARALLELIZE.__init__(self, parameters, updates, args)
+    #def __init__(self, parameters, updates, args):
+        #TASK_PARALLELIZE.__init__(self, parameters, updates, args)
 
-    def parse_elements_list(self, env_local, dict_setts):
-        paths = []
-        input_path = str(dict_setts["input_path"])
-        folder_list = (dict_setts["folders_list"]).split(",")
-        for folder in folder_list:
-            path = FM.path_join(input_path, folder)
-            paths.append(path)
-        folders_number = len(paths)
-        return paths, folders_number
+    #def parse_elements_list(self, env_local, dict_setts):
+        #paths = []
+        #input_path = str(dict_setts["input_path"])
+        #folder_list = (dict_setts["folders_list"]).split(",")
+        #for folder in folder_list:
+            #path = FM.path_join(input_path, folder)
+            #paths.append(path)
+        #folders_number = len(paths)
+        #return paths, folders_number
 
 
-class TASK_PARALLELIZE_PATH(TASK_PARALLELIZE): #all objects (folders) in given directory (path)
+#class TASK_PARALLELIZE_PATH(TASK_PARALLELIZE): #all objects (folders) in given directory (path) # [!] NOT SUPPORTED
 
-    dict_task = {"input_path" : {"required" : True},
-                 "number_of_cores" : {"required" : True, "default" : "1"}, 
-                 "sleep_time" : {"required" : True},
-                 "folders_number" : {"required" : True}}
-    # [!] number_of_cores is temporary coded as string
+    #dict_task = {"input_path" : {"required" : True},
+                 #"number_of_cores" : {"required" : True, "default" : "1"}, 
+                 #"sleep_time" : {"required" : True},
+                 #"folders_number" : {"required" : True}}
+    ## [!] number_of_cores is temporary coded as string
     
-    def __init__(self, parameters, updates, args):
-        TASK_PARALLELIZE.__init__(self, parameters, updates, args)
-        self.config_dict = args['config_dict']
+    #def __init__(self, parameters, updates, args):
+        #TASK_PARALLELIZE.__init__(self, parameters, updates, args)
+        #self.config_dict = args['config_dict']
 
-    def parse_elements_list(self, env_local, dict_setts):
-        folders_number = int(dict_setts["folders_number"])
-        dir_list = FM.dir_get_names(dict_setts["input_path"])
-        var_dir_list = []
-        for dir_name in dir_list:
-            variable = VAR.Variable("folder_name", dir_name)
-            var_dir_list.append({"folder_name" : variable})
-        return dir_list, folders_number
+    #def parse_elements_list(self, env_local, dict_setts):
+        #folders_number = int(dict_setts["folders_number"])
+        #dir_list = FM.dir_get_names(dict_setts["input_path"])
+        #var_dir_list = []
+        #for dir_name in dir_list:
+            #variable = VAR.Variable("folder_name", dir_name)
+            #var_dir_list.append({"folder_name" : variable})
+        #return dir_list, folders_number
 
 class TASK_READ_MAP_PLATE(TASK):
     """
