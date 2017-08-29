@@ -3,8 +3,8 @@
 <CONFIG>
     <!-- PC configuration -->
     <parameter key="cp_path" value = "C://Program Files//CellProfiler//" type="path"/>
-    <parameter key="r_scripts_path" value = "F://AG//IPIQA//R//" type="path"/>
-    <parameter key="exec_output_path" value = "F://AG//experiment_execution//" type="path"/>
+    <parameter key="r_scripts_path" value = "Y://IPIQA//R//" type="path"/>
+    <parameter key="exec_output_path" value = "Y://IPIQA//output//" type="path"/>
 
     <!-- Building up output analysis directory structure: -->
     <parameter key="camcor_data_path_rel"   value="data_camcor//" type="path"/>
