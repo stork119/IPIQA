@@ -4,6 +4,7 @@ import atexit
 from time import sleep
 import logging
 import shutil # for function copy_data
+import numpy
 
 logger = logging.getLogger("IPIQA.file_managment")
 
@@ -126,7 +127,7 @@ def file_get_paths(input_path):
 def dir_get_names(input_path):
     subdir_list = []
     if not path_check_existence(input_path):
-        logger.error("Error. Can't get subdirs names list for a given path: %s. Path doesn't exist", input_path)
+        logger.warning("Error. Can't get subdirs names list for a given path: %s. Path doesn't exist", input_path)
         return subdir_list
     for subdir in os.listdir(input_path):
         if os.path.isdir(path_join(input_path, subdir)):
@@ -256,14 +257,17 @@ def filenames_make_paths_list(main_path, file_list):
         path_list.append(path)
     return path_list
 
-def dir_check_completeness(in_path, required_files, sleep_time):
+def dir_check_completeness(in_path, required_files, sleep_time, max_iterations):
     """ Verify if the given list of files exist in given directory (path)"""
-    while True:
-        all_files = os.listdir(in_path)
-        if set(required_files).issubset(set(all_files)):
-            break
-        else:
-            sleep(sleep_time)
+    completed = False
+    #for i in numpy.arange(max_iterations):
+    all_files = os.listdir(in_path)
+    if set(required_files).issubset(set(all_files)):
+        completed = True
+    #break
+    #else:
+    #sleep(sleep_time)
+    return(completed)
 
 def file_verify_extension(filename, extension): #checking out if the given file have got given extension
     if filename.endswith(extension):
