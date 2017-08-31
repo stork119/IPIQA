@@ -40,6 +40,20 @@ class Variable():
         # see VariableMP
         return self.get_value(env)
 
+
+class VariableBool(Variable):
+    """
+    Parameters with type 'path' are represented in  xml settings
+    as following:
+    <parameter key = <KEY> value = <VALUE> type = "path" />
+    
+    i.e.
+    <parameter key = "path21" value = "C://input_file_1" type = "ref"/>
+    """
+    def __init__(self, key, value, args = {}):
+        Variable.__init__(self, key, value, args)
+        self.value = value.lower() in ['true', '1', 't']
+
 class VariablePath(Variable):
     """
     Parameters with type 'path' are represented in  xml settings

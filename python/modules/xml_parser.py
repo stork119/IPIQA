@@ -59,6 +59,8 @@ def _create_variable(param, tmp_key = ""):
         var = VAR.VariableReference(key, value, args)
     elif p_type == "path":
         var = VAR.VariablePath(key, value, args)
+    elif p_type == "bool":
+        var = VAR.VariableBool(key, value, args)
     elif p_type == "list":
         var = _parse_variable_list(key, param, args)
     elif p_type == "structure" or p_type == "struc":
