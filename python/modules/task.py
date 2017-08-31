@@ -15,6 +15,7 @@ import multiprocessing
 import logging
 import os
 from logging.handlers import QueueHandler, QueueListener
+import numpy
 
 logger = logging.getLogger("IPIQA")
 
@@ -141,7 +142,9 @@ class TASK_IF(TASK):
 
     def execute_specify(self, env_local, dict_setts):
         comparison = dict_setts["comparison"].lower() 
+        logger.info("TASK IF %s %s %s", type(dict_setts["arg_1"]), type(dict_setts["arg_2"]), comparison)
         if FC.compare_args(dict_setts["arg_1"], dict_setts["arg_2"], comparison) == True:
+            logger.info("TASK IF SUCCESS")
             self._execute_queue(env_local)
         return
 
@@ -154,22 +157,28 @@ class TASK_CHECK_COMPLETNESS(TASK):
     dict_task = {"experiment_finished" : {"required" : True, "default" : True},
                  "input_path" : {"required" : True}, 
                  "required_files" : {"required" : True,},
+                 "max_iterations" : {"required" : True, "default" : 1},
                  "sleep_time" : {"required" : True}}
 
     def __init__(self, parameters, updates,  args = {}):
         TASK.__init__(self, parameters, updates, args)
 
     def execute_specify(self, env_local, dict_setts):
+        var_complete = VAR.Variable("completed", True)
         in_path = dict_setts["input_path"]
-        try:
-            job_done = str(dict_setts["experiment_finished"])
-            job_done = job_done.lower()
-            if job_done == "no" or job_done ==  "0" or job_done == "false" or job_done == False:
-                required_files = (dict_setts["required_files"]).split(",")
-                sleep_time = int(dict_setts["sleep_time"])
-                FM.dir_check_completeness(in_path, required_files, sleep_time)
-        except:
-            pass
+        #job_done = str(dict_setts["experiment_finished"])
+        #job_done = job_done.lower()
+        required_files = (dict_setts["required_files"]).split(",") # TODO splitting to list of elements
+        if dict_setts["experiment_finished"]:
+            sleep_time = int(dict_setts["sleep_time"])
+            max_iterations = int(dict_setts["max_iterations"])
+            # max iterations 
+            completed = FM.dir_check_completeness(in_path, required_files, sleep_time, max_iterations)
+            if not completed:
+                var_complete = VAR.Variable("completed", False)
+                logger.warning("TASK_CHECK_COMPLETNESS: well %s not finished", in_path)
+        env_local["completed"] = var_complete
+
 
 class TASK_DOWNLOAD(TASK):
 
@@ -293,21 +302,28 @@ class TASK_PARALLELIZE(TASK):
         p_queue = env_local["parall_logs_queue"].get_value(env_local)
         self.level = env_local["logs_level"].get_value(env_local)
         del env_local["parall_logs_queue"]
-        elements_list, ele_number = self.parse_elements_list(env_local, dict_setts)
+        env_local["completed"] = VAR.Variable("completed", True)
+        new_elements, ele_number = self.parse_elements_list(env_local, dict_setts)
+        elements_list = []
         processes_number = int(dict_setts["number_of_cores"])
         sleep_time = int(dict_setts["sleep_time"])
-        new_elements = elements_list
         pool = multiprocessing.Pool(processes_number, self._logs_init, [p_queue])
         while True:
             if len(new_elements) > 0:
                 args = ((env_local, element) for element in new_elements) #or just pass task, because we're able to get task_list and settings_dict from init if both functions will stay here
-                pool.map_async(self._execute_queue, args)
+                env_tasks_list = []
+                pool_job = pool.map_async(self._execute_queue, args, callback = env_tasks_list.extend)
+                pool_job.wait()
+                elements_list.extend([new_elements[i] for i in numpy.arange(len(env_tasks_list)) if env_tasks_list[i]["completed"].get_value(env_tasks_list[i])]) # TODO flow control
+                #elements_list.extend(elements_finished)
+                #for element in elements_list:
+                    #logger.error("TASK PARALLEIZE elements_list finished , %s", element["wellname_id"].get_value(env_local))
             if len(elements_list) >= ele_number:
                 break
             sleep(sleep_time)
             new_elements_list = self.parse_elements_list(env_local, dict_setts)[0] # in MP case (ONLY) we could just call _create_ele_lis; TO DO
-            new_elements = [i for i in new_elements_list if i not in elements_list]
-            elements_list = new_elements_list
+            elements_list_wellnames = [element["wellname_id"].get_value(env_local) for element in elements_list]
+            new_elements = [element for element in new_elements_list if element["wellname_id"].get_value(env_local) not in elements_list_wellnames] 
         pool.close()
         pool.join()
 
@@ -315,7 +331,8 @@ class TASK_PARALLELIZE(TASK):
         env_local, elements = args
         env_local.update(elements)
         for task in self.task_list:
-            task.execute(env_local)
+            env_local = task.execute(env_local)
+        return(env_local)
 
 class TASK_PARALLELIZE_MP(TASK_PARALLELIZE): #all objects (folders) for given map_plate setup
     """
@@ -357,9 +374,9 @@ class TASK_PARALLELIZE_MP(TASK_PARALLELIZE): #all objects (folders) for given ma
             elements_list = FC.create_elements_list(dict_setts["input_path"], params, dict_setts["used_value"])
         else:
             input_path_list = [FM.path_join(input_path_list_elem.get_value(env_local), 
-                                            dict_setts["input_path"])
-            for input_path_list_elem in dict_setts["input_path_list"]]
-            elements_list = FC.create_elements_list(None, params, dict_setts["used_value"],input_path_list = input_path_list)
+                                            dict_setts["input_path"]) for input_path_list_elem in dict_setts["input_path_list"]]
+            logger.info("TASK_PARALLELIZE_MP %s", input_path_list) 
+            elements_list = FC.create_elements_list(None, params, dict_setts["used_value"], input_path_list = input_path_list)
         var_elements_list = []
         for element in elements_list:
             var_element = self.convert_to_var_dict(element)
