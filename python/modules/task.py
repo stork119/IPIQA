@@ -142,7 +142,7 @@ class TASK_IF(TASK):
 
     def execute_specify(self, env_local, dict_setts):
         comparison = dict_setts["comparison"].lower() 
-        logger.info("TASK IF %s %s %s", type(dict_setts["arg_1"]), type(dict_setts["arg_2"]), comparison)
+        logger.info("TASK IF %s %s %s", dict_setts["arg_1"], dict_setts["arg_2"], comparison)
         if FC.compare_args(dict_setts["arg_1"], dict_setts["arg_2"], comparison) == True:
             logger.info("TASK IF SUCCESS")
             self._execute_queue(env_local)
@@ -169,7 +169,7 @@ class TASK_CHECK_COMPLETNESS(TASK):
         #job_done = str(dict_setts["experiment_finished"])
         #job_done = job_done.lower()
         required_files = (dict_setts["required_files"]).split(",") # TODO splitting to list of elements
-        if dict_setts["experiment_finished"]:
+        if not dict_setts["experiment_finished"]:
             sleep_time = int(dict_setts["sleep_time"])
             max_iterations = int(dict_setts["max_iterations"])
             # max iterations 
