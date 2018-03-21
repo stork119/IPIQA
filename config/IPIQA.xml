@@ -35,6 +35,9 @@
         <parameter value = "Cells555.csv" />
         <parameter value = "Cytoplasm555.csv" />
     </parameter>
+    
+    
+    <parameter key="required_files" value = "No ROI.roi"/>
 
     
 </CONFIG>
