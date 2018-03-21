@@ -10,7 +10,7 @@ from time import sleep
 def main():
     PP_path = os.path.abspath('..')
     """Setting up logs."""
-    logs_path, q_listener, queue, handler1, handler2, level = LC.configure(PP_path)
+    logs_filename, logs_path, q_listener, queue, handler1, handler2, level = LC.configure(PP_path)
     logger = logging.getLogger("IPIQA")
     logger.setLevel(level)
     logger.addHandler(handler1)
@@ -84,6 +84,8 @@ def main():
         FM.parse_exec_info(PP_path, logs_path, setts, config_dict)
         config_dict["parall_logs_queue"] = VAR.Variable("parall_queue", queue)
         config_dict["logs_level"] = VAR.Variable("logs_level", level)
+        config_dict["logs_filename"] = VAR.Variable("logs_filename", logs_filename)
+        config_dict["logs_path"] = VAR.Variable("logs_path", logs_path)
         config_dict["settings_path"] = VAR.Variable("settings_path", settings_path)
         pipeline.execute(config_dict)
         q_listener.stop()

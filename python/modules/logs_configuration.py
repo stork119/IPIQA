@@ -6,10 +6,11 @@ from logging.handlers import QueueHandler, QueueListener
 
 def configure(PP_path):
     # Setting up log level
-    level = logging.WARNING
+    level = logging.INFO
 
     log_output_path = (os.path.join(PP_path, "python", "logs", "")).replace("\\", "//")
-    log_file =  log_output_path + ((strftime("%Y_%m_%d_")  + "_" + strftime("%H_%M")) ) + ".log" # setup log filename
+    log_filename = ((strftime("%Y_%m_%d_")  + "_" + strftime("%H_%M")) ) + ".log" 
+    log_file =  log_output_path + log_filename # setup log filename
     # Creating log handlers for stream (handler1) and file (handler2):
     handler1 = logging.StreamHandler()
     handler2 = logging.FileHandler(log_file)
@@ -31,4 +32,4 @@ def configure(PP_path):
     logger.setLevel(logging.DEBUG)
     logger.info("Logs initialization...")
     
-    return log_file, q_listener, queue, handler1, handler2, level
+    return log_filename, log_file, q_listener, queue, handler1, handler2, level
