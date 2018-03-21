@@ -85,7 +85,7 @@ def main():
         config_dict["parall_logs_queue"] = VAR.Variable("parall_queue", queue)
         config_dict["logs_level"] = VAR.Variable("logs_level", level)
         config_dict["settings_path"] = VAR.Variable("settings_path", settings_path)
-		pipeline.execute(config_dict)
+        pipeline.execute(config_dict)
         q_listener.stop()
     
 if __name__ == '__main__':
