@@ -16,6 +16,7 @@ import logging
 import os
 from logging.handlers import QueueHandler, QueueListener
 import numpy
+import time
 
 logger = logging.getLogger("IPIQA")
 
@@ -254,11 +255,17 @@ class TASK_QUANTIFY(TASK):
         TASK.__init__(self, parameters, updates, args)
 
     def execute_specify(self, env_local, dict_setts):
-        logger.debug("TASK_QUANTIFY cp_path: %s input_path :%s, output_path :%s, pipeline :%s",
+        logger.info("TASK_QUANTIFY START cp_path: %s input_path :%s, output_path :%s, pipeline :%s",
                      dict_setts["cp_path"], dict_setts["input_path"], 
                      dict_setts["output_path"], dict_setts["pipeline"]) 
+        start_time = time.clock()
         cpm.run_cp_by_cmd(dict_setts["cp_path"], dict_setts["input_path"], 
                           dict_setts["output_path"], dict_setts["pipeline"])
+        calc_time = time.clock()-start_time
+        logger.info("TASK_QUANTIFY FINISHED cp_path: %s input_path :%s, output_path :%s, pipeline :%s, comp_time: %s",
+                     dict_setts["cp_path"], dict_setts["input_path"], 
+                     dict_setts["output_path"], dict_setts["pipeline"],
+                     calc_time) 
    
 class TASK_MERGE_SUBDIR_CSV(TASK):
  
