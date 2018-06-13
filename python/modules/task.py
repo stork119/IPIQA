@@ -249,22 +249,26 @@ class TASK_QUANTIFY(TASK):
     dict_task = {"cp_path" : {"required" : True},
                  "input_path" : {"required" : True},
                  "output_path" : {"required" : True},
-                 "pipeline" : {"required" : True}}
+                 "pipeline" : {"required" : True},
+                 "cp_memory_size" : {"required" : True}}
 
     def __init__(self, parameters, updates,  args = {}):
         TASK.__init__(self, parameters, updates, args)
 
     def execute_specify(self, env_local, dict_setts):
-        logger.info("TASK_QUANTIFY START cp_path: %s input_path :%s, output_path :%s, pipeline :%s",
+        logger.info("TASK_QUANTIFY START cp_path: %s input_path :%s, output_path :%s, pipeline :%s, cp_memory_size: %s",
                      dict_setts["cp_path"], dict_setts["input_path"], 
-                     dict_setts["output_path"], dict_setts["pipeline"]) 
+                     dict_setts["output_path"], dict_setts["pipeline"], 
+                     dict_setts["cp_memory_size"]) 
         start_time = time.clock()
         cpm.run_cp_by_cmd(dict_setts["cp_path"], dict_setts["input_path"], 
-                          dict_setts["output_path"], dict_setts["pipeline"])
+                          dict_setts["output_path"], dict_setts["pipeline"],
+                          dict_setts["cp_memory_size"])
         calc_time = time.clock()-start_time
-        logger.info("TASK_QUANTIFY FINISHED cp_path: %s input_path :%s, output_path :%s, pipeline :%s, comp_time: %s",
+        logger.info("TASK_QUANTIFY FINISHED cp_path: %s input_path :%s, output_path :%s, pipeline :%s, cp_memory_size: %s, comp_time: %s",
                      dict_setts["cp_path"], dict_setts["input_path"], 
                      dict_setts["output_path"], dict_setts["pipeline"],
+                     dict_setts["cp_memory_size"],
                      calc_time) 
    
 class TASK_MERGE_SUBDIR_CSV(TASK):

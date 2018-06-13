@@ -7,10 +7,10 @@ import sys
 
 logger = logging.getLogger("IPIQA.cellprofiler")
 
-def run_cp_by_cmd(cp_path, input_file, output_file, pipeline):
+def run_cp_by_cmd(cp_path, input_file, output_file, pipeline, cp_memory_size):
     if not _pipeline_verification(pipeline):
         return
-    command = '"' + cp_path + 'Cellprofiler.exe"' + ' -c -r -i "' + input_file +   '" -o "' + output_file + '" -p "' + pipeline + '"'
+    command = '"' + cp_path + 'Cellprofiler.exe"' + ' --jvm-heap-size ' + cp_memory_size + ' -c -r -i "' + input_file +   '" -o "' + output_file + '" -p "' + pipeline + '"'
     p=subprocess.Popen(command, shell=True)
     p.wait()
 

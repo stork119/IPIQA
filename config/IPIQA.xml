@@ -36,6 +36,8 @@
         <parameter value = "Cytoplasm555.csv" />
     </parameter>
     
+    <!-- CellProfille configuration -->
+    <parameter key="cp_memory_size" value = "1024"/>
     
     <parameter key="required_files" value = "No ROI.roi"/>
 
